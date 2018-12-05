@@ -2,7 +2,7 @@
 
 ## 本项目地址
 仓库：[http://git.gensh.me/HPCer/HPCerDocs](https://git.gensh.me/HPCDoc/cluster)  
-在线阅读: [http://hpcdoc.pages.gensh.me/clusters](http://books.gensh.me/clusters_user_manual)
+在线阅读: [http://hpcdoc.pages.gensh.me/clusters](http://hpcdoc.pages.gensh.me/clusters)
 
 ## Contributions
 Feel free to create issues or pull-requests if you have any problems.

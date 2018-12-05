@@ -8,7 +8,7 @@
     * [外网VPN登录](zh-cn/02-login/02-vpn-login)
 
 * **软件与工具**
-    * [Environment Module](zh-cn/03-02-run_on_sunway.md)
+    * [Environment Module](zh-cn/03-softwares-and-tools/01-environment-modules)
     * [编译器 软件及库](zh-cn/03-softwares-and-tools/02-compilers-softwares-and-libs)
     * [常用工具](zh-cn/03-softwares-and-tools/03-tools)
 
