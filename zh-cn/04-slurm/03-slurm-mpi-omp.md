@@ -123,7 +123,8 @@ mpirun -np 48 -mca btl_tcp_if_include 172.16.0.0/24 computePI
 
 上面的例子用的都是OpenMPI，如果使用MPICH，格式大致如下：
 
-```ml gmpich/2016a
+```
+ml gmpich/2016a
 ml gmpich/2016a
 mpirun -np 4 ./computePI
 ```
