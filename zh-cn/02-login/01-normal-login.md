@@ -1,4 +1,16 @@
-# 登录
+# 登录到集群
+
+用户可以使用 SSH 登陆到节点，这是最常用的方式。可以登陆的节点如下：
+
+| 节点        | 域名                                                         | 说明                                     |
+| ----------- | ------------------------------------------------------------ | ---------------------------------------- |
+| node01      | ssh.hpc.gensh.me<br />n.hpcone.science        | 计算集群的登陆节点，可以连接到其他节点。 |
+| node[02-04] | n02.hpcone.science<br />n03.hpcone.science<br />n04.hpcone.science | 单独使用的节点。也可以由node01登陆。     |
+| nodegpu     | ssh.ml.gensh.me                                              | GPU节点，单独使用。                      |
+
+> 注：node[13-16]目前不在计算集群中。
+
+账号使用过程中有任何问题或申请开通账号请联系管理员:[汪岸](mailto:wangan.cs@gmail.com) 或 [储根深](mailto:genshenchu@gmail.com)。
 
 ## ssh登录集群
 目前,该集群仅允许校内的网段登录,不对外网开放直接登录权限。
@@ -13,7 +25,7 @@
   1. Web登录方式可参考**集群外网VPN登录**章节的关于其登录方式的介绍；  
 
 - ssh登录地址及端口  
-登录地址为[ssh.hpc.gensh.me](ssh.hpc.gensh.me)或[n.hpcone.science](n.hpcone.science)，登录端口**22**。  
+主节点登录地址为[ssh.hpc.gensh.me](ssh.hpc.gensh.me)或[n.hpcone.science](n.hpcone.science)，登录端口**22**。  
 
 - 登录方式  
   以安全为目的, 集群的不支持静态密码的登录方式, 仅支持**PublicKey** 和 **Keyboard-Interactive**两种登录方式。
@@ -77,6 +89,3 @@ ssh -i ~/.ssh/my_id_rsa user@host # -i 参数指定私钥路径
 如果需要上传文件到集群的对应的用户目录，可使用支持sftp协议的工具上传。这里推荐使用Xftp工具，具体配置方法和Xshell类似，其中主机名和端口号同ssh登录的设置，协议选择**sftp**。
 <!-- 登录示例参考下图: -->
   <!-- ![Xftp登录](../../static/assets/sftp-login.png) -->
-
-## 关于集群账号  
-账号使用过程中有任何问题或申请开通账号请联系管理员:[wangan](mailto:wangan93@126.com) 或 [genshen](mailto:genshenchu@gmail.com)
