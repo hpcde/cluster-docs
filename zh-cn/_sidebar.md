@@ -16,6 +16,7 @@
     * [了解集群的计算资源](zh-cn/04-slurm/01-slurm-info)
     * [申请资源并运行程序](zh-cn/04-slurm/02-slurm-submit)
     * [提交OpenMP/MPI作业](zh-cn/04-slurm/03-slurm-mpi-omp)
+    * [三种MPI实现的用法对比](zh-cn/04-slurm/04-slurm-mpi-vers)
 
 * **软件与工具**
     * [用户注意事项](zh-cn/05-0)
