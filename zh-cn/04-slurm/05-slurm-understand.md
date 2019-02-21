@@ -8,6 +8,32 @@
 
 ![处理器相关概念](https://slurm.schedmd.com/mc_support.gif)
 
+通过提交作业时给定的选项，我们可以精细地控制请求分配的资源数量。其中一个很有用的选项是`-B`，它指明我们需要调度系统分配的 sockets, cores, threads 的数量。
+
+```
+-B, --extra-node-info=S[:C[:T]]            Expands to:
+  --sockets-per-node=S   number of sockets per node to allocate
+  --cores-per-socket=C   number of cores per socket to allocate
+  --threads-per-core=T   number of threads per core to allocate
+                each field can be 'min' or wildcard '*'
+
+     Total cpus requested = (Nodes) x (S x C x T)
+```
+
+例如：
+
+```
+$SBATCH -n 4 -N 2
+$SBATCH -B 2:6:2
+```
+
+这表明我们需要执行4个任务，请求2个节点，每节点2个处理器，每处理器6个核，每个核都超线程。在我们的机器配置下，这就相当于前几节里用其他选项达到的效果，例如
+
+```
+$SBATCH -n 4 -N 2 -c 6
+$SBATCH --export=ALL,OMP_NUM_THREADS=12
+```
+
 ## 可消耗的资源
 
 参考：[Consumable Resources in Slurm](https://slurm.schedmd.com/cons_res.html)
