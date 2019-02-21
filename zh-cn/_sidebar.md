@@ -17,6 +17,8 @@
     * [申请资源并运行程序](zh-cn/04-slurm/02-slurm-submit)
     * [提交OpenMP/MPI作业](zh-cn/04-slurm/03-slurm-mpi-omp)
     * [三种MPI实现的用法对比](zh-cn/04-slurm/04-slurm-mpi-vers)
+    * [关于SLURM的额外知识](zh-cn/04-slurm/05-slurm-understand)
+    * [高级用法](zh-cn/04-slurm/06-slurm-advance)
 
 * **软件与工具**
     * [用户注意事项](zh-cn/05-0)

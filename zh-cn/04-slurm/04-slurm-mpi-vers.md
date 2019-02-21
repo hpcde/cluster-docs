@@ -12,6 +12,8 @@
 
 申请2个节点，每个节点12个进程，把所有核都用上。以下是不同版本的脚本。
 
+> 注：如果想把所有逻辑核都用上，就开24个进程。这样做的话，核内的通信快，很有可能缩短计算时间。
+
 **OpenMPI**
 
 编译：
@@ -82,7 +84,9 @@ mpirun -n 24 ./computePI
 
 ## 提交MPI/OpenMP作业
 
-申请2个节点，每个节点2个进程，每个进程6个线程，把所有核都用上。以下是不同版本的脚本。
+申请2个节点，每个节点2个进程，每个进程12个线程，让所有逻辑核都满负载。以下是不同版本的脚本。
+
+> 注：申请计算资源时可以用 SLURM 提供的`--export`选项来传环境变量，默认是把用户在主节点加载的环境变量全部传过去。如果不用这种方式，就要像前面的小节演示的那样，显示地定义变量，或者作为参数传给 mpirun。 
 
 **OpenMPI**
 
@@ -101,10 +105,10 @@ $ mpicc -fopenmp -o computePI computePI.c
 #SBATCH -o J%j-%x.log
 #SBATCH -N 2
 #SBATCH -n 4
-#SBATCH -c 12
+#SBATCH --ntasks-per-socket=1
+#SBATCH --export=ALL,OMP_NUM_THREADS=12
 ml gompi/2019a
-export OMP_NUM_THREADS=6
-mpirun -n 4 --bind-to none -x OMP_NUM_THREADS -mca btl_tcp_if_include 172.16.0.0/24 ./computePI
+mpirun -mca btl_tcp_if_include 172.16.0.0/24 ./computePI
 ```
 
 **MPICH**
@@ -124,9 +128,10 @@ $ mpicc -fopenmp -o computePI computePI.c
 #SBATCH -o J%j-%x.log
 #SBATCH -N 2
 #SBATCH -n 4
-#SBATCH -c 12
+#SBATCH --ntasks-per-socket=1
+#SBATCH --export=ALL,OMP_NUM_THREADS=12
 ml gmpich/2016a
-mpirun -n 4 -env OMP_NUM_THREADS 6 ./computePI
+mpirun ./computePI
 ```
 
 **Intel MPI**
@@ -146,9 +151,10 @@ $ mpiicc -qopenmp -o computePI computePI.c
 #SBATCH -o J%j-%x.log
 #SBATCH -N 2
 #SBATCH -n 4
-#SBATCH -c 12 
+#SBATCH --ntasks-per-socket=1
+#SBATCH --export=ALL,OMP_NUM_THREADS=12
 ml intel/2019a
-mpirun -n 4 -env OMP_NUM_THREADS 6 ./computePI
+mpirun ./computePI
 ```
 
 > 注：IMPI 在编译 OpenMP 程序时用的选项是`-qopenmp`。
