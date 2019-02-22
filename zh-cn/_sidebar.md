@@ -10,7 +10,8 @@
 * **软件与工具**
     * [配置你的使用环境 - Lmod](zh-cn/03-softwares-and-tools/01-environment-modules)
     * [预装软件（编译器、软件及库）](zh-cn/03-softwares-and-tools/02-compilers-softwares-and-libs)
-    * [常用工具](zh-cn/03-softwares-and-tools/03-tools)
+    * [Anaconda](zh-cn/03-softwares-and-tools/03-anaconda)
+    * [常用工具](zh-cn/03-softwares-and-tools/04-tools)
 
 * **使用计算资源**
     * [了解集群的计算资源](zh-cn/04-slurm/01-slurm-info)
