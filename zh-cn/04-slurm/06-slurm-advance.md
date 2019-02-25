@@ -10,7 +10,8 @@
 
 ```
 #!/bin/sh
-#SBATCH -N 2 -n 4 -c 6 
+#SBATCH -N 2 -n 4
+#SBATCH --exclusive
 #SBATCH --export=ALL,OMP_NUM_THREADS=12
 #SBATCH -a 1,3,5,7
 
