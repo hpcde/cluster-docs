@@ -2,7 +2,7 @@
 
 使用 OpenMPI 时，可以在申请资源后用 `srun` 命令执行你的程序；使用 MPICH/Intel MPI 时，在申请资源后请尽量用 `mpirun` 或 `mpiexec` 执行你的程序。
 
-我们仍然以*Vhagar*分区为例，使用多线程时让每个物理核跑一个线程。使用的编译器如下：
+我们仍然以 *Vhagar* 分区为例，使用多线程时让每个物理核跑一个线程。示例中使用的编译器如下：
 
 - OpenMPI - gompi/2019a 工具链；
 - MPICH - gmpich/2016a 工具链；
@@ -33,7 +33,7 @@ $ mpicc -o computePI computePI.c
 #SBATCH --ntasks-per-node=12
 #SBATCH -c 2 
 ml gompi/2019a
-mpirun -n 24 -mca btl_tcp_if_include 172.16.0.0/24 ./computePI
+mpirun -mca btl_tcp_if_include 172.16.0.0/24 ./computePI
 ```
 
 **MPICH**
@@ -55,7 +55,7 @@ $ mpicc -o computePI computePI.c
 #SBATCH --ntasks-per-node=12
 #SBATCH -c 2 
 ml gmpich/2016a
-mpirun -n 24 ./computePI
+mpirun ./computePI
 ```
 
 **Intel MPI**
@@ -77,7 +77,7 @@ $ mpiicc -o computePI computePI.c
 #SBATCH --ntasks-per-node=12
 #SBATCH -c 2 
 ml intel/2019a
-mpirun -n 24 ./computePI
+mpirun ./computePI
 ```
 
 > 注：MPICH 和 IMPI 的 `mpirun` 命令都不需要指明网卡或网段。
