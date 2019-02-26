@@ -107,7 +107,7 @@ $ ml av
 GCC/8.2.0-2.31.1 (L)    OpenMPI/3.1.3
 ```
 
-当用户加载了 GCC/8.2.0 后，依赖它的软件就可以用命令看到了。如果未加载依赖项，直接加载 OpenMPI/3.1.3 会报错，除非在模块文件中加入了额外的配置。
+当用户加载了 `GCC/8.2.0` 后，依赖它的软件就可以用命令看到了。如果未加载依赖项，直接加载 `OpenMPI/3.1.3` 会报错，除非在模块文件中加入了额外的配置。
 
 ```
 $ ml purge
@@ -128,7 +128,39 @@ OpenMPI: OpenMPI/3.1.3
   	GCC/8.2.0-2.31.1
 ```
 
-如果一个软件被切换成其他版本，依赖它的软件也会相应切换（或者变成非活跃状态）。
+集群上有的软件是用同一编译器编译的。假设有4个模块： A (`GCC/6.4.0`)，B (`CMake/3.9.1`)，C (`CMake/3.10.2`)，D (`GCC/8.2.0`)。B 和 C 都依赖于 A。典型的用法如下。
+
+- 用户想使用 B，必须加载 A：
+
+```bash
+$ ml CMake/3.9.1                  # 报错
+$ ml GCC/6.4.0-2.28 CMake/3.9.1   # 成功加载
+``` 
+
+- 用户加载了 A 和 B后，想切换到 C：
+
+```bash
+$ ml GCC/6.4.0-2.28 CMake/3.9.1   # 成功加载
+$ ml CMake/3.10.2                 # 成功切换
+```
+
+- 用户不想用 A 了，想切换到 D 编译器：
+
+```bash
+$ ml GCC/6.4.0-2.28 CMake/3.9.1   # 成功加载
+$ ml GCC/8.2.0-2.31.1             # 成功切换
+
+Inactive Modules:
+  1) CMake/3.9.1
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) ncurses/6.0
+
+The following have been reloaded with a version change:
+  1) GCC/6.4.0-2.28 => GCC/8.2.0-2.31.1     2) GCCcore/6.4.0 => GCCcore/8.2.0     3) binutils/2.28 => binutils/2.31.1
+```
+
+> 注：从输出可以看到，`GCC/6.4.0` 依赖的模块都自动切换了版本；依赖于 `GCC/6.4.0` 的模块要么找到了对应的版本，要么进入 *Inactive* 状态。
 
 ### 工具链（推荐）
 
@@ -143,7 +175,7 @@ depends_on("OpenMPI/3.1.3")
 
 再往底层，`GCC/8.2.0-2.31-1`又依赖于其他软件、库。加载工具链后，可以看到所有加载进来的模块：
 
-```
+```bash
 $ ml gompi/2019a
 $ ml
 Currently loaded Modules:
@@ -152,9 +184,30 @@ Currently loaded Modules:
   3) GCC/8.2.0-2.31-1   6) XZ/5.2.4         9) hwloc/1.11.11
 ```
 
-卸载工具链也会把所有依赖项全部卸载。常用的 MPI 工具链和版本如下。
+卸载工具链时会把所有依赖项全部卸载。
 
-| 名称   | 包含的主要模块                          | 版本(编译器版本)                                             | 说明             |
+```bash
+$ ml -gompi/2019a
+$ ml
+No modules loaded
+```
+
+切换工具链时，对于同一系列的工具链，用户只需要加载新的就能让旧的自动切换（参考上一节的说明）；对于不同系列的工具链，最好使用切换命令。
+
+```bash
+$ ml gompi/2019a                  # 加载工具链
+$ ml gompi/2019o                  # 切换到同一系列的另一工具链
+
+The following have been reloaded with a version change:
+  1) OpenMPI/3.1.3 => OpenMPI/4.0.0     3) hwloc/1.11.11 => hwloc/2.0.2
+  2) gompi/2019a => gompi/2019o
+
+$ ml -gompi/2019o intel/2019a     # 切换到不同系列的工具链
+```
+
+常用的 MPI 工具链和版本如下。
+
+| 名称   | 包含的主要模块                          | 版本(MPI版本)                                             | 说明             |
 | ------ | --------------------------------------- | ------------------------------------------------------------ | ---------------- |
 | intel  | icc, ifort, imkl, impi                  | 2018a (2018.1)<br />2018b (2018.3)<br />***2019a***(2019.1) | Intel编译器      |
 | gmpich | GCC, MPICH                              | 2016a (3.2)<br />***2017.08*** (3.2.1)<br /> | gcc编译的MPICH   |
@@ -174,16 +227,20 @@ Currently loaded Modules:
 
 用户在使用 Lmod 时，可以把已经加载的模块保存起来，便于下次使用：
 
-```
+```shell
 $ ml GCC/8.2.0-2.31-1 OpenMPI/3.1.3
-$ ml save mytools
+$ ml save mytools                       # 保存当前的加载配置
+
 Saved current collection of modules to: "mytools"
 
-$ ml savelist
+$ ml savelist                           # 查看所有保存的加载配置
 Named collection list:
   1) mytools
 
 $ ml purge
-$ ml restore mytools
+$ ml restore mytools                    # 恢复一个已保存的加载配置
+
 Restoring modules from user's mytools
+
+$ ml disable mytools                    # 弃用一个已保存的加载配置
 ```
