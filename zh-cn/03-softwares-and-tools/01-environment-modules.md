@@ -244,3 +244,17 @@ Restoring modules from user's mytools
 
 $ ml disable mytools                    # 弃用一个已保存的加载配置
 ```
+
+## 自定义模块
+
+当用户自己安装了软件时，可以写自定义的 modulefiles 来使用这些软件。
+
+一般来说，自己安装的软件都在自己的家目录（`/home`）下。为了使用自己安装的软件，往往要修改环境变量。把这些环境变量写成 modulefile 并加入到 Lmod 的搜索路径，就可以让 Lmod 来管理自己安装的软件。
+
+在 Lmod 的官网上有关于撰写 modulefiles 的说明，一个例子是：[Modulefile Examples from simple to complex](https://lmod.readthedocs.io/en/latest/100_modulefile_examples.html)。
+
+假设用户安装了 `GCC/5.1.0`，并且写了一个 modulefile 放在 `/home/user/mymodules` 目录下。为了让 Lmod 能搜索到这个模块，用户可以使用以下命令：
+
+```bash
+$ ml use /home/user/mymodules
+```
