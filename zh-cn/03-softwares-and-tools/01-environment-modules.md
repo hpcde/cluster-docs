@@ -61,7 +61,7 @@ $ ml -GCC/8.2.0 GCC/7.3.0       # module swap
 
 以上只是命令的简单用法，更详细的用法参考 [User Guide for Lmod](https://lmod.readthedocs.io/en/latest/010_user.html)。
 
-> 注：请注意`module avail`和`module spider`的区别，如果要快速查看当前可加载的软件，键入`module avail`后按`<TAB><TAB>`；如果要快速查看**所有**已安装的软件，键入`module spider`后按`<TAB><TAB>`。
+> 注：请注意 `module avail`和`module spider` 的区别，如果要快速查看当前可加载的软件，键入 `module avail` 后按 `<TAB><TAB>`；如果要快速查看**所有**已安装的软件，键入 `module spider` 后按 `<TAB><TAB>`。
 >
 > 注：多数情况下切换模块都不需要卸载之前加载的模块，例如，`ml GCC/7.3.0; ml GCC/8.2.0`。命令会自动切换相应的依赖项。
 
@@ -91,15 +91,23 @@ $ ml showlegacy
 - 执行`ml spider mpi/mpich/3.2`命令，能找到`mpi/mpich/3.2`这个模块，或者，
 - 执行`ml av`命令，能找到`mpi/mpich/3.2`这个模块。
 
+### 默认模块
+
+如果用户在加载模块时不指定版本，那么 Lmod 会加载默认模块。在模块列表中，默认模块的名字后面有个 `(D)`。用户可以用命令查看当前可加载的所有默认模块：
+
+```bash
+module -d avail
+```
+
 ## Lmod的特性
 
 除了基本用法，Lmod 还提供了更为强大的功能，具体参考 [Lmod: A New Environment Module System](https://lmod.readthedocs.io/en/latest/index.html)。以下仅简单介绍一些对用户最有用的特性。
 
 ### 模块层次
 
-编译科学计算软件的编译器版本众多，许多软件在特定编译器下能顺利通过，换作其他编译器就会相当棘手。Lmod 使用模块层次来处理这种软件间的依赖关系。用户可以用 `module avail`查看**当前**可加载的模块，因为模块文件所在的路径`$MODULEPATH`会在运行时被修改。例如：
+编译科学计算软件的编译器版本众多，许多软件在特定编译器下能顺利通过，换作其他编译器就会相当棘手。Lmod 使用模块层次来处理这种软件间的依赖关系。用户可以用 `module avail` 查看**当前**可加载的模块，因为模块文件所在的路径`$MODULEPATH`会在运行时被修改。例如：
 
-```none
+```bash
 $ ml av
 GCC/8.2.0-2.31.1
 $ ml GCC/8.2.0-2.31.1
@@ -127,6 +135,15 @@ OpenMPI: OpenMPI/3.1.3
   
   	GCC/8.2.0-2.31.1
 ```
+
+在用户没有加载任何模块的情况下，可以加载的模块称为 **核心 (Core)**模块。其模块所在路径也以 **Core** 命名：
+
+```bash
+/apps/modulefiles/Core
+/apps/lmod/lmod/modulefiles/Core
+```
+
+**切换软件版本**
 
 集群上有的软件是用同一编译器编译的。假设有4个模块： A (`GCC/6.4.0`)，B (`CMake/3.9.1`)，C (`CMake/3.10.2`)，D (`GCC/8.2.0`)。B 和 C 都依赖于 A。典型的用法如下。
 
@@ -251,7 +268,11 @@ $ ml disable mytools                    # 弃用一个已保存的加载配置
 
 一般来说，自己安装的软件都在自己的家目录（`/home`）下。为了使用自己安装的软件，往往要修改环境变量。把这些环境变量写成 modulefile 并加入到 Lmod 的搜索路径，就可以让 Lmod 来管理自己安装的软件。
 
-在 Lmod 的官网上有关于撰写 modulefiles 的说明，一个例子是：[Modulefile Examples from simple to complex](https://lmod.readthedocs.io/en/latest/100_modulefile_examples.html)。
+在 Lmod 的官网上有关于撰写 modulefiles 的说明：
+
+- [Advanced User Guide for Personal Modulefiles](https://lmod.readthedocs.io/en/latest/020_advanced.html)
+
+- [Modulefile Examples from simple to complex](https://lmod.readthedocs.io/en/latest/100_modulefile_examples.html)
 
 假设用户安装了 `GCC/5.1.0`，并且写了一个 modulefile 放在 `/home/user/mymodules` 目录下。为了让 Lmod 能搜索到这个模块，用户可以使用以下命令：
 
