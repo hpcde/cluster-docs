@@ -3,10 +3,10 @@
 用户可以使用 SSH 登陆到节点，这是最常用的方式。可以登陆的节点如下：
 
 | 节点        | 域名                                                         | 说明                                     |
-| ----------- | ------------------------------------------------------------ | ---------------------------------------- |
-| node01      | ssh.hpc.gensh.me<br />n.hpcone.science        | 计算集群的登陆节点，可以连接到其他节点。 |
-| node[02-04] | n02.hpcone.science<br />n03.hpcone.science<br />n04.hpcone.science | 单独使用的节点。也可以由node01登陆。     |
-| nodegpu     | ssh.ml.gensh.me                                              | GPU节点，单独使用。                      |
+| ----------- | ----------------------------------------------------------- | ---------------------------------------- |
+| node01      | ssh.hpcer.dev<br>n.hpcone.science           | 计算集群的登陆节点，可以连接到其他节点。                |
+| node[02-04] | n02.hpcone.science<br>n03.hpcone.science<br>n04.hpcone.science | 单独使用的节点。也可以由node01登陆。     |
+| nodegpu     | gpu.ssh.hpcer.dev<br> ssh.ml.gensh.me           | GPU节点，单独使用。                                   |
 
 > 注：node[13-16]目前不在计算集群中。
 
@@ -25,7 +25,7 @@
   1. Web登录方式可参考**集群外网VPN登录**章节的关于其登录方式的介绍；  
 
 - ssh登录地址及端口  
-主节点登录地址为[ssh.hpc.gensh.me](ssh.hpc.gensh.me)或[n.hpcone.science](n.hpcone.science)，登录端口**22**。  
+主节点登录地址为[ssh.hpcer.dev](ssh.hpcer.dev)或[n.hpcone.science](n.hpcone.science)，登录端口**22**。  
 
 - 登录方式  
   以安全为目的, 集群的不支持静态密码的登录方式, 仅支持**PublicKey** 和 **Keyboard-Interactive**两种登录方式。
