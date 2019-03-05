@@ -22,7 +22,7 @@ PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
 Balerion	 up	  1:00:00	  4	down* node[17-20]
 Balerion	 up	  1:00:00	  3	 idle node[21-23]
 Vhagar*		 up	  3:00:00	  2	alloc node[05-06]
-Vhagar*		 up	  3:00:00	  6	 idle node[07-12]
+Vhagar*		 up	  3:00:00	  6	  mix node[07-12]
 ```
 
 > 注：节点和分区的信息以集群上的实时数据为准，这里只是用于演示。
@@ -35,7 +35,7 @@ Vhagar*		 up	  3:00:00	  6	 idle node[07-12]
 
 `NODES`		指明了分区中的节点数量，这是该分区所有可以分配给用户的计算节点；
 
-`STATE`		指明了节点的状态。常见状态：`down`表示不可用，`idle`表示空闲节点，`alloc`表示已完全分配给用户使用，`mix`表示已分配给用户，但仍有剩余的计算资源。同一分区可能会占据多个条目，这是因为分区中节点的状态不同；
+`STATE`		指明了节点的状态。常见状态：`down`表示不可用，`idle`表示空闲节点，`alloc`表示已完全分配给用户使用，`mix`表示已分配给用户，但仍有剩余的计算资源可用。同一分区可能会占据多个条目，这是因为分区中节点的状态不同；
 
 `NODELIST`	指明了节点的名称。
 
