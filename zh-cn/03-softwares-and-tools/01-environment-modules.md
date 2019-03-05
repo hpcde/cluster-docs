@@ -61,7 +61,7 @@ $ ml -GCC/8.2.0 GCC/7.3.0       # module swap
 
 以上只是命令的简单用法，更详细的用法参考 [User Guide for Lmod](https://lmod.readthedocs.io/en/latest/010_user.html)。
 
-> 注：请注意`module avail`和`module spider`的区别，如果要快速查看当前可加载的软件，键入`module avail`后按`<TAB><TAB>`；如果要快速查看**所有**已安装的软件，键入`module spider`后按`<TAB><TAB>`。
+> 注：请注意 `module avail`和`module spider` 的区别，如果要快速查看当前可加载的软件，键入 `module avail` 后按 `<TAB><TAB>`；如果要快速查看**所有**已安装的软件，键入 `module spider` 后按 `<TAB><TAB>`。
 >
 > 注：多数情况下切换模块都不需要卸载之前加载的模块，例如，`ml GCC/7.3.0; ml GCC/8.2.0`。命令会自动切换相应的依赖项。
 
@@ -91,15 +91,23 @@ $ ml showlegacy
 - 执行`ml spider mpi/mpich/3.2`命令，能找到`mpi/mpich/3.2`这个模块，或者，
 - 执行`ml av`命令，能找到`mpi/mpich/3.2`这个模块。
 
+### 默认模块
+
+如果用户在加载模块时不指定版本，那么 Lmod 会加载默认模块。在模块列表中，默认模块的名字后面有个 `(D)`。用户可以用命令查看当前可加载的所有默认模块：
+
+```bash
+module -d avail
+```
+
 ## Lmod的特性
 
 除了基本用法，Lmod 还提供了更为强大的功能，具体参考 [Lmod: A New Environment Module System](https://lmod.readthedocs.io/en/latest/index.html)。以下仅简单介绍一些对用户最有用的特性。
 
 ### 模块层次
 
-编译科学计算软件的编译器版本众多，许多软件在特定编译器下能顺利通过，换作其他编译器就会相当棘手。Lmod 使用模块层次来处理这种软件间的依赖关系。用户可以用 `module avail`查看**当前**可加载的模块，因为模块文件所在的路径`$MODULEPATH`会在运行时被修改。例如：
+编译科学计算软件的编译器版本众多，许多软件在特定编译器下能顺利通过，换作其他编译器就会相当棘手。Lmod 使用模块层次来处理这种软件间的依赖关系。用户可以用 `module avail` 查看**当前**可加载的模块，因为模块文件所在的路径`$MODULEPATH`会在运行时被修改。例如：
 
-```none
+```bash
 $ ml av
 GCC/8.2.0-2.31.1
 $ ml GCC/8.2.0-2.31.1
@@ -107,7 +115,7 @@ $ ml av
 GCC/8.2.0-2.31.1 (L)    OpenMPI/3.1.3
 ```
 
-当用户加载了 GCC/8.2.0 后，依赖它的软件就可以用命令看到了。如果未加载依赖项，直接加载 OpenMPI/3.1.3 会报错，除非在模块文件中加入了额外的配置。
+当用户加载了 `GCC/8.2.0` 后，依赖它的软件就可以用命令看到了。如果未加载依赖项，直接加载 `OpenMPI/3.1.3` 会报错，除非在模块文件中加入了额外的配置。
 
 ```
 $ ml purge
@@ -128,7 +136,48 @@ OpenMPI: OpenMPI/3.1.3
   	GCC/8.2.0-2.31.1
 ```
 
-如果一个软件被切换成其他版本，依赖它的软件也会相应切换（或者变成非活跃状态）。
+在用户没有加载任何模块的情况下，可以加载的模块称为 **核心 (Core)**模块。其模块所在路径也以 **Core** 命名：
+
+```bash
+/apps/modulefiles/Core
+/apps/lmod/lmod/modulefiles/Core
+```
+
+**切换软件版本**
+
+集群上有的软件是用同一编译器编译的。假设有4个模块： A (`GCC/6.4.0`)，B (`CMake/3.9.1`)，C (`CMake/3.10.2`)，D (`GCC/8.2.0`)。B 和 C 都依赖于 A。典型的用法如下。
+
+- 用户想使用 B，必须加载 A：
+
+```bash
+$ ml CMake/3.9.1                  # 报错
+$ ml GCC/6.4.0-2.28 CMake/3.9.1   # 成功加载
+``` 
+
+- 用户加载了 A 和 B后，想切换到 C：
+
+```bash
+$ ml GCC/6.4.0-2.28 CMake/3.9.1   # 成功加载
+$ ml CMake/3.10.2                 # 成功切换
+```
+
+- 用户不想用 A 了，想切换到 D 编译器：
+
+```bash
+$ ml GCC/6.4.0-2.28 CMake/3.9.1   # 成功加载
+$ ml GCC/8.2.0-2.31.1             # 成功切换
+
+Inactive Modules:
+  1) CMake/3.9.1
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) ncurses/6.0
+
+The following have been reloaded with a version change:
+  1) GCC/6.4.0-2.28 => GCC/8.2.0-2.31.1     2) GCCcore/6.4.0 => GCCcore/8.2.0     3) binutils/2.28 => binutils/2.31.1
+```
+
+> 注：从输出可以看到，`GCC/6.4.0` 依赖的模块都自动切换了版本；依赖于 `GCC/6.4.0` 的模块要么找到了对应的版本，要么进入 *Inactive* 状态。
 
 ### 工具链（推荐）
 
@@ -143,7 +192,7 @@ depends_on("OpenMPI/3.1.3")
 
 再往底层，`GCC/8.2.0-2.31-1`又依赖于其他软件、库。加载工具链后，可以看到所有加载进来的模块：
 
-```
+```bash
 $ ml gompi/2019a
 $ ml
 Currently loaded Modules:
@@ -152,9 +201,30 @@ Currently loaded Modules:
   3) GCC/8.2.0-2.31-1   6) XZ/5.2.4         9) hwloc/1.11.11
 ```
 
-卸载工具链也会把所有依赖项全部卸载。常用的 MPI 工具链和版本如下。
+卸载工具链时会把所有依赖项全部卸载。
 
-| 名称   | 包含的主要模块                          | 版本(编译器版本)                                             | 说明             |
+```bash
+$ ml -gompi/2019a
+$ ml
+No modules loaded
+```
+
+切换工具链时，对于同一系列的工具链，用户只需要加载新的就能让旧的自动切换（参考上一节的说明）；对于不同系列的工具链，最好使用切换命令。
+
+```bash
+$ ml gompi/2019a                  # 加载工具链
+$ ml gompi/2019o                  # 切换到同一系列的另一工具链
+
+The following have been reloaded with a version change:
+  1) OpenMPI/3.1.3 => OpenMPI/4.0.0     3) hwloc/1.11.11 => hwloc/2.0.2
+  2) gompi/2019a => gompi/2019o
+
+$ ml -gompi/2019o intel/2019a     # 切换到不同系列的工具链
+```
+
+常用的 MPI 工具链和版本如下。
+
+| 名称   | 包含的主要模块                          | 版本(MPI版本)                                             | 说明             |
 | ------ | --------------------------------------- | ------------------------------------------------------------ | ---------------- |
 | intel  | icc, ifort, imkl, impi                  | 2018a (2018.1)<br />2018b (2018.3)<br />***2019a***(2019.1) | Intel编译器      |
 | gmpich | GCC, MPICH                              | 2016a (3.2)<br />***2017.08*** (3.2.1)<br /> | gcc编译的MPICH   |
@@ -174,16 +244,38 @@ Currently loaded Modules:
 
 用户在使用 Lmod 时，可以把已经加载的模块保存起来，便于下次使用：
 
-```
+```shell
 $ ml GCC/8.2.0-2.31-1 OpenMPI/3.1.3
-$ ml save mytools
+$ ml save mytools                       # 保存当前的加载配置
+
 Saved current collection of modules to: "mytools"
 
-$ ml savelist
+$ ml savelist                           # 查看所有保存的加载配置
 Named collection list:
   1) mytools
 
 $ ml purge
-$ ml restore mytools
+$ ml restore mytools                    # 恢复一个已保存的加载配置
+
 Restoring modules from user's mytools
+
+$ ml disable mytools                    # 弃用一个已保存的加载配置
+```
+
+## 自定义模块
+
+当用户自己安装了软件时，可以写自定义的 modulefiles 来使用这些软件。
+
+一般来说，自己安装的软件都在自己的家目录（`/home`）下。为了使用自己安装的软件，往往要修改环境变量。把这些环境变量写成 modulefile 并加入到 Lmod 的搜索路径，就可以让 Lmod 来管理自己安装的软件。
+
+在 Lmod 的官网上有关于撰写 modulefiles 的说明：
+
+- [Advanced User Guide for Personal Modulefiles](https://lmod.readthedocs.io/en/latest/020_advanced.html)
+
+- [Modulefile Examples from simple to complex](https://lmod.readthedocs.io/en/latest/100_modulefile_examples.html)
+
+假设用户安装了 `GCC/5.1.0`，并且写了一个 modulefile 放在 `/home/user/mymodules` 目录下。为了让 Lmod 能搜索到这个模块，用户可以使用以下命令：
+
+```bash
+$ ml use /home/user/mymodules
 ```
