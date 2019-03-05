@@ -4,11 +4,11 @@
 
 | 节点        | 域名                                                         | 说明                                     |
 | ----------- | ----------------------------------------------------------- | ---------------------------------------- |
-| node01      | ssh.hpcer.dev<br>n.hpcone.science           | 计算集群的登陆节点，可以连接到其他节点。                |
-| node[02-04] | n02.hpcone.science<br>n03.hpcone.science<br>n04.hpcone.science | 单独使用的节点。也可以由node01登陆。     |
-| nodegpu     | gpu.ssh.hpcer.dev<br> ssh.ml.gensh.me           | GPU节点，单独使用。                                   |
-
-> 注：node[13-16]目前不在计算集群中。
+| node01      | ssh.hpcer.dev<br>n.hpcone.science                           | 计算集群的登陆节点，可以连接到其他节点。     |
+| node01      | x.hpcone.science                                            | 计算集群的登陆节点，可以连接到其他节点。     |
+| node[03-04] | n03.hpcone.science<br>n04.hpcone.science                    | 单独使用的节点。也可以由node01登陆。        |
+| node[13-16] | -                                                           | Hadoop集群。                              |
+| nodegpu     | gpu.ssh.hpcer.dev<br> ssh.ml.gensh.me                       | GPU节点，单独使用。                        |
 
 账号使用过程中有任何问题或申请开通账号请联系管理员:[汪岸](mailto:wangan.cs@gmail.com) 或 [储根深](mailto:genshenchu@gmail.com)。
 
