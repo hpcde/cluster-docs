@@ -27,7 +27,7 @@ mpirun ./my_prog
 分配了节点、处理器、核心之后，执行的任务（进程）可能会在不同处理器、核心之间切换。用户可以在提交作业时指定选项，让任务绑定到核、CPU 等。
 
 ```
-$SBATCH --cpu-bind=cores
+#SBATCH --cpu-bind=cores
 ```
 
 除此之外，OpenMPI/MPICH/IMPI 这些 MPI 实现也有自己的绑定语法。使用这些语法时，请参考官网或手册。
