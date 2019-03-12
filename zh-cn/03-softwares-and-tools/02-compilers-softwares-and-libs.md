@@ -2,9 +2,9 @@
 
 集群上安装的软件及工具包列如下(2019/02/20更新)，可用的编译器及工具类软件也可以利用 module 工具查看。
 
-推荐使用工具链 *intel/gmpich/gompi/foss/impich/iompi*。
+推荐使用工具链 *intel/gmpich/gompi/foss/impich/iompi/cgmpich*。
 
-## 工具链
+## MPI 工具链
 
 | 版本           | 包含的主要                                                         |
 | -------------- | ----------------------------------------------------------------- |
@@ -25,6 +25,8 @@
 | foss/2019a     | gompi/2019a, OpenBLAS/0.3.5, ScaLAPACK/2.0.2, FFTW/3.3.8          |
 | impich/2018o   | gcc/7.3.0, icc, ifort/2018.3.222, MPICH/3.2.1                     |
 | iompi/2019.01  | gcc/8.2.0, icc, ifort/2019.1.144, OpenMPI/3.1.3                   | 
+| cgmpich/2018a  | gcc/6.4.0, clang/6.0.1, MPICH/3.2.1                               | 
+| cgmpich/2018b  | gcc/7.3.0, clang/7.0.0, MPICH/3.2.1                               | 
 
 ## 编译工具及版本
 
