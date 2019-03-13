@@ -16,46 +16,86 @@
 
 > 注：编译工作也请提交到 *Vhagar* 或 *Balerion* 分区。提交的脚本中可以写编译命令、`make`等，支持 SHELL。
 
-## 如何查看信息
-
 SLURM 提供了一系列命令用于查看分区、节点、作业等信息。以下给出简单的用法。
 
-### 查看分区信息 - sinfo
+## 查看分区和节点信息 - sinfo | snodes
+
+### sinfo
 
 该命令用于查看当前集群的所有分区信息，包括分区和节点的状态。
 
 ```
 $ sinfo
 PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
-Balerion	 up	  1:00:00	  4	down* node[17-20]
-Balerion	 up	  1:00:00	  3	 idle node[21-23]
-Vhagar*		 up	  3:00:00	  2	alloc node[05-06]
-Vhagar*		 up	  3:00:00	  6	  mix node[07-12]
+Balerion     up   1:00:00     4	down* node[17-20]
+Balerion     up   1:00:00     3	 idle node[21-23]
+Vhagar*      up   3:00:00     2	alloc node[05-06]
+Vhagar*      up   3:00:00     6	  mix node[07-12]
 ```
 
 > 注：节点和分区的信息以集群上的实时数据为准，这里只是用于演示。
 
-`PARTITION`	指明了节点的分区，每个任务都只能提交到分区中，不能跨分区。默认分区的名称后有`*`号；
+- `PARTITION` : 节点的分区。每个任务都只能提交到分区中，不能跨分区。默认分区的名称后有 `*` 号；
 
-`AVAIL`		指明了分区的状态，`UP`表示分区可用；
+- `AVAIL` : 分区的状态。`UP` 表示分区可用；
 
-`TIMELIMIT`	指明了分区对作业的时间限制，所有提交到该分区的作业都不能超过时间上限；
+- `TIMELIMIT` : 分区对作业的时间限制。所有提交到该分区的作业都不能超过时间上限；
 
-`NODES`		指明了分区中的节点数量，这是该分区所有可以分配给用户的计算节点；
+- `NODES` : 分区中的节点数量。这是该分区所有可以分配给用户的计算节点；
 
-`STATE`		指明了节点的状态。常见状态：`down`表示不可用，`idle`表示空闲节点，`alloc`表示已完全分配给用户使用，`mix`表示已分配给用户，但仍有剩余的计算资源可用。同一分区可能会占据多个条目，这是因为分区中节点的状态不同；
+- `STATE` : 节点的状态。常见状态：`down` 表示不可用，`idle` 表示空闲节点，`alloc` 表示已完全分配给用户使用，`mix` 表示已分配给用户，但仍有剩余的计算资源可用。同一分区可能会占据多个条目，这是因为分区中节点的状态不同；
 
-`NODELIST`	指明了节点的名称。
+- `NODELIST` : 节点的名称。
 
-### 查看作业队列 - squeue
+给 `sinfo` 命令加上选项，可以查看更详细的信息
+```
+$ sinfo -lN
+NODELIST   NODES PARTITION       STATE CPUS    S:C:T MEMORY TMP_DISK WEIGHT AVAIL_FE REASON              
+node05         1   Vhagar*   allocated   24    2:6:2  64156    10240      1   (null) none
+node06         1   Vhagar*   allocated   24    2:6:2  64156    10240      1   (null) none
+node23         1  Balerion    drained*   32    2:8:2  64155    10240      1   (null) Power saving
+```
 
-该命令用于查看当前在队列中的作业。可以通过参数筛选作业，具体参数见手册。
+- `CPUS` : 节点的总CPU数量；
+
+- `S:C:T` : 节点的 Sockets(S)、Cores(C)、Threads(T) 数量。更详细的解释参考[关于SLURM的额外知识](zh-cn\04-slurm\05-slurm-understand.md)；
+
+- `MEMORY` : 节点的可用内存；
+
+- `TMP_DISK` : 节点的可用临时存储空间；
+
+- `WEIGHT` : 节点被调度的优先级（权重）。
+
+### snodes
+
+如果用户不记得 `sinfo` 的那些选项，`snodes` 命令更方便。
+
+这个命令可以按节点、分区或状态来查看信息，包括分区名、节点名、状态、处理器数量、内存大小。它也能显示节点上的 CPU 占用情况，见 `CPUS(A/I/O/T)` 一栏。
+
+> 注：用 `sinfo` 也可以完成差不多的功能，具体参考其手册 `man sinfo`。
+
+
+## 查看作业队列 - squeue | showq
+
+### squeue
+
+该命令用于查看当前在队列中的作业。默认情况下它会显示作业已经运行的时间。
 
 ```
 $ squeue
 ```
 
-### 查看历史作业 - sacct
+> 注：可以通过参数筛选作业，具体参数见手册 `man squeue`。
+
+### showq
+
+该命令调整了输出信息的格式，便于用户使用。要注意的是，它显示的时间有两个：
+
+- `REMAINING` : 作业剩余的时间。每个作业提交时都有时限，这一栏显示了分配给作业的时间还剩余多少，而无剩余时间的作业会被强制结束；
+
+- `STARTTIME` : 作业的起始时间。
+
+## 查看历史作业 - sacct
 
 直接运行该命令，可以查看当前用户的历史作业。可以通过参数调整输出，具体参数见手册。
 
@@ -63,7 +103,7 @@ $ squeue
 $ sacct
 ```
 
-### 查看详细信息 - scontrol show
+## 查看详细信息 - scontrol show
 
 该命令可以查看很多信息，比如分区、节点的详细信息。示例如下。
 

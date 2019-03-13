@@ -18,9 +18,9 @@
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J computePI-ompi
 #SBATCH -o J%j-%x.log
+#SBATCH -p Vhagar
 #SBATCH -N 2
 #SBATCH --ntasks-per-node=12
 #SBATCH -c 2 
@@ -33,9 +33,9 @@ mpirun -mca btl_tcp_if_include 172.16.0.0/24 ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J computePI-mpich
 #SBATCH -o J%j-%x.log
+#SBATCH -p Vhagar
 #SBATCH -N 2
 #SBATCH --ntasks-per-node=12
 #SBATCH -c 2 
@@ -48,9 +48,9 @@ mpirun ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J computePI-impi
 #SBATCH -o J%j-%x.log
+#SBATCH -p Vhagar
 #SBATCH -N 2
 #SBATCH --ntasks-per-node=12
 #SBATCH -c 2 
@@ -75,9 +75,9 @@ Intel MPI 是基于 MPICH的，这两个的使用方式是类似的，即使用 
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J computePI-ompi
 #SBATCH -o J%j-%x.log
+#SBATCH -p Vhagar
 #SBATCH -N 2
 #SBATCH -n 4
 #SBATCH -c 12
@@ -95,9 +95,9 @@ mpirun -bind-to none -mca btl_tcp_if_include 172.16.0.0/24 ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J computePI-mpich
 #SBATCH -o J%j-%x.log
+#SBATCH -p Vhagar
 #SBATCH -N 2
 #SBATCH -n 4
 #SBATCH -c 12
@@ -111,9 +111,9 @@ srun --mpi=mpi2 ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J computePI-impi
 #SBATCH -o J%j-%x.log
+#SBATCH -p Vhagar
 #SBATCH -N 2
 #SBATCH -n 4
 #SBATCH -c 12
@@ -133,9 +133,9 @@ srun --mpi=mpi2 ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J computePI-mpich
 #SBATCH -o J%j-%x.log
+#SBATCH -p Vhagar
 #SBATCH -N 2
 #SBATCH -n 2
 #SBATCH -c 12
@@ -153,9 +153,9 @@ srun --mpi=mpi2 ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J computePI-mpich
 #SBATCH -o J%j-%x.log
+#SBATCH -p Vhagar
 #SBATCH -N 2
 #SBATCH -n 2
 #SBATCH -c 12

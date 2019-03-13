@@ -116,31 +116,44 @@ node06
 
 该命令用于提交作业（包括分配资源）。它不是交互式的，也不会阻塞终端。如果作业运行时间较长，建议用这个命令。它的参数与`srun`一样。这里仅给出使用的例子。
 
-下面我们申请一个节点，开两个进程，每个进程使用12个线程，同时运行一个 OpenMP 程序：
+下面我们申请一个节点的24个CPU，运行一个程序：
 
-```
+```bash
 $ vim mybatch
     #!/bin/sh
+    #SBATCH -J myjob
+    #SBATCH -o %x-%j.log
+    #SBATCH -p Vhagar
     #SBATCH -N 1
-    #SBATCH -n 2
-    #SBATCH -c 12
-    srun omp_program
+    #SBATCH -c 24
+
+    srun myprogram
 
 $ sbatch mybatch
 ```
 
-如果需要使用特定的软件，可以把加载的命令写在脚本中：
+上述脚本的各部分解释如下：
 
-```
+- `-J myjob` 指定作业的名称，便于用户从多个已经提交的作业中识别它。不指定名称的话，系统会自动分配一个。
+- `-o %x-%j.log` 指定作业的输出位置。`%x` 和 `%j` 是替换符，分别表示作业名和作业编号。关于替换符的说明，请参考手册 `man sbatch`。
+- `-p Vhagar` 指定分区，该分区的节点有24个 CPU。
+- `-N 1` 指定节点数量。
+- `-c 24` 指定CPU数量。
+- 由于未使用 `-t` 指定资源使用的时限，系统会用默认的时限。
+
+如果需要使用特定的软件，可以把加载模块的命令写在脚本中：
+
+```bash
 $ vim mybatch
     #!/bin/sh
+    #SBATCH -J myjob
+    #SBATCH -o %x-%j.log
+    #SBATCH -p Vhagar
     #SBATCH -N 1
-    #SBATCH -n 2
-    #SBATCH -c 12
-    module load HDF5
-    module load Python/3.7.0
-    
-    srun omp_program
+    #SBATCH -c 24
+
+    ml GCC
+    srun myprogram
 
 $ sbatch mybatch
 ```

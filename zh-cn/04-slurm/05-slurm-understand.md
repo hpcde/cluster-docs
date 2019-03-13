@@ -8,7 +8,9 @@
 
 ![处理器相关概念](https://slurm.schedmd.com/mc_support.gif)
 
-通过提交作业时给定的选项，我们可以精细地控制请求分配的资源数量。其中一个很有用的选项是`-B`，它指明我们需要调度系统分配的 sockets, cores, threads 的数量。
+通过提交作业时给定的选项，我们可以精细地控制请求分配的资源数量。其中一个很有用的选项是 `-B`，它指明我们需要调度系统分配的 sockets, cores, threads 的数量。
+
+使用这个选项之前，最好先确认一下要申请的节点是否能满足这个限制。比如，如果节点只有1个 socket，就无法指定2个。
 
 ```
 -B, --extra-node-info=S[:C[:T]]            Expands to:
@@ -22,7 +24,7 @@
 
 例如：
 
-```
+```bash
 #SBATCH -n 4 -N 2
 #SBATCH -B 2:6:2
 ```
