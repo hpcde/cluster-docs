@@ -12,10 +12,10 @@
 
 申请1个节点，1个进程，24个逻辑CPU：
 
-```
+```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J omptest1
+#SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH -c 24
@@ -24,10 +24,10 @@ srun omptest
 
 申请1个节点，1个进程，24个逻辑CPU，但只起12个线程：
 
-```
+```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J omptest2
+#SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH -c 24
@@ -37,10 +37,10 @@ srun omptest
 
 申请1个节点，2个进程，每进程12个逻辑CPU，此时运行两份程序：
 
-```
+```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J omptest3
+#SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 2
 #SBATCH -c 12
@@ -49,10 +49,10 @@ srun omptest
 
 申请1个节点，2个进程，每进程12个逻辑CPU，起12个线程：
 
-```
+```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J omptest4
+#SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 2
 export OMP_NUM_THREADS=12
@@ -75,8 +75,8 @@ srun omptest
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J cpi-N1n24
+#SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 24
 
@@ -96,8 +96,8 @@ mpirun ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J cpi-N1n12c2
+#SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 12
 #SBATCH -c 2
@@ -114,8 +114,8 @@ mpirun ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J cpi-N4n4
+#SBATCH -p Vhagar
 #SBATCH -N 4
 #SBATCH -n 4
 ml gompi/2019a
@@ -134,8 +134,8 @@ mpirun -mca btl_tcp_if_include 172.16.0.0/24 computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J cpi-N4n48
+#SBATCH -p Vhagar
 #SBATCH -N 4
 #SBATCH -n 48
 #SBATCH -c 2
@@ -156,8 +156,8 @@ mpirun -mca btl_tcp_if_include 172.16.0.0/24 ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J cpi-hybrid-N1c24
+#SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -c 24
 ml gompi/2019a
@@ -171,8 +171,8 @@ mpirun --bind-to none -x OMP_NUM_THREADS=12 -mca btl_tcp_if_include 172.16.0.0/2
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J cpi-hybrid-N1n2c12
+#SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 2
 #SBATCH -c 12
@@ -187,8 +187,8 @@ mpirun --bind-to none -x OMP_NUM_THREADS=12 -mca btl_tcp_if_include 172.16.0.0/2
 
 ```bash
 #!/bin/sh
-#SBATCH -p Vhagar
 #SBATCH -J cpi-hybrid-N4n4c24
+#SBATCH -p Vhagar
 #SBATCH -N 4
 #SBATCH -n 4
 #SBATCH -c 24

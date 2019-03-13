@@ -82,4 +82,3 @@ ml Anaconda3
 source /apps/software/Core/Anaconda3/5.3.0/bin/activate py37
 python --version
 ```
-
