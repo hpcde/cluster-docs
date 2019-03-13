@@ -85,7 +85,7 @@ $ netlogin -u [校园网用户名] -p [校园网密码]  --autoipv6
 详细信息请执行**netlogin --help**或**netlogin -h**命令查看  
 ```bash
 $ netlogin --help
-netlogin	0.1.0	Author:genshen | http://git.gensh.me/genshen/NetLogin
+netlogin	0.1.0	Author:genshen | http://git.hpcer.dev/genshen/NetLogin
 
 Usage: netlogin --username USERNAME [--password PASSWORD] [--ipv6addr IPV6ADDR] [--autoipv6]
 
@@ -99,4 +99,4 @@ Options:
   --help, -h             display this help and exit
   --version              display version and exit
 ```
-该校园网登录工具使用中有任何问题请到 http://git.gensh.me/genshen/NetLogin 上提issue或者联系作者([genshenchu@gmail.com](mailto:genshenchu@gmail.com))
+该校园网登录工具使用中有任何问题请到 http://git.hpcer.dev/genshen/NetLogin 上提issue或者联系作者([genshenchu@gmail.com](mailto:genshenchu@gmail.com))
