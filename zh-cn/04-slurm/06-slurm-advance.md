@@ -136,3 +136,12 @@ done
 
 > 注：前面我们还提到过，使用 `-B` 会自动启用绑定。
 
+## Rosetta Stone
+
+参考：[Rosetta Stone of Workload Managers](https://slurm.schedmd.com/rosetta.html)
+
+PBS/Torque、Slurm、LSF、SGE 和 LoadLeveler 这几个调度和管理软件都有自己的命令和参数，它们的命令之间的对应关系在 Slurm 的文档中有说明，见参考链接。
+
+例如，Slurm 用的 `sbatch` 和 `squeue` 分别对应 LSF 中的 `bsub` 和 `bjobs`。
+
+除此之外，集群中安装了 PBS/Torque 插件，可以把 PBS/Torque 的脚本转换为 Slurm 的脚本格式。该插件的相关命令有 `pbs2sbatch`, `pbs2slurm`, `pbsenv2slurm`, `pbsnodes`。
