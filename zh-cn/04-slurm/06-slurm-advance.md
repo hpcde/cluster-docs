@@ -76,7 +76,7 @@ for i in `seq $NJOBS`; do
     if [[ $i != 1 ]]; then NTASKS=$(($NTASKS * 2)); fi
 
     SUFFIX='t$CPUS-$CL'                 # 便于识别
-    NEWPROG="$PROG-$SUFFIX"
+    NEWPROG="$PROG-$SUFFIX"             # 新的程序名，避免冲突
     WORKER="wk-$PROGNAME-$SUFFIX"       # 待提交的脚本名
     JOBNAME="job-$PROGNAME-$SUFFIX"     # 作业名，便于识别
     LOGFILE="$LOGDIR/${JOBNAME}.log"    # 输出文件名，便于识别
@@ -93,14 +93,14 @@ for i in `seq $NJOBS`; do
     cp $PROG $NEWPROG
 
     ## 生成脚本文件
-    printf "%s\n" "${ALLOC[@]}" > $WORKER
-    echo "ml purge; ml $CL" >> $WORKER
+    printf "%s\n" "${ALLOC[@]}" > $WORKER   # 资源申请
+    echo "ml purge; ml $CL" >> $WORKER      # 软件加载
 
-    for j in `seq $MAXITERS`; do
+    for j in `seq $MAXITERS`; do            # 多次执行
         echo "$RUNCMD ./$NEWPROG $PROGARGS" >> $WORKER
     done
 
-    echo "rm $NEWPROG $WORKER" >> $WORKER
+    echo "rm $NEWPROG $WORKER" >> $WORKER   # 清理文件
 
     ## 提交脚本
     sbatch $WORKER
@@ -108,7 +108,11 @@ done
 ```
 > 注：这个脚本中，文件的清理工作由它派生的脚本完成。如果要让这个脚本自己完成清理，要保证所有作业把所需的文件读过去之后再执行清理，因为从作业提交到开始执行是有延迟的。
 
-以上脚本以 8 种不同配置执行程序，每种配置下执行 5 次。这些作业都是分开的，因此只要计算资源够就会同时执行。每种配置的输出结果是单独放在一个文件中的，也就是说，每个输出文件中有跑 5 次的结果。也可以扩充这个脚本：
+以上脚本以 8 种不同配置执行程序，每种配置下执行 5 次。这些作业都是分开的，因此只要计算资源够就会同时执行。每种配置的输出结果是单独放在一个文件中的，也就是说，每个输出文件中有跑 5 次的结果。
+
+总的来说，这个脚本把源代码编译了一次，随后根据不同的配置拷贝多份可执行文件，并生成多份待提交的脚本，逐个把这些脚本提交给集群。
+
+如果有其他需要，还可以扩充这个脚本：
 
 - 用脚本把结果集中起来分析，或用其他方式分析结果（如 Python）；
 - 使用多个不同的时限、分区、节点数、任务数等；
