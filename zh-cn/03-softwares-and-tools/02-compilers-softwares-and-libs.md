@@ -18,6 +18,7 @@
 | gompi/2018a    | gcc/6.4.0, OpenMPI/2.1.2                                          |
 | gompi/2018b    | gcc/7.3.0, OpenMPI/3.1.1                                          |
 | gompi/2019a    | gcc/8.2.0, OpenMPI/3.1.3                                          |
+| gompi/2019a-debug | gcc/8.2.0, OpenMPI/3.1.3, Valgrind/3.13.0                      |
 | gompi/2019o    | gcc/8.2.0, OpenMPI/4.0.0                                          |
 | foss/2016b     | gompi/2016b, OpenBLAS/0.2.18, ScaLAPACK/2.0.2, FFTW/3.3.4         |
 | foss/2018a     | gompi/2016a, OpenBLAS/0.2.20, ScaLAPACK/2.0.2, FFTW/3.3.7         |

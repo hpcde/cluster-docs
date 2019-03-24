@@ -21,8 +21,15 @@
     * [关于SLURM的额外知识](zh-cn/04-slurm/05-slurm-understand)
     * [高级用法](zh-cn/04-slurm/06-slurm-advance)
 
-* **软件与工具**
-    * [用户注意事项](zh-cn/05-0)
+* **调试与分析**
+    * [在集群上调试及分析程序](zh-cn/05-debug/01-debug-intro)
+    * [使用GDB](zh-cn/05-debug/02-debug-gdb)
+    * [调试MPI程序](zh-cn/05-debug/03-debug-mpi)
+    * [使用Valgrind分析工具](zh-cn/05-debug/04-debug-valgrind)
+    * [使用Vtune分析工具](zh-cn/05-debug/05-debug-vtune)
+
+* **其他说明**
+    * [用户注意事项](zh-cn/06-0)
 
 * **Q&A**
-    * [Q&A 常见问题及解答](zh-cn/06-qa)
+    * [Q&A 常见问题及解答](zh-cn/07-qa)
