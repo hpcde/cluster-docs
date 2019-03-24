@@ -1,5 +1,16 @@
 # 申请计算资源并运行程序
 
+用户使用集群时，主要会涉及以下操作：
+
+- 查看信息（分区信息、节点信息、作业信息）
+- 提交作业
+- 取消作业
+- 挂起/恢复作业
+- 调整作业的属性
+- 传输文件
+
+本节会逐个介绍这些操作。
+
 ## 如何提交作业
 
 提交作业的命令主要是：
@@ -36,7 +47,7 @@ $ man sbatch
 | **-o**, **--output**=<*filename pattern*>     | 指明将stdout重定向到某个文件，即打印标准输出。<br />如果不指定**--error**，则错误信息也输出到这个文件里。 |
 | **-e**, **--error**=<*filename pattern*>      | 指明将stderr重定向到某个文件，即打印错误信息。               |
 | **-t**, **--time**=<*time*>                   | 为作业指定时间限制。格式为<br />"minutes", "minutes:seconds", <br />"hours:minutes:seconds", "days-hours", <br />"days-hours:minutes", "days-hours:minutes:seconds" |
-| **-J**, **--job-name**=<*jobname*>            | 指定作业的名称。                                             |
+| **-J**, **--job-name**=<*jobname*>            | 指定作业的名称。可选项，便于用户识别自己提交的作业。                                             |
 | **-w**, **--nodelist**=<*hosts*>              | 指定运行程序的节点，语法见手册。                             |
 | **-F**, **--nodefile**=<*node file*>          | 指定运行程序的节点                                           |
 | **-x**, **--exclude**=<*hosts*>               | 排除一些节点，语法见手册。                                   |
@@ -114,20 +125,30 @@ node06
 
 ### sbatch
 
-该命令用于提交作业（包括分配资源）。它不是交互式的，也不会阻塞终端。如果作业运行时间较长，建议用这个命令。它的参数与`srun`一样。这里仅给出使用的例子。
+该命令用于提交作业（包括分配资源）。它不是交互式的，也不会阻塞终端。如果作业运行时间较长，建议用这个命令。它的参数与`srun`一样。接下来我们重点介绍一下它的使用方法，这部分的很多内容都是适用于 `salloc` 和 `srun` 的。
 
-下面我们申请一个节点的24个CPU，运行一个程序：
+#### 基本命令格式
+
+```bash
+sbatch [options] script [args]
+```
+
+使用 `sbatch` 时，要指明申请的资源数量，如节点数、任务数、CPU数等；还要指明待执行的脚本名称。随后，SLURM 会分配相应的资源（或挂起作业），并将用户的脚本拷贝到计算节点上执行。其中，脚本名必须提供给 sbatch。
+
+例如，我们想跑一个程序（记为 `myprog`，跑之前需要编译，跑完后要输出结果并且清理一下编译好的可执行文件。这个工作可以全部写在脚本中提交。假设脚本为 `mybatch`。
 
 ```bash
 $ vim mybatch
     #!/bin/sh
-    #SBATCH -J myjob
+    #SBATCH -J compile-and-run
     #SBATCH -o %x-%j.log
     #SBATCH -p Vhagar
-    #SBATCH -N 1
-    #SBATCH -c 24
+    #SBATCH -n 1
 
-    srun myprogram
+    ml GCC                  ## 加载所需的编译器
+    gcc myprog.c -o myprog  ## 编译
+    srun myprog             ## 执行
+    rm myprog               ## 清理文件
 
 $ sbatch mybatch
 ```
@@ -136,27 +157,85 @@ $ sbatch mybatch
 
 - `-J myjob` 指定作业的名称，便于用户从多个已经提交的作业中识别它。不指定名称的话，系统会自动分配一个。
 - `-o %x-%j.log` 指定作业的输出位置。`%x` 和 `%j` 是替换符，分别表示作业名和作业编号。关于替换符的说明，请参考手册 `man sbatch`。
-- `-p Vhagar` 指定分区，该分区的节点有24个 CPU。
-- `-N 1` 指定节点数量。
-- `-c 24` 指定CPU数量。
-- 由于未使用 `-t` 指定资源使用的时限，系统会用默认的时限。
+- `-p Vhagar` 指定分区。使用前请通过 `sinfo`、`snodes` 等命令确认哪个分区有空闲节点，否则作业可能要排队等待。
+- `-n 1` 指定任务数量。在这里我们只要求执行1个进程。
 
-如果需要使用特定的软件，可以把加载模块的命令写在脚本中：
+执行完毕后，计算节点的输出（包括 `stdout` 和 `stderr`）都可以在 `-o` 参数指定的文件中看到。
+
+由脚本中 `#SBATCH` 指定的选项和由命令行直接输入的选项是一样的。例如，以下脚本和命令可以达到和前例相同的效果。
 
 ```bash
 $ vim mybatch
     #!/bin/sh
-    #SBATCH -J myjob
+    #SBATCH -J compile-and-run
     #SBATCH -o %x-%j.log
-    #SBATCH -p Vhagar
-    #SBATCH -N 1
-    #SBATCH -c 24
 
-    ml GCC
-    srun myprogram
+    ml GCC                  ## 加载所需的编译器
+    gcc myprog.c -o myprog  ## 编译
+    srun myprog             ## 执行
+    rm myprog               ## 清理文件
 
-$ sbatch mybatch
+$ sbatch -p Vhagar -n 1 mybatch
 ```
+
+#### 作业的时限
+
+执行时间较长的作业需要手动指定时间限制，因为默认的时间限制可能不满足要求。选项 `-t` 的格式我们在前面总结过了。例如，我们可以指定时间为数分钟甚至数天。
+
+```bash
+## 时限为30分钟
+#SBATCH -t 30:00
+
+## 时限为12小时
+#SBATCH -t 12:00:00
+
+## 时限为2天零12小时
+#SBATCH -t 2-12:00:00
+```
+
+如果需要给作业设置一个期限，让作业到期就被终止，可以用 `--deadline`。这个选项可以在作业提交之后通过 `scontrol` 附加上去。
+
+某些情况下，我们可能希望自己的作业在特定时间执行，或者在数小时之后执行。比如定期跑一个清理脚本，跑一个数据分析软件或者脚本之类的。此时可以用 `--begin` 选项来完成。
+
+```bash
+## 当天晚上9点开始
+#SBATCH --begin=21:00:00
+
+## 6小时以后开始
+#SBATCH --begin=now+6hour
+
+## 2100年1月1日凌晨开始
+#SBATCH --begin=2100-01-01T00:00:00
+```
+
+#### 作业的依赖关系
+
+一个作业可以设置与其他作业的依赖关系。考虑以下场景：
+
+我们有不同版本的代码需要编译（使用不同编译器），这些编译后的程序我们要同时提交运行。一种解决方案是，分为2个脚本完成：脚本 A 负责一个接一个地编译，这样能避免多个编译过程产生相同的中间文件（如 `*.o` 文件）相互覆盖；脚本 B 负责把编译后的程序提交给集群去执行。
+
+`mybatchA` 中的选项没什么特别的。提交之后可以看到它的作业编号 `JobID`，假设是 103。接下来，`mybatchB`中要加上一个选项：
+
+```bash
+#SBATCH -d afterok:103
+```
+
+这一句指明了，`mybatchB` 会在 `mybatchA` 成功执行时才会执行。除此之外，还有其他的依赖，例如：
+
+```bash
+## 在作业 103 开始执行之后
+#SBATCH -d after:103
+
+## 在作业 103 和 104 都失败之后，失败的原因有很多
+#SBATCH -d afternotok:103 104
+
+## 单例作业，在所有同名、同用户的作业都结束后才执行
+#SBATCH -d singleton
+```
+
+在提交作业时，多个作业的作业名是可以重复的，因此`singleton` 有时会很有用的，它保证当前任务执行时没有和它作业名、用户名相同的任务。
+
+在手册中可以看到 `-d` 选项的所有参数。
 
 ## 取消作业 - scancel
 
@@ -164,6 +243,29 @@ $ sbatch mybatch
 
 ```
 $ scancel 103
+```
+
+## 更新作业相关信息 - scontrol update job
+
+该命令用于更新一个已提交的作业的信息。如果作业提交后发现时间写短了，或者想附加一些参数，用户应该使用这个命令更新，而不是取消作业再重新提交。
+
+命令的格式可以为：
+
+```bash
+scontrol update job=JobID [Attr1=Value1] [Att2=Value2] ...
+```
+
+其中，`JobID` 是要更新的作业编号，`Attr` 和 `Value` 分别是待更新的作业属性和值。例如，我们要更新编号为 `103` 的作业，把它的时限调整为 `7` 天整。
+
+```bash
+$ scontrol update job=103 TimeLimit=7-00
+```
+
+> 注：`job=103` 可以写成 `job 103`。属性名称`TimeLimit` 不区分大小写，可以写成 `timelimit`。
+
+属性的名字可以通过以下命令查看：
+```bash
+$ scontrol show job 103
 ```
 
 ## 发送文件 - sbcast
