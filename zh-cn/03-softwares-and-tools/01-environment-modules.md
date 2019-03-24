@@ -229,7 +229,7 @@ $ ml -gompi/2019o intel/2019a     # 切换到不同系列的工具链
 | intel  | icc, ifort, imkl, impi                  | 2018a (2018.1)<br />2018b (2018.3)<br />***2019a***(2019.1) | Intel编译器      |
 | gmpich | GCC, MPICH                              | 2016a (3.2)<br />***2017.08*** (3.2.1)<br /> | gcc编译的MPICH   |
 | impich | icc, ifort, MPICH                       | ***2018o*** (3.2.1)                                          | icc编译的MPICH   |
-| gompi  | GCC, OpenMPI                            | 1.5.16 (1.6.5)<br />2016b (1.10.3)<br />2018a (2.1.2)<br />2018b (3.1.1)<br />***2019a*** (3.1.3)<br />***2019o*** (4.0.0) | gcc编译的OpenMPI |
+| gompi  | GCC, OpenMPI                            | 1.5.16 (1.6.5)<br />2016b (1.10.3)<br />2018a (2.1.2)<br />2018b (3.1.1)<br />***2019a*** (3.1.3)<br />2019a-debug (3.1.3)<br />***2019o*** (4.0.0) | gcc编译的OpenMPI |
 | iompi  | icc, ifort, OpenMPI                     | ***2019.01*** (3.1.3)                                        | icc编译的OpenMPI |
 | foss   | GCC, OpenMPI, OpenBLAS, FFTW, ScaLAPACK | 2018a (2.1.2)<br />2018b (3.1.1)<br />***2019a*** (3.1.3)    | 包括数学库       |
 | cgmpich | GCC, Clang, MPICH                      | 2018a (3.2.1)<br />***2018b*** (3.2.1)<br /> | C/C++由clang编译，Fortran由gfortran编译 |
