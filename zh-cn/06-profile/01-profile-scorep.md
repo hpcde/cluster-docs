@@ -2,9 +2,9 @@
 
 Score-P 是一个高可扩展且易于使用的工具集，可用于高性能程序的性能分析和事件追踪。
 
-官方网站：[Score-P](https://www.vi-hps.org/projects/score-p/)
-手册（HTML）：[Score-P 5.0 documentation](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/)
-手册（PDF）： [Score-P 5.0 documentation](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/pdf/scorep.pdf)
+- 官方网站：[Score-P](https://www.vi-hps.org/projects/score-p/)
+- 手册（HTML）：[Score-P 5.0 documentation](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/)
+- 手册（PDF）： [Score-P 5.0 documentation](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/pdf/scorep.pdf)
 
 ## 简介
 
@@ -26,7 +26,9 @@ $ scorep --version
 Score-P 5.0
 ```
 
-## 性能分析
+> 注：Score-P 还支持 OpenCL, OpenACC, CUDA。
+
+## 性能分析示例
 
 使用 Score-P 可以测量程序中 MPI 调用、OpenMP 并行区的时间。大致步骤如下，随后会附上一个小例子。
 
@@ -59,7 +61,11 @@ $ scorep mpicc -std=c99 -g -O2 -fopenmp -o jacobi jacobi.o main.o -lm
 $ srun --mpi=pmi2 -n 2 ./jacobi
 ```
 
-区别在于，编译时要在命令前加上 `scorep`，用于链接 `Score-P` 的库（PMPI、POMP等）。使用 CMake, Make 等方式编译的代码，做类似的处理即可。如果成功链接了 Score-P 的库，可以看到相关信息：
+区别在于，编译时要在命令前加上 `scorep`，用于链接 `Score-P` 的库（PMPI、POMP等）。
+
+> 注：使用 CMake, Make 等方式编译的代码，Score-P 提供了相应的工具来处理，见后续小节。
+
+如果成功链接了 Score-P 的库，可以看到相关信息：
 
 ```bash
 $ ldd jacobi | grep scorep
@@ -95,4 +101,86 @@ flt     type max_buf[B] visits time[s] time[%] time/visit[us]  region
          USR         26      2    0.00     0.0          16.83  USR
 ```
 
-各列的解释参考 [Scoring a Profile Measurement](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/score.html)
+除了汇总的信息，还可以查看每一个区域（函数、结构等）的具体统计信息。例如 `MPI_Send`, `MPI_Recv` 函数或 `#pragma omp parallel` 结构花费了多少时间。
+
+```bash
+$ scorep-score scorep*/profile.cubex -r
+```
+
+各列的详细解释可参考 [Scoring a Profile Measurement](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/score.html)，这里对其中重要的几列说明一下：
+
+- **region** 是被测量（插桩）的代码区域，例如用户函数、库函数、OpenMP 结构等；
+- **visits** 是访问某一区域的次数；
+- **time[s]** 是程序在运行过程中花费在特定区域的总时间；
+- **time[%]** 是程序花费在特定区域的总时间占程序总执行时间的比例。
+- **time/visit[us]** 是访问某区域一次的平均时间。
+
+> 注：C++ 编写的代码如果大量使用 STL，要格外小心。请先仔细阅读官方手册 [Application Measurement](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/measurement.html) 中的内容，尤其是如何筛去一些函数。原因在于，我们这里使用了 Score-P 的插桩功能，会极大影响 C++ STL 中的短函数，让程序运行时间显著延长（几十倍到上千倍都是可能的）。
+
+## 事件追踪分析示例
+
+在性能分析示例中，执行程序时我们没有设置任何与 Score-P 相关的环境变量、参数。这里要说明的是，Score-P 会检查相应的环境变量，因而我们可以通过环境变量来调整它的行为。例如，可以只做性能分析（默认），也可以只做事件追踪。
+
+性能分析示例的输出结果中，前3行以 Estimated 开头的信息可以用作后续事件追踪。开启追踪功能会记录相当多的信息，需要在内存中预先分配足够的内存给 Score-P 使用。因此，做程序的追踪分析之前，一般要先做一个不带追踪功能的性能分析，根据 **估计的(Estimated)** 内存需求，指定环境变量，再运行一个开启了追踪的版本。其工作流程可以大致总结如下：
+
+- 编译；
+- 执行程序（只做性能分析）；
+- 用 `scorep-score` 查看输出结果，确认总的统计信息和后续事件追踪所需的内存大小；
+- 设置环境变量，执行程序（事件追踪，或性能分析+事件追踪）；
+- 分析结果。
+
+详细的工作流程请参考文档中的章节 [Performance Analysis Workflow Using Score-P](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/workflow.html)。本文档仅列出相应标题和链接：
+
+1. Program instrumentation (Section '[Program Instrumentation](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/workflow.html#program_instrumentation)')
+2. Summary measurement collection (Section '[Summary Measurement Collection](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/workflow.html#summary_measurement)')
+3. Summary report examination (Section '[Summary report examination](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/workflow.html#summary_examination)')
+4. Summary experiment scoring (Section '[Summary experiment scoring](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/workflow.html#summary_scoring)')
+5. Advanced summary measurement collection (Section '[Advanced summary measurement collection](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/workflow.html#advanced_summary_collection)')
+6. Advanced summary report examination (Section '[Advanced summary report examination](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/workflow.html#advanced_summary_examination)')
+7. Event trace collection and examination (Section '[Event trace collection and examination](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/workflow.html#trace_collection_exploration)')
+
+## 提交作业的脚本示例
+
+无论性能分析还是事件追踪，都可以作为脚本提交到实验室集群上。在脚本中，我们可以设置环境变量来控制 Score-P 的行为，所有可用的环境变量可参考官方文档 [Score-P Measurement Configuration](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/scorepmeasurementconfig.html)。
+
+实验室集群上支持的环境变量及含义可以用以下命令查看：
+
+```bash
+$ scorep-info config-vars
+```
+
+下面我们给一个脚本作为例子，演示如何把事件追踪的任务提交到集群上。
+
+我们申请在 `Vhagar` 分区上用4个进程来收集 `jacobi` 程序的事件追踪数据，每个进程开12个线程。为了保证有足够的内存供 Score-P 使用，我们要求为每个进程分配 200M 用于存储性能数据（默认为 16000K）。
+
+```bash
+#!/bin/bash
+#SBATCH -J Jacobi-n4-t12
+#SBATCH -t 12:00:00
+#SBATCH -p Vhagar
+#SBATCH -n 4
+#SBATCH -c 12
+
+export OMP_NUM_THREADS=12
+export SCOREP_ENABLE_TRACING=true
+export SCOREP_ENABLE_PROFILING=false
+export SCOREP_ENABLE_UNWINDING=true
+export SCOREP_TOTAL_MEMORY=200M
+
+ml gompi Score-P
+mpirun -bind-to none -mca btl_tcp_if_include 172.16.0.0/24 ./jacobi
+```
+
+从脚本中可以看到，为了只做事件追踪，我们开启了 `TRACING` 并关闭了默认的 `PROFILING`，为了得到详细的调用关系，我们还开启了 `UNWINDING`。
+
+## CMake 与 Score-P
+
+Score-P 为 CMake 和基于 Autotools 的构建系统提供了简便的工具（Score-P wrappers）来链接相应的库。具体做法可以参考官方文档 [Score-P Compiler Wrapper Usage](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/scorepwrapper.html)。
+
+简单来说，使用 CMake 的程序无需修改 CMake 的配置，只需要让 Score-P 来替换 CMake 生成的文件中所用的编译器：
+
+```bash
+$ SCOREP_WRAPPER=off cmake .. \
+    -DCMAKE_C_COMPILER=scorep-gcc \
+    -DCMAKE_CXX_COMPILER=scorep-g++
+```
