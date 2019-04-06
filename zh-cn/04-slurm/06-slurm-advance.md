@@ -49,14 +49,15 @@ mpirun ./my_prog
 TLIMIT='2-00:00:00'
 PARTITION='Balerion'
 NTASKS='1'                  # 起始的进程数量
-NJOBS='8'                   # 多种配置，以2为倍数
+CPUS='16'                   # 每进程的线程数量
+NJOBS='8'                   # 表示1,2,4,8,16,32,64,128这8种配置
 
 ########## 程序的信息  #############
 PROGDIR='./'                # 源代码所在目录
 SRCNAME='mpiprog.c'         # 源代码的名字（如果需要的话）
 PROGNAME='mpiprog'          # 程序的名字
-PROGARGS=''                 # 程序的参数
-LOGDIR='mylog'              # 输出文件的目录
+PROGARGS=''                 # 程序的参数，可以没有
+LOGDIR='log'                # 输出文件的目录
 
 CL='gmpich'                 # 编译器，这里写的是工具链的名字
 CLCMD='mpicc'               # 编译程序的命令
@@ -75,19 +76,21 @@ $CLCMD $SRC -o $PROG
 for i in `seq $NJOBS`; do
     if [[ $i != 1 ]]; then NTASKS=$(($NTASKS * 2)); fi
 
-    SUFFIX='t$CPUS-$CL'                 # 便于识别
+    SUFFIX="n${NTASKS}t${CPUS}-$CL"     # 便于识别
     NEWPROG="$PROG-$SUFFIX"             # 新的程序名，避免冲突
     WORKER="wk-$PROGNAME-$SUFFIX"       # 待提交的脚本名
-    JOBNAME="job-$PROGNAME-$SUFFIX"     # 作业名，便于识别
-    LOGFILE="$LOGDIR/${JOBNAME}.log"    # 输出文件名，便于识别
+    JOBNAME="$PROGNAME-$SUFFIX"         # 作业名，便于识别
+    LOGFILE="$LOGDIR/%j-%x.log"         # 输出文件名，便于识别
 
     ## 程序执行所需的选项
-    ALLOC=("#!bin/bash" \
+    ALLOC=("#!/bin/bash" \
     "#SBATCH -J ${JOBNAME}" \
     "#SBATCH -o ${LOGFILE}" \
     "#SBATCH -t ${TLIMIT}" \
     "#SBATCH -p ${PARTITION}" \
-    "#SBATCH -n ${NTASKS}")
+    "#SBATCH -n ${NTASKS}" \
+    "#SBATCH -c ${CPUS}" \
+    "#SBATCH --export=ALL,OMP_NUM_THREADS=${CPUS}")
 
     ## 复制可执行文件
     cp $PROG $NEWPROG
