@@ -116,6 +116,8 @@ $ scorep-score scorep*/profile.cubex -r
 - **time/visit[us]** 是访问某区域一次的平均时间。
 
 > 注：C++ 编写的代码如果大量使用 STL，要格外小心。请先仔细阅读官方手册 [Application Measurement](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/measurement.html) 中的内容，尤其是如何筛去一些函数。原因在于，我们这里使用了 Score-P 的插桩功能，会极大影响 C++ STL 中的短函数，让程序运行时间显著延长（几十倍到上千倍都是可能的）。
+> 
+> 此外，用户的程序本身也可能有大量被重复调用的函数。这种情况下也可以放弃自动插桩，改用其他插桩方式，例如手动插桩。关于其他插桩方式的详解请参考 [Application Instrumentation](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/instrumentation.html)。
 
 ## 事件追踪分析示例
 
