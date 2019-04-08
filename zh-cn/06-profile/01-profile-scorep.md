@@ -184,5 +184,15 @@ Score-P 为 CMake 和基于 Autotools 的构建系统提供了简便的工具（
 ```bash
 $ SCOREP_WRAPPER=off cmake .. \
     -DCMAKE_C_COMPILER=scorep-gcc \
-    -DCMAKE_CXX_COMPILER=scorep-g++
+    -DCMAKE_CXX_COMPILER=scorep-g++ \
+    -DCMAKE_FORTRAN_COMPILER=scorep-gfortran
+```
+
+使用 MPI 的情况下，提供的参数要做相应修改：
+
+```bash
+$ SCOREP_WRAPPER=off cmake .. \
+    -DCMAKE_C_COMPILER=scorep-mpicc \
+    -DCMAKE_CXX_COMPILER=scorep-mpicxx \
+    -DCMAKE_FORTRAN_COMPILER=scorep-mpif90
 ```
