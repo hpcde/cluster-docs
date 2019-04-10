@@ -8,10 +8,10 @@
     * [外网VPN登录](zh-cn/02-login/02-vpn-login)
 
 * **软件与工具**
-    * [配置你的使用环境 - Lmod](zh-cn/03-softwares-and-tools/01-environment-modules)
-    * [预装软件（编译器、软件及库）](zh-cn/03-softwares-and-tools/02-compilers-softwares-and-libs)
-    * [Anaconda](zh-cn/03-softwares-and-tools/03-anaconda)
-    * [常用工具](zh-cn/03-softwares-and-tools/04-tools)
+    * [使用集群上的软件 - Lmod](zh-cn/03-software/01-lmod)
+    * [预装软件（编译器、软件及库）](zh-cn/03-software/02-software-list)
+    * [Anaconda](zh-cn/03-software/03-anaconda)
+    * [常用工具](zh-cn/03-software/04-tools)
 
 * **使用计算资源**
     * [了解集群的计算资源](zh-cn/04-slurm/01-slurm-info)
