@@ -155,10 +155,19 @@ $ man srun
 $ srun -N 1 -n 2 hostname
 node05
 node05
+
 $ srun -w node06 -n 2 hostname
 node06
 node06
+
+$ srun -N 2 hostname
+node05
+node06
 ```
+
+可以发现，在这三条命令中，`hostname` 都执行了两次。换句话说，申请的资源数量就是使用的资源数量。这是 `srun` 最基本的用法：申请资源，并完全使用这些资源。
+
+在后续章节中，我们会看到另一种用法，即申请资源后只使用申请的一部分资源。
 
 ### sbatch
 
