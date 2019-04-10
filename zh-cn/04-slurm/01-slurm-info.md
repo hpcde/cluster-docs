@@ -58,7 +58,7 @@ node23         1  Balerion    drained*   32    2:8:2  64155    10240      1   (n
 
 - `CPUS` : 节点的总CPU数量；
 
-- `S:C:T` : 节点的 Sockets(S)、Cores(C)、Threads(T) 数量。更详细的解释参考[关于SLURM的额外知识](zh-cn\04-slurm\05-slurm-understand.md)；
+- `S:C:T` : 节点的 Sockets(S)、Cores(C)、Threads(T) 数量。更详细的解释参考[关于SLURM的额外知识](zh-cn\04-slurm\05-slurm-understand)；
 
 - `MEMORY` : 节点的可用内存；
 
