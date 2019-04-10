@@ -107,7 +107,9 @@ $ squeue -S -M      # 按作业已执行时间降序排列
 
 ## 查看历史作业 - sacct
 
-直接运行该命令，可以查看当前用户的历史作业。可以通过参数调整输出，具体参数见手册。
+直接运行该命令，可以查看当前用户的历史作业。
+
+通过相应的选项，我们可以指定要显示的历史作业的起止时间。
 
 ```bash
 $ sacct             # 以默认配置显示历史记录
@@ -117,6 +119,28 @@ $ sacct -S 0301     # 从3月1日起所有的记录
 $ sacct -E 0312     # 在3月12日之前的记录
 
 $ sacct -S 0301 -s FAILED   # 3月1日以来失败的作业
+```
+
+通过使用 `-o` 或 `--format` 选项，可以显示特定的字段。不带任何参数时，`sacct` 会显示 7 个字段。以下两条命令有相同的效果：
+
+```bash
+$ sacct
+
+$ sacct -o JobID,JobName,Partition,Account,AllocCPUS,State,ExitCode
+```
+
+有时我们想知道历史作业执行了多长时间，可以使用 `-o Elapsed` 或 `-o ElapsedRaw`。为了便于大家查看时间，实验室集群的 *node01* 上预定义了一个 `shistory` 命令，可以显示比默认情况下更详细的信息。以下两条命令有相同的效果：
+
+```bash
+$ shistory
+
+$ sacct -o JobID,JobName,Partition,User,AllocCPUS,NNodes,Elapsed,ElapsedRaw,CPUTime,CPUTimeRaw,State
+```
+
+所有可显示的字段可以通过以下命令查看：
+
+```bash
+$ sacct -e
 ```
 
 ## 查看详细信息 - scontrol show
