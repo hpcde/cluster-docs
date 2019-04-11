@@ -58,7 +58,7 @@ node23         1  Balerion    drained*   32    2:8:2  64155    10240      1   (n
 
 - `CPUS` : 节点的总CPU数量；
 
-- `S:C:T` : 节点的 Sockets(S)、Cores(C)、Threads(T) 数量。更详细的解释参考[关于SLURM的额外知识](zh-cn\04-slurm\05-slurm-understand.md)；
+- `S:C:T` : 节点的 Sockets(S)、Cores(C)、Threads(T) 数量。更详细的解释参考[关于SLURM的额外知识](zh-cn\04-slurm\05-slurm-understand)；
 
 - `MEMORY` : 节点的可用内存；
 
@@ -107,7 +107,9 @@ $ squeue -S -M      # 按作业已执行时间降序排列
 
 ## 查看历史作业 - sacct
 
-直接运行该命令，可以查看当前用户的历史作业。可以通过参数调整输出，具体参数见手册。
+直接运行该命令，可以查看当前用户的历史作业。
+
+通过相应的选项，我们可以指定要显示的历史作业的起止时间。
 
 ```bash
 $ sacct             # 以默认配置显示历史记录
@@ -117,6 +119,28 @@ $ sacct -S 0301     # 从3月1日起所有的记录
 $ sacct -E 0312     # 在3月12日之前的记录
 
 $ sacct -S 0301 -s FAILED   # 3月1日以来失败的作业
+```
+
+通过使用 `-o` 或 `--format` 选项，可以显示特定的字段。不带任何参数时，`sacct` 会显示 7 个字段。以下两条命令有相同的效果：
+
+```bash
+$ sacct
+
+$ sacct -o JobID,JobName,Partition,Account,AllocCPUS,State,ExitCode
+```
+
+有时我们想知道历史作业执行了多长时间，可以使用 `-o Elapsed` 或 `-o ElapsedRaw`。为了便于大家查看时间，实验室集群的 *node01* 上预定义了一个 `shistory` 命令，可以显示比默认情况下更详细的信息。以下两条命令有相同的效果：
+
+```bash
+$ shistory
+
+$ sacct -o JobID,JobName,Partition,User,AllocCPUS,NNodes,Elapsed,ElapsedRaw,CPUTime,CPUTimeRaw,State
+```
+
+所有可显示的字段可以通过以下命令查看：
+
+```bash
+$ sacct -e
 ```
 
 ## 查看详细信息 - scontrol show
@@ -174,6 +198,8 @@ $ scontrol show job 103
 
 - 默认的资源使用方式：非独占
 
-> 作业的默认时限指的是，一个作业在未给定时间限制时，系统默认设置的时间限制，超时的作业会被杀掉。提交作业时可以用 `-t` 来指定时间限制。
->
-> **非独占**的资源使用方式指的是，节点以 CPU 为单位分配，除非用户加上参数 `--exclusive` 来占据整个节点。
+> 注：作业的默认时限指的是，一个作业在未给定时间限制时，系统默认设置的时间限制，超时的作业会被杀掉。提交作业时可以用 `-t` 来指定时间限制。
+
+**非独占**的资源使用方式指的是，节点以 CPU 为单位分配，除非用户加上参数 `--exclusive` 来占据整个节点。这有助于实验室集群的资源利用。
+
+例如，用户 A 申请了一个节点中的 12 个 CPU。如果这是非独占的，剩下的 12 个 CPU 仍然可以被用户 B 申请；如果是独占的，剩下的 12 个 CPU 无法被其他任何用户申请。
