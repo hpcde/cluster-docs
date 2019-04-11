@@ -295,8 +295,14 @@ $ sbatch -p Vhagar -n 1 mybatch
 
 该命令用于取消已提交的作业。可以通过参数指定作业、筛选条件等。
 
-```
+```bash
 $ scancel 103
+```
+
+取消某一用户 `hpcer`（通常是自己的）所有作业，使用如下命令：
+
+```bash
+$ scancel -u hpcer
 ```
 
 ## 更新作业相关信息 - scontrol update job
