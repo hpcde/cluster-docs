@@ -145,3 +145,9 @@ static void wait_for_debugger()
 - `MPI_DEBUG_RANK` 用于指定要调试的进程，如果该环境变量未定义，则调试 0 号进程。
 
 这个代码块会把所有进程（除了待调试的）卡在 `MPI_Barrier` 处，而把待调试的进程卡在 `while` 内。当待调试进程执行到 `MPI_Barrier` 时，所有进程都可以继续执行，直到下一个同步（或死循环）。
+
+## 使用 TotalView 调试 MPI 程序
+
+TotalView 是产品级的全能（full-featured）并行程序调试工具。
+
+（待补充）
