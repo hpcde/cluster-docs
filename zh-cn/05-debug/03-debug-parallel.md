@@ -150,4 +150,13 @@ static void wait_for_debugger()
 
 TotalView 是产品级的全能（full-featured）并行程序调试工具。
 
-（待补充）
+实验室登录节点 *node02* 上安装了 TotalView 2019。由于是教育许可，目前该软件仅能在 *node02* 上使用。
+
+TotalView 有 GUI 和 CLI，启用 CLI 的命令为 `totalviewcli`，使用方法与 GDB 类似。
+
+```bash
+$ ml TotalView
+$ totalviewcli
+```
+
+详细使用方法请参考官方网站 [TotalView for HPC](https://www.roguewave.com/products-services/totalview)。官网中有用户手册、教学视频等资源。
