@@ -4386,12 +4386,12 @@
 		</g>
 		<g id="shape400-525" transform="translate(1077.17,-504.689)">
 			<title>工作表.400</title>
-			<desc>存储节点暂未加入</desc>
+			<desc>存储节点</desc>
 			<g id="shadow400-526" transform="matrix(1,0,0,1,2.12132,2.12132)" class="st10">
-				<rect x="0" y="1115.98" width="255.118" height="38.5718" class="st11"/>
+				<rect x="0" y="1115.98" width="111.85" height="38.5718" class="st11"/>
 			</g>
-			<rect x="0" y="1115.98" width="255.118" height="38.5718" class="st12"/>
-			<text x="7.56" y="1142.47" class="st23">存储节点（暂未加入）</text>		</g>
+			<rect x="0" y="1115.98" width="111.85" height="38.5718" class="st12"/>
+			<text x="7.93" y="1142.47" class="st23">存储节点</text>		</g>
 		<g id="shape401-531" transform="translate(722.835,-717.977)">
 			<title>动态连接线.401</title>
 			<path d="M0 1154.55 L-0 1352.95 L183.65 1352.95" class="st24"/>
@@ -4777,9 +4777,9 @@
 			<text x="22.31" y="1145.47" class="st31">nodeft</text>		</g>
 		<g id="shape450-696" transform="translate(954.601,-458.103)">
 			<title>工作表.450</title>
-			<desc>nodemass</desc>
+			<desc>nodedata</desc>
 			<rect x="0" y="1125.58" width="136.738" height="28.968" class="st18"/>
-			<text x="28.78" y="1145.47" class="st31">nodemass</text>		</g>
+			<text x="28.78" y="1145.47" class="st31">nodedata</text>		</g>
 		<g id="shape451-699" transform="translate(668.367,-717.977)">
 			<title>动态连接线.451</title>
 			<path d="M0 1154.55 L0 1330.84 L-215.53 1330.84 L-215.53 1370.75 L-216.2 1370.75" class="st1"/>
