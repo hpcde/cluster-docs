@@ -24,7 +24,7 @@
 * **调试**
     * [在集群上调试及分析程序](zh-cn/05-debug/01-debug-intro)
     * [使用GDB](zh-cn/05-debug/02-debug-gdb)
-    * [调试MPI程序](zh-cn/05-debug/03-debug-mpi)
+    * [调试MPI程序](zh-cn/05-debug/03-debug-parallel)
     * [使用Valgrind分析工具](zh-cn/05-debug/04-debug-valgrind)
 
 * **性能分析**
