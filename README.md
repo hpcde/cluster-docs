@@ -1,5 +1,2 @@
-# HPCer Clusters :id=get-start
-
-English version document is not available currently.
-
-Please checkout to <a href="#/zh-cn/"> chinese</a> version.
+# HPCer Clusters
+Document for HPC clusters of **High Performance Computing and Data Engineering Lab**.
