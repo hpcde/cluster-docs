@@ -84,6 +84,7 @@ class Index extends React.Component {
         background={props.background}>
         <GridBlock
           align="center"
+          className={props.className}
           contents={props.children}
           layout={props.layout}
         />
@@ -94,93 +95,102 @@ class Index extends React.Component {
       <div
         className="productShowcaseSection paddingBottom"
         style={{textAlign: 'center'}}>
-        <h2>Feature Callout</h2>
-        <MarkdownBlock>These are features of this project</MarkdownBlock>
+        <h2>Large Data Storage</h2>
+        <MarkdownBlock>Storage node can store users' data up to **50 TB**.</MarkdownBlock>
       </div>
     );
 
-    const TryOut = () => (
+    const Status = () => (
       <Block id="try">
         {[
           {
-            content: 'Talk about trying this out',
-            image: `${baseUrl}img/docusaurus.svg`,
+            content: `Watch system running status, try now: [cluster status](${siteConfig.extraUrl.status})`,
+            image: `${baseUrl}img/undraw_data_trends.svg`,
             imageAlign: 'left',
-            title: 'Try it Out',
+            title: 'Cluster Status',
           },
         ]}
       </Block>
     );
 
-    const Description = () => (
+    const Support = () => (
       <Block background="dark">
         {[
           {
-            content:
-              'This is another description of how this project is useful',
-            image: `${baseUrl}img/docusaurus.svg`,
+            content: 'By contact the cluster system administrators, you can always get your technical support.',
+            image: `${baseUrl}img/undraw_contact_us.svg`,
             imageAlign: 'right',
-            title: 'Description',
+            title: 'Get Technical Support',
           },
         ]}
       </Block>
     );
 
-    const LearnHow = () => (
+    const BlogLearn = () => (
       <Block background="light">
         {[
           {
-            content: 'Talk about learning how to use this',
-            image: `${baseUrl}img/docusaurus.svg`,
+            content: 'Learn on HPCer Blog about **Performance Analysis** and **Debug** skills.',
+            image: `${baseUrl}img/undraw_blogging.svg`,
             imageAlign: 'right',
-            title: 'Learn How',
+            title: 'HPCer Blog',
           },
         ]}
       </Block>
     );
 
     const Features = () => (
-      <Block layout="fourColumn">
+      <Block layout="fourColumn" className="productShowcaseSection">
         {[
           {
-            content: 'This is the content of my feature',
-            image: `${baseUrl}img/docusaurus.svg`,
-            imageAlign: 'top',
-            title: 'Feature One',
+            content: 'Submit your job, [SLURM](https://slurm.schedmd.com) system will schedule and run you job.',
+            // image: `${baseUrl}img/docusaurus.svg`,
+            // imageAlign: 'top',
+            title: 'Jobs manager based on SLURM',
           },
           {
-            content: 'The content of my second feature',
-            image: `${baseUrl}img/docusaurus.svg`,
-            imageAlign: 'top',
-            title: 'Feature Two',
+            content: 'GPUs, x86 CPUs, phytium CPUs are included in our computing system.',
+            // image: `${baseUrl}img/docusaurus.svg`,
+            // imageAlign: 'top',
+            title: 'Various of computing resource',
           },
         ]}
       </Block>
     );
 
-    const Showcase = () => {
-      if ((siteConfig.users || []).length === 0) {
-        return null;
-      }
+    const JoinUs = () => {
+      // if ((siteConfig.admins || []).length === 0) {
+      //   return null;
+      // }
 
-      const showcase = siteConfig.users
-        .filter(user => user.pinned)
-        .map(user => (
-          <a href={user.infoLink} key={user.infoLink}>
-            <img src={user.image} alt={user.caption} title={user.caption} />
-          </a>
-        ));
+      // const showcase = siteConfig.admins
+      //   .filter(user => user.pinned)
+      //   .map(user => (
+      //     <a href={user.infoLink} key={user.infoLink}>
+      //       <img src={user.image} alt={user.caption} title={user.caption} />
+      //     </a>
+      //   ));
 
       const pageUrl = page => baseUrl + (language ? `${language}/` : '') + page;
 
       return (
         <div className="productShowcaseSection paddingBottom">
-          <h2>Who is Using This?</h2>
-          <p>This project is used by all these people</p>
-          <div className="logos">{showcase}</div>
+          <h2>Join us!</h2>
+          <p>
+            Join us to <b>maintain the cluster</b> togather 
+            and <b>contribute technical support</b>
+            if you a great interest in Linux and Networking.</p>
+          {/* <p>Current administrators </p> */}
+          {/* <div className="logos">{showcase}</div> */}
+          <img
+            src={`${this.props.config.baseUrl}img/undraw_operating_system.svg`}
+            alt="Join us"
+            width="240"
+            height="200"
+          />
           <div className="more-users">
             <a className="button" href={pageUrl('users.html')}>
-              More {siteConfig.title} Users
+              Join us!
             </a>
           </div>
         </div>
@@ -193,10 +203,10 @@ class Index extends React.Component {
         <div className="mainContainer">
           <Features />
           <FeatureCallout />
-          <LearnHow />
-          <TryOut />
-          <Description />
-          <Showcase />
+          <BlogLearn />
+          <Status />
+          <Support />
+          <JoinUs />
         </div>
       </div>
     );

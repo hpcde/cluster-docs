@@ -9,16 +9,28 @@
 // site configuration options.
 
 // List of projects/orgs using your project for the users page.
-const users = [
+const admins = [
   {
-    caption: 'User1',
+    caption: 'Wang An',
     // You will need to prepend the image path with your baseUrl
     // if it is not '/', like: '/test-site/img/docusaurus.svg'.
-    image: '/img/docusaurus.svg',
-    infoLink: 'https://www.facebook.com',
+    image: 'https://git.hpcer.dev/uploads/-/system/user/avatar/10/avatar.png',
+    infoLink: 'https://git.hpcer.dev/one',
+    pinned: true,
+  },
+  {
+    caption: 'Genshen Chu',
+    image: 'https://secure.gravatar.com/avatar/15520bc606e6177300abacab337a5dc6?s=72&d=identicon',
+    infoLink: 'https://github.com/genshen',
     pinned: true,
   },
 ];
+
+const extraUrl = {
+   git: 'https://git.hpcer.dev',
+   hub: 'https://hub.hpcer.dev',
+   status: 'http://status.hpc.hpcer.dev/zabbix/',
+}
 
 const siteConfig = {
   title: 'HPCer Clusters Document', // Title for your website.
@@ -44,8 +56,9 @@ const siteConfig = {
     {blog: true, label: 'Blog'},
   ],
 
-  // If you have users set above, you add it here:
-  users,
+  // If you have admins set above, you add it here:
+  admins,
+  extraUrl,
 
   /* path to images for header/footer */
   headerIcon: 'img/docusaurus.svg',
@@ -57,6 +70,7 @@ const siteConfig = {
     primaryColor: '#2E8555',
     secondaryColor: '#205C3B',
   },
+  editUrl: 'https://git.hpcer.dev/HPCDoc/clusters/blob/master/docs/',
 
   /* Custom fonts for website */
   /*
@@ -100,7 +114,7 @@ const siteConfig = {
 
   // You may provide arbitrary config keys to be used as needed by your
   // template. For example, if you need your repo's URL...
-  //   repoUrl: 'https://github.com/facebook/test-site',
+  repoUrl: 'https://git.hpcer.dev/HPCDoc/clusters',
 };
 
 module.exports = siteConfig;

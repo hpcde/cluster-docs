@@ -37,47 +37,54 @@ class Footer extends React.Component {
           </a>
           <div>
             <h5>Docs</h5>
-            <a href={this.docUrl('doc1.html', this.props.language)}>
-              Getting Started (or other categories)
+            <a href={this.docUrl('getting-started.html', this.props.language)}>
+              Getting Started
             </a>
-            <a href={this.docUrl('doc2.html', this.props.language)}>
-              Guides (or other categories)
-            </a>
-            <a href={this.docUrl('doc3.html', this.props.language)}>
-              API Reference (or other categories)
-            </a>
+            <a href={`${this.props.config.baseUrl}blog`}>Blog</a>
+            {/* <a href={this.docUrl('admin-guide.html', this.props.language)}> */}
+              {/* Admin Guides */}
+            {/* </a> */}
+            {/* <a href={this.docUrl('doc3.html', this.props.language)}> */}
+              {/* API Reference (or other categories) */}
+            {/* </a> */}
           </div>
           <div>
             <h5>Community</h5>
-            <a href={this.pageUrl('users.html', this.props.language)}>
-              User Showcase
+            <a 
+            href={this.props.config.extraUrl.git}
+            target="_blank"
+            rel="noreferrer noopener">
+              HPCer Git
             </a>
             <a
-              href="http://stackoverflow.com/questions/tagged/"
+              href={this.props.config.extraUrl.hub}
               target="_blank"
               rel="noreferrer noopener">
-              Stack Overflow
-            </a>
-            <a href="https://discordapp.com/">Project Chat</a>
-            <a
-              href="https://twitter.com/"
-              target="_blank"
-              rel="noreferrer noopener">
-              Twitter
+              HPCer Hub
             </a>
           </div>
           <div>
             <h5>More</h5>
-            <a href={`${this.props.config.baseUrl}blog`}>Blog</a>
-            <a href="https://github.com/">GitHub</a>
+            <a
+            href={this.props.config.extraUrl.status}
+            target="_blank"
+            rel="noreferrer noopener">
+            Cluster Status
+            </a>
+            <a
+            href={this.props.config.repoUrl}
+            target="_blank"
+            rel="noreferrer noopener">
+            Doc Source on Git
+            </a>
             <a
               className="github-button"
               href={this.props.config.repoUrl}
               data-icon="octicon-star"
               data-count-href="/facebook/docusaurus/stargazers"
-              data-show-count="true"
-              data-count-aria-label="# stargazers on GitHub"
-              aria-label="Star this project on GitHub">
+              data-show-count="flase"
+              data-count-aria-label="# stargazers on Git"
+              aria-label="Star this project on Git">
               Star
             </a>
           </div>
@@ -89,10 +96,10 @@ class Footer extends React.Component {
           rel="noreferrer noopener"
           className="fbOpenSource">
           <img
-            src={`${this.props.config.baseUrl}img/oss_logo.png`}
+            src={`${this.props.config.baseUrl}img/oss_logo.svg`}
             alt="Facebook Open Source"
             width="170"
-            height="45"
+            height="96"
           />
         </a>
         <section className="copyright">{this.props.config.copyright}</section>
