@@ -1,4 +1,7 @@
-# Anaconda
+---
+id: anaconda
+title: Anaconda
+---
 
 Anaconda 是 Python 的一个发行版。它可以创建并管理许多虚拟环境，在每个虚拟环境中的 Python 版本、依赖包版本都可以完全不同。相比于用 pip 安装 Python 包，使用 Anaconda 更加方便。
 

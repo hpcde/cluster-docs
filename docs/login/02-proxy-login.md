@@ -1,4 +1,8 @@
-# 外网VPN登录
+---
+id: proxy-login
+title: 外网代理登录
+---
+
 目前，在外网环境下(指校外网络环境),无法直接登录该集群.但可以通过**VPN**或者**代理**的方式在外网登录.  
 用户可以通过以下的任意一种方式登录到集群:
 - **ssh-web-console**: 在校外通过vpn访问网站 https://console.hpc.gensh.me, 使用[ssh-web-console](https://github.com/genshen/ssh-web-console)登录到校内服务器, 该服务提供基于web的ssh登录与文件传输功能.

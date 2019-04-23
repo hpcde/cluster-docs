@@ -1,4 +1,7 @@
-# 登录到集群
+---
+id: normal-login
+title: 登录到集群
+---
 
 用户可以使用 SSH 登陆到节点，这是最常用的方式。可以登陆的节点如下：
 
@@ -32,12 +35,12 @@
 
 ## Keyboard-Interactive登录
 1. 手机端前往应用商店下载[Google身份验证器](https://support.google.com/accounts/answer/1066447)或者[Microsoft Authenticator](https://www.microsoft.com/zh-cn/account/authenticator)应用。扫描创建账号时提供的二维码或者输入提供的密钥以创建动态验证码。
-![Google 身份验证器](../../static/assets/google_authenticator.png) 
+![Google 身份验证器](/assets/google_authenticator.png) 
 
-2. 以xshell为例，在xshell中选择文件->新建，在类别连接中填入主机名、端口号等内容，再在左侧的连接->用户身份认证，选择Keyboard-Interactive项。  
-![Xshell登录](../../static/assets/login.png)  
+1. 以xshell为例，在xshell中选择文件->新建，在类别连接中填入主机名、端口号等内容，再在左侧的连接->用户身份认证，选择Keyboard-Interactive项。  
+![Xshell登录](/assets/login.png)  
 
-3. 在进行登录时(Xshell中从已创建的会话中登录), 会提示输入验证码, 输入手机端验证器提供的动态密码; 密码输入创建账号时提供的密码(如果有提示输入的话)。
+1. 在进行登录时(Xshell中从已创建的会话中登录), 会提示输入验证码, 输入手机端验证器提供的动态密码; 密码输入创建账号时提供的密码(如果有提示输入的话)。
   
 ## PublicKey登录
 1. 在本地机器上使用ssh-keygen生成公钥和私钥。
@@ -88,4 +91,4 @@ ssh -i ~/.ssh/my_id_rsa user@host # -i 参数指定私钥路径
 ## 使用sftp上传文件  
 如果需要上传文件到集群的对应的用户目录，可使用支持sftp协议的工具上传。这里推荐使用Xftp工具，具体配置方法和Xshell类似，其中主机名和端口号同ssh登录的设置，协议选择**sftp**。
 <!-- 登录示例参考下图: -->
-  <!-- ![Xftp登录](../../static/assets/sftp-login.png) -->
+  <!-- ![Xftp登录](/assets/sftp-login.png) -->

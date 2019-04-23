@@ -1,4 +1,7 @@
-# 使用集群上的软件 - Lmod
+---
+id: lmod
+title: 使用集群上的软件 - Lmod
+---
 
 Lmod 是一个基于 Lua 的 Environment Module System 实现。它可以帮助用户
 

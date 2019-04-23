@@ -1,4 +1,8 @@
-# 三种MPI实现的用法对比
+---
+id: mpi-version-diff
+title: 三种MPI实现的用法对比
+---
+
 
 使用 OpenMPI 时，可以在申请资源后用 `srun` 命令执行你的程序；使用 MPICH/Intel MPI 时，在申请资源后请尽量用 `mpirun` 或 `mpiexec` 执行你的程序。
 

@@ -1,4 +1,7 @@
-# 使用Valgrind分析工具
+---
+id: valgrind
+title: 使用Valgrind分析工具
+---
 
 Valgrind 是一个非常流行的二进制插桩框架（instrumentation framework），可用于构建动态分析工具。目前的发行版本中自带了许多 Valgrind 工具，用于探测内存管理问题、线程问题等。它支持 MPI 程序的分析。
 

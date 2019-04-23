@@ -1,4 +1,7 @@
-# 集群环境
+---
+id: cluster-overview
+title: 集群环境
+---
 
 **北京科技大学高性能计算与数据工程实验室 (High Performance Computing and Data Engineer Lab,HPC&DE Labs)** 隶属于北京科技大学计算机与通信工程学院。
 实验室配有一套集群环境，用于支撑高性能计算、数据工程、机器学习等领域的学习与科研工作。
@@ -47,7 +50,7 @@
 
 集群配置图如下：
 
-![节点概况](../static/assets/clusters_arch.svg)
+![节点概况](/assets/clusters_arch.svg)
 
 ## 操作系统
 
@@ -115,7 +118,7 @@ $ module spider <TAB><TAB>
 
 用户以 `Guest` 身份登录时，可以查看集群 CPU、内存、磁盘等资源的使用情况。
 
-![Zabbix登录](../static/assets/zabbix-login.jpg)
+![Zabbix登录](/assets/zabbix-login.jpg)
 
 登录之后，点击左上角的 *Monitoring -> Dashboard*，可进入 **仪表盘**。每一个仪表盘都显示了集群的部分监控数据。目前开放的仪表盘有以下几个：
 

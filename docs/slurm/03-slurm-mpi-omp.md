@@ -1,4 +1,7 @@
-# 提交OpenMP/MPI作业
+---
+id: mpi-omp
+title: 提交OpenMP/MPI作业
+---
 
 这一小节，我们用几个实例来演示如何提交 OpenMP/MPI 作业。为了方便，我们统一使用`sbatch`，给出脚本文件。以下的所有实例都在分区*Vhagar*上完成。*Vhagar*分区的节点具有2个6核处理器，每个核支持超线程执行，共计24个可用于分配的CPU。
 

@@ -1,4 +1,7 @@
-# 常用工具
+---
+id: tools
+title: 常用工具
+---
 
 ## [Vtune](https://software.intel.com/en-us/intel-vtune-amplifier-xe/) 性能分系软件
 位置:/opt/intel/vtune_amplifier_2018.1.0.535340 或 /opt/intel/vtune_amplifier(软链接方式)  
