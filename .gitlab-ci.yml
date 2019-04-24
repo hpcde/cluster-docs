@@ -22,7 +22,7 @@ build:
   cache:
     key: docusaurus-1.8.1 # caching by docusaurus version.
     paths:
-    - node_modules/
+    - website/node_modules/
   artifacts:
     paths:
     - website/build

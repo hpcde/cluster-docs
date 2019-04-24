@@ -26,6 +26,8 @@ const admins = [
   },
 ];
 
+const siteBaseUrl = process.env.NODE_ENV === 'production'? '/clusters/' : '/'
+
 const extraUrl = {
    git: 'https://git.hpcer.dev',
    hub: 'https://hub.hpcer.dev',
@@ -36,7 +38,7 @@ const siteConfig = {
   title: 'HPCer Clusters Document', // Title for your website.
   tagline: '高性能计算与数据工程实验室集群系统用户手册',
   url: 'http://hpcdoc.pages.hpcer.dev/', // Your website URL
-  baseUrl: '/', // Base URL for your project */
+  baseUrl: siteBaseUrl, // Base URL for your project */
   // For github.io type URLs, you would set the url and baseUrl like:
   //   url: 'https://facebook.github.io',
   //   baseUrl: '/test-site/',
