@@ -14,7 +14,7 @@ build:
   stage: build
   before_script:
     - cd website
-    - yarn install
+    - yarn install --ignore-scripts
     - cd ../
   script:
     - cd website
