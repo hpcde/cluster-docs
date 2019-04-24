@@ -1,12 +1,33 @@
 image: alpine:latest
 
+variables:
+  SITE_BUILD_DIR: "website/build/cluster-doc"
+
+stages:
+  - build
+  - deploy
+
+## all branchs can build html
+build:
+  image: node:10.15.3-alpine
+  tags: [pages]
+  stage: build
+  before_script:
+    - cd website
+    - yarn install
+    - cd ../
+  script:
+    - cd website
+    - yarn build
+  artifacts:
+    paths:
+    - website/build
+
 pages:
   tags: [pages]
   stage: deploy
   script:
-  - mkdir .public
-  - cp -r * .public
-  - mv .public public
+  - mv $SITE_BUILD_DIR} public
   artifacts:
     paths:
     - public
