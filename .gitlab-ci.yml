@@ -31,7 +31,7 @@ pages:
   tags: [pages]
   stage: deploy
   script:
-  - mv $SITE_BUILD_DIR} public
+  - mv $SITE_BUILD_DIR public
   artifacts:
     paths:
     - public
