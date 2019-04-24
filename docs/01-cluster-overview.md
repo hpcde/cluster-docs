@@ -50,7 +50,7 @@ title: 集群环境
 
 集群配置图如下：
 
-![节点概况](/assets/clusters_arch.svg)
+![节点概况](assets/clusters_arch.svg)
 
 ## 操作系统
 
@@ -118,7 +118,7 @@ $ module spider <TAB><TAB>
 
 用户以 `Guest` 身份登录时，可以查看集群 CPU、内存、磁盘等资源的使用情况。
 
-![Zabbix登录](/assets/zabbix-login.jpg)
+![Zabbix登录](assets/zabbix-login.jpg)
 
 登录之后，点击左上角的 *Monitoring -> Dashboard*，可进入 **仪表盘**。每一个仪表盘都显示了集群的部分监控数据。目前开放的仪表盘有以下几个：
 
