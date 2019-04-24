@@ -108,9 +108,9 @@ $ module spider
 $ module spider <TAB><TAB>
 ```
 
-常用软件列表见[预装软件](zh-cn/03-software/02-software-list)一节。
+常用软件列表见[预装软件](software/02-software-list.md)一节。
 
-## 集群 Web 前端
+## 集群节点状态
 
 集群安装了 Zabbix 用于监控集群的使用情况、节点的健康状况，校内网用户可访问以下网址查看：
 
@@ -132,4 +132,4 @@ $ module spider <TAB><TAB>
 
 ## 其他说明
 
-集群登录节点对 CPU 占用有一定限制，多个用户同时在登录节点上运行程序时，CPU 使用率可能会很低，导致程序跑很长时间。因此，请尽量把程序[提交给调度系统](zh-cn/04-slurm/02-slurm-submit)，不要在登录节点上运行。
+集群登录节点对 CPU 占用有一定限制，多个用户同时在登录节点上运行程序时，CPU 使用率可能会很低，导致程序跑很长时间。因此，请尽量把程序[提交给调度系统](slurm/02-slurm-submit-jobs.md)，不要在登录节点上运行。

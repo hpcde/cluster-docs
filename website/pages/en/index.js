@@ -114,10 +114,10 @@ class Index extends React.Component {
     );
 
     const Support = () => (
-      <Block background="dark">
+      <Block background="light">
         {[
           {
-            content: 'By contact the cluster system administrators, you can always get your technical support.',
+            content: 'By contacting the cluster system administrators, you can always get your technical support.',
             image: `${baseUrl}img/undraw_contact_us.svg`,
             imageAlign: 'right',
             title: 'Get Technical Support',
@@ -178,8 +178,8 @@ class Index extends React.Component {
           <h2>Join us!</h2>
           <p>
             Join us to <b>maintain the cluster</b> togather 
-            and <b>contribute technical support</b>
-            if you a great interest in Linux and Networking.</p>
+            and <b>contribute technical support </b>
+            if you have a great interest in Linux and Networking.</p>
           {/* <p>Current administrators </p> */}
           {/* <div className="logos">{showcase}</div> */}
           <img

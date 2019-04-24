@@ -73,7 +73,7 @@ $ conda clean -f
 
 ## 在 SLURM 中使用 Anaconda
 
-这里仅给出一点说明，关于 SLURM 的用法请参考下一章：[使用计算资源 - SLURM](zh-cn/04-slurm/01-slurm-info)
+这里仅给出一点说明，关于 SLURM 的用法请参考下一章：[使用计算资源 - SLURM](../slurm/01-slurm-intro.md)
 
 提交脚本时，如果用户当前的环境中没有加载 Anaconda，那就要在脚本中加载 Anaconda。提交脚本后，如果  SLURM 不能识别`activate`命令，则可以写绝对路径：
 

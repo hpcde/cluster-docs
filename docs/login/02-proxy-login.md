@@ -33,10 +33,10 @@ title: 外网代理登录
    ![获取Cookie](https://github.com/genshen/wssocks-plugin-ustb/raw/master/docs/zh-cn/asserts/get-cookie.png).
 
 3. 使用wssocks连接到USTB校内wssocks服务器,其中wssocks服务器地址为: `ws://proxy.gensh.me`.
-```bash
-USTB_VPN=ON VPN_COOKIE=wengine_vpn_ticket=b28f9aabf8d4f3dd wssocks-ustb client --addr :1080 --remote ws://proxy.gensh.me
-# 其中 b28f9aabf8d4f3dd 为上一步中获取到的 cookie,依据自己情况进行替换.
-```
+    ```bash
+    USTB_VPN=ON VPN_COOKIE=wengine_vpn_ticket=b28f9aabf8d4f3dd wssocks-ustb client --addr :1080 --remote ws://proxy.gensh.me
+    # 其中 b28f9aabf8d4f3dd 为上一步中获取到的 cookie,依据自己情况进行替换.
+    ```
 4. ssh连接校内服务  
    如果你的ssh客户端有socks5代理功能,可以开启socks5代理, socks5代理本地服务器地址为 `127.0.0.1:1080` (该地址及端口可通过`wssocks-ustb client --addr [地址:端口]`指定).  
    如果你的ssh客户端没有socks5代理功能, 你可以在你的Terminal中使用下面的命令进行ssh连接:
