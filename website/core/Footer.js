@@ -91,13 +91,13 @@ class Footer extends React.Component {
         </section>
 
         <a
-          href="https://opensource.facebook.com/"
+          href="https://git.hpcer.dev/HPCer/"
           target="_blank"
           rel="noreferrer noopener"
           className="fbOpenSource">
           <img
             src={`${this.props.config.baseUrl}img/oss_logo.svg`}
-            alt="Facebook Open Source"
+            alt="HPCer of USTB"
             width="170"
             height="96"
           />
