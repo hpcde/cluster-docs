@@ -108,7 +108,7 @@ mpirun -bind-to none -mca btl_tcp_if_include 172.16.0.0/24 ./computePI
 #SBATCH --export=ALL,OMP_NUM_THREADS=12
 ml gmpich/2016a
 mpicc -fopenmp -o computePI computePI.c
-srun --mpi=mpi2 ./computePI
+srun --mpi=pmi2 ./computePI
 ```
 
 **Intel MPI**
@@ -124,7 +124,7 @@ srun --mpi=mpi2 ./computePI
 #SBATCH --export=ALL,OMP_NUM_THREADS=12
 ml intel/2019a
 mpiicc -qopenmp -o computePI computePI.c
-srun --mpi=mpi2 ./computePI
+srun --mpi=pmi2 ./computePI
 ```
 
 > 注：IMPI 在编译 OpenMP 程序时用的选项是`-qopenmp`。
@@ -146,7 +146,7 @@ srun --mpi=mpi2 ./computePI
 #SBATCH --export=ALL,OMP_NUM_THREADS=12
 ml gmpich/2016a
 mpicc -fopenmp -o computePI computePI.c
-srun --mpi=mpi2 ./computePI
+srun --mpi=pmi2 ./computePI
 ```
 
 提交后，执行该作业的节点会处于 `mix` 状态，而剩余的资源（每节点12核，共24核剩余）仍然可以被别的作业使用。比如说，你可以再提交一次上面这个脚本，把剩余的也申请来使用。
@@ -167,5 +167,5 @@ srun --mpi=mpi2 ./computePI
 #SBATCH --exclusive
 ml gmpich/2016a
 mpicc -fopenmp -o computePI computePI.c
-srun --mpi=mpi2 ./computePI
+srun --mpi=pmi2 ./computePI
 ```
