@@ -25,28 +25,29 @@ title: 外网代理登录
 ?> 注:该SSH Web Console在校内网也可以访问,地址:https://console.hpc.gensh.me.
 
 ## 外网wssocks代理使用
-1. 从wssocks-plugin-ustb的[Release](https://github.com/genshen/wssocks-plugin-ustb/releases)页面下载带有[wssocks-plugin-ustb](https://github.com/genshen/wssocks-plugin-ustb)插件的wssocks二进制包,并配置好环境变量.  
 
-!> 如果你需要从校外访问USTB校内网络,需要下载带有wssocks-plugin-ustb插件的wssocks版本.
+1. 从wssocks-plugin-ustb的[Release](https://github.com/genshen/wssocks-plugin-ustb/releases)页面下载带有[wssocks-plugin-ustb](https://github.com/genshen/wssocks-plugin-ustb)插件的wssocks二进制包(该插件会通过USTB的vpn服务连接进校内网络),并配置好环境变量.  
 
-2. 登录USTB VPN https://n.ustb.edu.cn (账号及密码分别为校园网用户名与密码),获取cookie.
-   ![获取Cookie](https://github.com/genshen/wssocks-plugin-ustb/raw/master/docs/zh-cn/asserts/get-cookie.png).
-
-3. 使用wssocks连接到USTB校内wssocks服务器,其中wssocks服务器地址为: `ws://proxy.gensh.me`.
+    如果你有 go 环境，也可以直接 使用一下命令安装：
     ```bash
-    USTB_VPN=ON VPN_COOKIE=wengine_vpn_ticket=b28f9aabf8d4f3dd wssocks-ustb client --addr :1080 --remote ws://proxy.gensh.me
-    # 其中 b28f9aabf8d4f3dd 为上一步中获取到的 cookie,依据自己情况进行替换.
+    go get -u github.com/genshen/wssocks-plugin-ustb/wssocks-ustb
     ```
-4. ssh连接校内服务  
-   如果你的ssh客户端有socks5代理功能,可以开启socks5代理, socks5代理本地服务器地址为 `127.0.0.1:1080` (该地址及端口可通过`wssocks-ustb client --addr [地址:端口]`指定).  
+
+2. 运行wssocks客户端
+   ```bash
+   wssocks-ustb client --remote=ws://proxy.gensh.me --http -http-addr=:1086 --vpn-enable   --vpn-host=vpn4.ustb.edu.cn --vpn-force-logout --vpn-host-encrypt
+   ```
+   其中，wssocks 服务器地址为`ws://proxy.gensh.me`。  
+   其他选项请参见 github 上的[wssocks-plugin-ustb文档](https://github.com/genshen/wssocks-plugin-ustb/blob/master/docs/zh-cn/README.md)。  
+3. ssh连接校内服务  
+   如果你的ssh客户端有socks5代理功能(如xshell软件),可以开启socks5代理, socks5代理本地服务器地址为 `127.0.0.1:1080` (该地址及端口可通过`wssocks-ustb client --addr [地址:端口]`指定).  
    如果你的ssh客户端没有socks5代理功能, 你可以在你的Terminal中使用下面的命令进行ssh连接:
    ```bash
-   ssh -o ProxyCommand='nc -x 127.0.0.1:1080 %h %p' your_server_address
+   ssh -o ProxyCommand='nc -x 127.0.0.1:1080 %h %p' your_server_address # Mac and Linux only
    ```
 
-?> 当然,你也可以配置全局的socks5代理,你的所有的应用程序均可通过该代理访问校内网络，包括web网站, git, ssh等.相关文档见[wssocks-plugin-ustb文档](https://github.com/genshen/wssocks-plugin-ustb/blob/master/docs/zh-cn/README.md).
-
-!> 以上内容仅为大致的wssocks代理使用步骤，更多内容及细节请查看[wssocks-plugin-ustb文档](https://github.com/genshen/wssocks-plugin-ustb/blob/master/docs/zh-cn/README.md).
+当然,你也可以配置**全局的socks5代理**,你的所有的应用程序均可通过该代理访问校内网络，包括**web网站, git, ssh**等.  
+更多内容及细节请查看[wssocks-plugin-ustb文档](https://github.com/genshen/wssocks-plugin-ustb/blob/master/docs/zh-cn/README.md).  
 
 ## 关于项目及git repo
 该页面涉及的几个项目的代码仓库均开源在github上,使用中有任何问题或改进意见,欢迎前来贡献代码或提issues.
