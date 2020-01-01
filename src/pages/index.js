@@ -8,32 +8,30 @@ import styles from './styles.module.css';
 
 const features = [
   {
-    title: <>Easy to Use</>,
+    title: <>Jobs manager based on SLURM</>,
     imageUrl: 'img/undraw_docusaurus_mountain.svg',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Docusaurus was designed from the ground up to be easily installed
+        and used to get your website up and running quickly.
       </>
     ),
   },
   {
-    title: <>Focus on What Matters</>,
-    imageUrl: 'img/undraw_docusaurus_tree.svg',
+    title: <>Various of computing resource</>,
+    imageUrl: 'img/undraw_blogging.svg',
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        GPUs, x86 CPUs, phytium CPUs are included in our computing system.
       </>
     ),
   },
   {
-    title: <>Powered by React</>,
+    title: <>Large Data Storage</>,
     imageUrl: 'img/undraw_docusaurus_react.svg',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Storage node can store users' data up to 50 TB.
       </>
     ),
   },
@@ -54,9 +52,103 @@ function Feature({imageUrl, title, description}) {
   );
 }
 
+/**
+ *  const Status = () => (
+      <Block id="try">
+        {[
+          {
+            content: `Watch system running status, try now: [cluster status](${siteConfig.extraUrl.status})`,
+            image: `${baseUrl}img/undraw_data_trends.svg`,
+            imageAlign: 'left',
+            title: 'Cluster Status',
+          },
+        ]}
+      </Block>
+    );
+
+    const Support = () => (
+      <Block background="light">
+        {[
+          {
+            content: 'By contacting the cluster system administrators, you can always get your technical support.',
+            image: `${baseUrl}img/undraw_contact_us.svg`,
+            imageAlign: 'right',
+            title: 'Get Technical Support',
+          },
+        ]}
+      </Block>
+    );
+
+    const BlogLearn = () => (
+      <Block background="light">
+        {[
+          {
+            content: 'Learn on HPCer Blog about **Performance Analysis** and **Debug** skills.',
+            image: `${baseUrl}img/undraw_blogging.svg`,
+            imageAlign: 'right',
+            title: 'HPCer Blog',
+          },
+        ]}
+      </Block>
+    );
+ */
+function JoinUs () {
+  // if ((siteConfig.admins || []).length === 0) {
+  //   return null;
+  // }
+
+  // const showcase = siteConfig.admins
+  //   .filter(user => user.pinned)
+  //   .map(user => (
+  //     <a href={user.infoLink} key={user.infoLink}>
+  //       <img src={user.image} alt={user.caption} title={user.caption} />
+  //     </a>
+  //   ));
+
+  // const pageUrl = page => baseUrl + (language ? `${language}/` : '') + page;
+
+  return (
+    <div className="productShowcaseSection paddingBottom">
+      <h2>Join us!</h2>
+      <p>
+        Join us to <b>maintain the cluster</b> togather 
+        and <b>contribute technical support </b>
+        if you have a great interest in Linux and Networking.</p>
+      {/* <p>Current administrators </p> */}
+      {/* <div className="logos">{showcase}</div> */}
+      <img
+        src={useBaseUrl('img/undraw_operating_system.svg')}
+        alt="Join us"
+        width="240"
+        height="200"
+      />
+      <div className="more-users">
+        <a className="button" >
+          Join us!
+        </a>
+      </div>
+    </div>
+  );
+};
+
 function Home() {
   const context = useDocusaurusContext();
   const {siteConfig = {}} = context;
+
+  // const Status = () => (
+  //   <Block id="try">
+  //     {[
+  //       {
+  //         content: `Watch system running status, try now: [cluster status](${siteConfig.customFields.extraUrl.status})`,
+  //         image: `${useBaseUrl}img/undraw_data_trends.svg`,
+  //         imageAlign: 'left',
+  //         title: 'Cluster Status',
+  //       },
+  //     ]}
+  //   </Block>
+  // );
+
+
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
@@ -89,6 +181,12 @@ function Home() {
             </div>
           </section>
         )}
+        <div className="container">
+          <div className="row">
+            <JoinUs/>
+          </div>
+        </div>
+        {/* <Status/> */}
       </main>
     </Layout>
   );

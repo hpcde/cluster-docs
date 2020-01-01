@@ -38,6 +38,7 @@ module.exports = {
   favicon: 'img/favicon.png',
   organizationName: 'HPCDE lab', // Usually your GitHub org/user name.
   projectName: 'cluster-doc', // Usually your repo name.
+  customFields: {extraUrl: extraUrl},
   themeConfig: {
     navbar: {
       title: 'HPCer Clusters Document',
@@ -102,6 +103,10 @@ module.exports = {
             {
               label: 'HPCDE lab',
               href: extraUrl.hpcde,
+            },
+            {
+              label: 'Help',
+              to: 'help',
             },
           ],
         },
