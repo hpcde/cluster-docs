@@ -125,7 +125,7 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://git.hpcer.dev/HPCDoc/clusters/blob/master/docs/',
+          editUrl: 'https://git.hpcer.dev/HPCDoc/clusters/blob/master/',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
         },
