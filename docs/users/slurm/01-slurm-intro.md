@@ -136,8 +136,8 @@ $ sacct -o JobID,JobName,Partition,Account,AllocCPUS,State,ExitCode
 
 ```bash
 $ shistory
-
-$ sacct -o JobID,JobName,Partition,User,AllocCPUS,NNodes,Elapsed,ElapsedRaw,CPUTime,CPUTimeRaw,State
+$ sacct -o JobID,JobName,Partition,User,AllocCPUS,NNodes,\
+           Elapsed,ElapsedRaw,CPUTime,CPUTimeRaw,State
 ```
 
 所有可显示的字段可以通过以下命令查看：

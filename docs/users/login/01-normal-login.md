@@ -7,11 +7,11 @@ title: 登录到集群
 
 | 节点        | 域名                                                         | 说明                                     |
 | ----------- | ----------------------------------------------------------- | ---------------------------------------- |
-| node01      | ssh.hpcer.dev<br>n.hpcone.science                           | 计算集群的登陆节点，可以连接到其他节点。     |
+| node01      | ssh.hpcer.dev<br/>n.hpcone.science                           | 计算集群的登陆节点，可以连接到其他节点。     |
 | node02      | x.hpcone.science                                            | 计算集群的登陆节点，可以连接到其他节点。     |
-| node[03-04] | n03.hpcone.science<br>n04.hpcone.science                    | 单独使用的节点。也可以由node01登陆。        |
+| node[03-04] | n03.hpcone.science<br/>n04.hpcone.science                    | 单独使用的节点。也可以由node01登陆。        |
 | node[13-16] | -                                                           | Hadoop集群。                              |
-| nodegpu     | gpu.ssh.hpcer.dev<br> ssh.ml.gensh.me                       | GPU节点，单独使用。                        |
+| nodegpu     | gpu.ssh.hpcer.dev<br/> ssh.ml.gensh.me                       | GPU节点，单独使用。                        |
 
 账号使用过程中有任何问题或申请开通账号请联系管理员:[汪岸](mailto:wangan.cs@gmail.com) 或 [储根深](mailto:genshenchu@gmail.com)。
 
@@ -91,4 +91,4 @@ ssh -i ~/.ssh/my_id_rsa user@host # -i 参数指定私钥路径
 ## 使用sftp上传文件  
 如果需要上传文件到集群的对应的用户目录，可使用支持sftp协议的工具上传。这里推荐使用Xftp工具，具体配置方法和Xshell类似，其中主机名和端口号同ssh登录的设置，协议选择**sftp**。
 <!-- 登录示例参考下图: -->
-  <!-- ![Xftp登录](assets/sftp-login.png) -->
+<!-- ![Xftp登录](assets/sftp-login.png) -->

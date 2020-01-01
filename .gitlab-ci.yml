@@ -1,37 +1,31 @@
 image: alpine:latest
 
-variables:
-  SITE_BUILD_DIR: "website/build/cluster-doc"
-
 stages:
   - build
   - deploy
 
 ## all branchs can build html
 build:
-  image: node:10.14.1-alpine
+  image: timbru31/node-alpine-git:12
   tags: [pages]
   stage: build
   before_script:
-    - cd website
     - yarn install --ignore-scripts --registry https://registry.npm.taobao.org 
-    - cd ../
   script:
-    - cd website
     - yarn build
   cache:
-    key: docusaurus-1.8.1 # caching by docusaurus version.
+    key: docusaurus-2.0.0-alpha.40 # caching by docusaurus version.
     paths:
-    - website/node_modules/
+    - node_modules/
   artifacts:
     paths:
-    - website/build
+    - build
 
 pages:
   tags: [pages]
   stage: deploy
   script:
-  - mv $SITE_BUILD_DIR public
+  - mv build public
   artifacts:
     paths:
     - public
