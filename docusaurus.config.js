@@ -113,7 +113,7 @@ module.exports = {
       ],
       logo: {
         alt: 'HPCer cluster',
-        src: 'https://docusaurus.io/img/oss_logo.png',
+        src: `img/oss_logo.svg`,
         href: 'https://hpcde.github.io/',
       },
       copyright: `Copyright © ${new Date().getFullYear()} HPCDE lab. Built with Docusaurus.`,
@@ -125,8 +125,9 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
+          editUrl: 'https://git.hpcer.dev/HPCDoc/clusters/blob/master/docs/',
+          showLastUpdateAuthor: true,
+          showLastUpdateTime: true,
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
