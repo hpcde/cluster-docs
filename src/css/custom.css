@@ -22,3 +22,8 @@
   margin: 0 calc(-1 * var(--ifm-pre-padding));
   padding: 0 var(--ifm-pre-padding);
 }
+
+.main-wrapper article header h1{
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}

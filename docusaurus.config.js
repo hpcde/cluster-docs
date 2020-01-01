@@ -64,7 +64,7 @@ module.exports = {
           items: [
             {
               label: 'User Manual',
-              to: 'docs/user/getting-started',
+              to: 'docs/users/getting-started',
             },
             {
               label: 'Admin Manual',
