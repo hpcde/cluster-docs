@@ -6,8 +6,8 @@ name: Node.js CI Build and Deploy
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  # pull_request:
+  #   branches: [ master ]
 
 jobs:
   build-docs-and-deploy:

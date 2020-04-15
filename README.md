@@ -25,8 +25,6 @@ This command generates static content into the `build` directory and can be serv
 
 ## Deployment
 
-```
-$ GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+### Deploy to Github and Gitlab
+We are use Github action and Gitlab CI/CD to automatic deploy out site to github pages or gitlab pages.  
+Nothing to do, just push your commit to master branch.
