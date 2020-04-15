@@ -21,7 +21,8 @@ const admins = [
   },
 ];
 
-const siteBaseUrl = process.env.NODE_ENV === 'production'? '/clusters/' : '/'
+// note: if set process.env.DEPLOY_PATH, it must start and end with '/'.
+const siteBaseUrl = process.env.NODE_ENV === 'production'? (process.env.DEPLOY_PATH? process.env.DEPLOY_PATH : '/clusters/') : '/'
 
 const extraUrl = {
   git: 'https://git.hpcer.dev',
@@ -98,7 +99,7 @@ module.exports = {
             },
             {
               label: 'Doc Source on Git',
-              href: "?",
+              href: "https://git.hpcer.dev/HPCDoc/clusters",
             },
             {
               label: 'HPCDE lab',
