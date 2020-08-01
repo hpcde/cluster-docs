@@ -47,7 +47,7 @@ module.exports = {
         alt: 'HPCer Clusters Document Logo',
         src: 'img/logo.svg',
       },
-      links: [
+      items: [
         {to: 'docs/users/getting-started', label: 'User Manual', position: 'left'},
         {to: 'blog', label: 'Blog', position: 'left'},
         {
