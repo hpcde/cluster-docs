@@ -40,6 +40,7 @@ module.exports = {
   organizationName: 'HPCDE lab', // Usually your GitHub org/user name.
   projectName: 'cluster-doc', // Usually your repo name.
   customFields: {extraUrl: extraUrl},
+  onBrokenLinks: 'log',
   themeConfig: {
     navbar: {
       title: 'HPCer Clusters Document',
@@ -67,10 +68,10 @@ module.exports = {
               label: 'User Manual',
               to: 'docs/users/getting-started',
             },
-            {
-              label: 'Admin Manual',
-              to: 'docs/doc2',
-            },
+            // {
+            //   label: 'Admin Manual',
+            //   to: 'docs/doc2',
+            // },
           ],
         },
         {
