@@ -26,5 +26,5 @@ This command generates static content into the `build` directory and can be serv
 ## Deployment
 
 ### Deploy to Github and Gitlab
-We are use Github action and Gitlab CI/CD to automatic deploy out site to github pages or gitlab pages.  
-Nothing to do, just push your commit to master branch.
+We are using Github action and Gitlab CI/CD to automatic deploy our site to github pages or gitlab pages.  
+Nothing to do, just push your commits to master branch.
