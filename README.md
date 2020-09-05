@@ -1,13 +1,13 @@
 # HPCer Clusters
 Document for HPC clusters of **High Performance Computing and Data Engineering Lab**.
 
-## Installation
+### Installation
 
 ```
 $ yarn
 ```
 
-## Local Development
+### Local Development
 
 ```
 $ yarn start
@@ -15,7 +15,7 @@ $ yarn start
 
 This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
 
-## Build
+### Build
 
 ```
 $ yarn build
@@ -23,8 +23,10 @@ $ yarn build
 
 This command generates static content into the `build` directory and can be served using any static contents hosting service.
 
-## Deployment
+### Deployment
 
-### Deploy to Github and Gitlab
-We are using Github action and Gitlab CI/CD to automatic deploy our site to github pages or gitlab pages.  
-Nothing to do, just push your commits to master branch.
+```
+$ GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
+```
+
+If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.

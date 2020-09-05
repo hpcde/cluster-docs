@@ -36,11 +36,11 @@ module.exports = {
   tagline: '高性能计算与数据工程实验室集群系统用户手册',
   url: 'http://hpcdoc.pages.hpcer.dev/',
   baseUrl: siteBaseUrl,
-  favicon: 'img/favicon.png',
+  onBrokenLinks: 'log',
+  favicon: 'img/favicon.ico',
   organizationName: 'HPCDE lab', // Usually your GitHub org/user name.
   projectName: 'cluster-doc', // Usually your repo name.
   customFields: {extraUrl: extraUrl},
-  onBrokenLinks: 'log',
   themeConfig: {
     navbar: {
       title: 'HPCer Clusters Document',
@@ -126,11 +126,19 @@ module.exports = {
       '@docusaurus/preset-classic',
       {
         docs: {
+          // It is recommended to set document id as docs home page (`docs/` path).
+          homePageId: 'getting-started',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://git.hpcer.dev/HPCDoc/clusters/blob/master/',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
         },
+        // blog: {
+        //   showReadingTime: true,
+        //   // Please change this to your repo.
+        //   editUrl:
+        //     'https://github.com/facebook/docusaurus/edit/master/website/blog/',
+        // },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },

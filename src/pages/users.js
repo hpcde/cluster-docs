@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import classnames from 'classnames';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 
