@@ -15,6 +15,7 @@ module.exports = {
       ],
       "软件与工具": [
         "users/software/lmod",
+        "users/software/spack",
         "users/software/sofrware-list",
         "users/software/anaconda",
         "users/software/tools"
