@@ -1,11 +1,13 @@
 ---
 id: getting-started
+# slug: users/getting-started.html
 title: 首页
 ---
 
 ## 本项目地址
-仓库：[https://git.hpcer.dev/HPCDoc/clusters](https://git.hpcer.dev/HPCDoc/cluster)  
-在线阅读: [http://hpcdoc.pages.hpcde.dev/clusters](http://hpcdoc.pages.hpcer.dev/clusters)
+仓库：https://git.hpcer.dev/HPCDoc/cluster  
+仓库 github 镜像： https://github.com/hpcde/cluster-docs  
+在线阅读: http://hpcdoc.pages.hpcde.dev/clusters 或 https://hpcde.github.io/cluster-docs/
 
 ## Contributions
 Feel free to create issues or pull-requests if you have any problems.

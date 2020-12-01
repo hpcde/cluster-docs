@@ -21,6 +21,10 @@ const admins = [
   },
 ];
 
+const defaultGitRepo = 'https://git.hpcer.dev/HPCDoc/clusters'
+const docGitRepo = process.env.DOC_GIT_REPO? process.env.DOC_GIT_REPO : defaultGitRepo
+// for document edit url, fallback is the same for github and gitlab.
+const docEditUrl = process.env.DOC_EDIT_URL? process.env.DOC_EDIT_URL : docGitRepo + '/blob/master/'
 // note: if set process.env.DEPLOY_PATH, it must start and end with '/'.
 const siteBaseUrl = process.env.NODE_ENV === 'production'? (process.env.DEPLOY_PATH? process.env.DEPLOY_PATH : '/clusters/') : '/'
 
@@ -34,7 +38,7 @@ const extraUrl = {
 module.exports = {
   title: 'HPCer Clusters Document',
   tagline: '高性能计算与数据工程实验室集群系统用户手册',
-  url: 'http://hpcdoc.pages.hpcer.dev/',
+  url: 'https://hpcdoc.pages.hpcer.dev/cluster',
   baseUrl: siteBaseUrl,
   onBrokenLinks: 'log',
   favicon: 'img/favicon.ico',
@@ -52,7 +56,7 @@ module.exports = {
         {to: 'docs/users/getting-started', label: 'User Manual', position: 'left'},
         {to: 'blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://git.hpcer.dev/HPCDoc/clusters',
+          href: docGitRepo,
           label: 'Source on Git',
           position: 'right',
         },
@@ -100,7 +104,7 @@ module.exports = {
             },
             {
               label: 'Doc Source on Git',
-              href: "https://git.hpcer.dev/HPCDoc/clusters",
+              href: docGitRepo,
             },
             {
               label: 'HPCDE lab',
@@ -129,7 +133,7 @@ module.exports = {
           // It is recommended to set document id as docs home page (`docs/` path).
           homePageId: 'getting-started',
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://git.hpcer.dev/HPCDoc/clusters/blob/master/',
+          editUrl: docEditUrl,
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
         },

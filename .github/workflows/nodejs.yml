@@ -39,6 +39,7 @@ jobs:
         env:
           CI: true
           DEPLOY_PATH: "/cluster-docs/"
+          DOC_GIT_REPO: "https://github.com/hpcde/cluster-docs"
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
