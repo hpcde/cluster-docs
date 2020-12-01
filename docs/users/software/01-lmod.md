@@ -3,7 +3,9 @@ id: lmod
 title: 使用集群上的软件 - Lmod
 ---
 
-Lmod 是一个基于 Lua 的 Environment Module System 实现。它可以帮助用户
+Lmod是一个环境变量管理软件，是基于Lua的Environment Module System实现。我们在超算上使用的通常是另一个基于Tcl的Environment Module System。
+
+Lmod可以帮助用户
 
 - 切换不同软件，如 Anaconda 和 Python；
 
@@ -156,6 +158,10 @@ OpenMPI: OpenMPI/3.1.3
 /apps/modulefiles/Core
 /apps/lmod/lmod/modulefiles/Core
 ```
+
+> **命名规则**
+>
+> 集群上所有Lmod的模块文件均由[EasyBuild](https://easybuild.readthedocs.io/en/latest/)安装，采用EasyBuild的命名规则。
 
 **切换软件版本**
 
