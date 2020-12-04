@@ -64,7 +64,10 @@ $ spack unload -a
 ### `spack find`
 
 ```console
-## 只指定软件包名称，可能会搜出多个同名软件包
+## 列出所有已安装的软件包
+$ spack find
+
+## 列出指定名称的软件包，可能会搜出多个同名软件包
 $ spack find hdf5
 
 ## '@'用于指定软件包版本
@@ -86,6 +89,21 @@ $ spack find -vd --show-full-compiler hdf5
 ## 虽然这些软件包是同名、同版本的，但它们的编译选项、编译器、依赖项各不相同，因此
 ## 有不同的spec，产生不同的hash值
 $ spack find -L --paths hdf5
+```
+
+Spack把安装的软件包按照架构（target）和编译器分类。在目前的集群Spack中，架构统一为x86_64，这是为了兼容集群中不同型号的处理器。
+
+使用`spack find`可以看到，不同编译器下面会有同名的软件包。
+
+```
+==> 4 installed packages
+-- linux-centos7-x86_64 / clang@11.0.0
+--------------------------
+mpich@3.3.2  openmpi@4.0.5
+
+-- linux-centos7-x86_64 / gcc@10.2.0
+----------------------------
+mpich@3.3.2  openmpi@4.0.5
 ```
 
 ### `spack info`
@@ -217,7 +235,7 @@ $ spack config get compilers
 $ spack find
 ```
 
-完成配置后，可以随意安装、卸载本地Spack的软件包。有关安装路径、外部软件包等设置，请参考Spack配置文件的手册。
+完成配置后，可以随意安装、删除本地Spack的软件包。有关安装路径、外部软件包等设置，请参考Spack配置文件的手册。
 
 > **关于优先级**
 >
@@ -235,7 +253,7 @@ $ spack find
 >
 > 解决方法三：在配置文件[packages.yaml](https://spack.readthedocs.io/en/latest/build_settings.html#build-settings)中设置某个版本为优先。
 
-## 在本地安装软件
+## 使用Spack安装软件包
 
 参考：
 
@@ -250,6 +268,10 @@ $ spack find
 - `spack uninstall`：解除安装（删除）
 - `spack gc`：垃圾回收，清理依赖项
 - `spack mark`：标记软件包
+
+Spack：
+
+- 本地Spack
 
 配置好本地Spack并连接到集群Spack后，我们可以在本地安装自己需要的软件包。安装软件的一般流程如下
 
@@ -270,7 +292,7 @@ $ spack list cmake
 ## 确认软件包的版本、编译选项
 $ spack info cmake
 
-## 查看软件包的完整spec，为已安装的软件包显示标记
+## 查看软件包的完整spec，为已安装的软件包显示特殊标记
 $ spack spec -It cmake@3.15.0 %gcc@10.2.0
 
 ## 安装软件包
@@ -283,14 +305,106 @@ $ spack gc
 $ spack uninstall cmake@3.15.0
 ```
 
-> **关于清理**
+`spack gc`可清理的主要是build-time依赖和test依赖，它们不会链接到安装的软件包中，也不会在运行时被调用。
+
+一个软件包的依赖有四种类型：build、link、run、test。使用命令可以看到所有依赖对应的类型：
+
+```console
+$ spack spec -t cmake
+```
+
+除了特定类型的依赖不会被清理，我们也可以手动标记软件包，让GC不要清理：
+
+```console
+$ spack mark -e ncurse
+```
+
+## 让Spack使用外部软件包（externel）
+
+参考：
+
+- [External packages](https://spack.readthedocs.io/en/latest/build_settings.html#external-packages)
+
+相关命令：
+
+- `spack config`
+- `spack install`
+
+Spack：
+
+- 本地Spack
+
+Spack非常擅长build软件包，我们通常不需要关心装一个东西需要多少依赖，也不用关心一个依赖是不是反复被gc又反复被build，完全可以全部交给Spack。
+
+不过我们也可能会有不需要Spack来安装的、已经存在的软件包。比如，集群上的默认gcc和slurm都在系统路径里，不需要Spack来安装，只需要Spack能识别它们，把它们当成一个普通的软件包来处理就行。
+
+在这种情况下，我们应该使用`external packages`，将已经存在的软件定义为external，并且禁止Spack重新安装它们。
+
+```console
+## 假设我们已经在/apps/software/Boost/底下安装了boost，想放在Spack里使用
+## 编辑配置文件如下
+$ spack config edit packages
+
+packages.yaml
+  1 packages:
+  2   boost:
+  3     buildable: false
+  4     externals:
+  5     - spec: boost@1.70.0-system
+  6       prefix: /apps/software/Boost/1.70.0-gompi-2019a/
+
+## 添加这个外部软件包到Spack
+$ spack install boost@1.70.0-system
+
+## 像普通Spack软件包一样使用
+$ spack load boost@1.70.0-system
+```
+
+在这个例子中，我们在配置文件中增加了一个外部软件包，指定了它的名字、版本和路径。同时，我们将`buildable`设置为`false`，禁止Spack安装别的boost版本，仅使用我们自己提供的版本。
+
+> **集群的packages.yaml**
 >
-> `spack gc`可清理的主要是build-time依赖和test依，它们不会连链到安装的软件包中，也不会在运行时被调用。
+> 集群的共享Spack配置了许多外部软件包，用户可以参考该配置文件来写自己的配置。
 >
-> 一个软件包的依赖有四种类型：build、link、run、test。使用命令可以看到所有依赖对应的类型：
->
-> `spack spec -t cmake`
->
-> 除了特定类型的依赖不会被清理，我们也可以手动标记软件包，让GC不要清理：
->
-> `spack mark -e ncurse`
+> 路径：`/apps/spack/etc/spack/packages.yaml`
+
+## 自定义软件包
+
+> 详细说明请参考Spack文档的教程。
+
+参考：
+
+- [Package creation tutorial](https://spack-tutorial.readthedocs.io/en/latest/tutorial_packaging.html)
+
+- [Packaging guide](https://spack.readthedocs.io/en/latest/packaging_guide.html)
+
+相关命令：
+
+- `spack create`：创建软件包的配置文件
+- `spack edit`：编辑软件包的配置文件
+- `spack cd`：切到上一次的软件包build目录
+- `spack build-env`：手动build软件包
+
+Spack：
+
+- 本地
+
+Spack可安装的每个软件包都有相应的Python配置文件，每个包都是Spack定义的某个类的实例。目前，Spack内置了5000多个软件包（0.16），大多是常用的开发工具、数值计算软件，不过这并不能完全满足我们的需求。
+
+当我们使用`spack list`找不到想要的软件包时，我们可以自己写配置文件。一般流程如下：
+
+1. 使用`spack create <url>`自动生成配置文件，Spack会根据提供的下载链接`url`尝试解析出软件包名称、版本等关键信息；
+2. 创建后的配置文件会自动被打开；
+3. 或者，可使用`spack edit <pkg_name>`打开配置文件；
+4. 修改配置文件以满足自己安装的需要；
+5. 使用`spack install <pkg_name>`尝试安装软件包；
+6. 如果出现错误，可以手动build以排查：
+
+```console
+## 切换到刚刚的build目录
+$ spack cd <pkg_name>
+
+## 手动build
+$ spack build-env <pkg_name> bash
+```
+7. 重复3~6直到安装成功。
