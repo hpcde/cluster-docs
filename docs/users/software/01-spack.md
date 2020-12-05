@@ -115,7 +115,9 @@ mpich@3.3.2  openmpi@4.0.5
 >
 > spec的语法可以在Spack网站上找到，也可以直接用命令查看：
 >
-> `$ spack help --spec`
+> ```console
+> $ spack help --spec
+> ```
 
 ### `spack info`
 
@@ -470,6 +472,80 @@ $ export CPATH=$HOME/data/mytools/include:$CPATH
 ## 不再使用时，删除外所有软链接
 $ spack view remove --all $HOME/data/mytools
 ```
+
+## 创建虚拟环境
+
+参考：
+
+- [Environments](https://spack.readthedocs.io/en/latest/environments.html)
+
+相关命令：
+
+- `spack env`
+- `spack add`
+- `spack concretize`
+- `spack install`
+
+Spack提供了一个与Anaconda的虚拟环境类似的功能，也称为*environments*。Spack的环境可以用于批量操作软件包specs，也可以用于管理文件系统视图，像Anaconda的虚拟环境一样激活、反激活，一次性加载其中的所有软件包。
+
+同一个环境里的specs可以批量操作，指的是：
+
+- *add*：批量添加specs，但不执行后续操作
+- *concretize*：批量concretize，解析所有依赖
+- *install*：批量安装
+
+因此，把specs组织成多个环境既有助于我们管理软件包，也有助于我们切换开发用的环境变量。要注意的是，操作Spack的虚拟环境需要修改权限，普通用户只能修改本地Spack，不能修改集群的共享Spack。
+
+Spack环境的简单用法如下：
+
+```console
+## 创建一个名为python3的空环境（需要本地Spack）
+$ spack env create python3
+
+## 查看目前有哪些环境
+$ spack env list
+
+## 激活Spack环境
+$ spack env activate python3
+
+## 查看当前位于哪个环境中
+$ spack env status
+
+## 查看当前环境中有哪些软件包
+$ spack find
+
+## 添加一些抽象specs到环境中
+$ spack add py-numpy py-h5py
+
+## 执行concretize，解析所有依赖（需要本地Spack）
+$ spack concretize --force
+
+## 已安装的specs会直接被拉到环境中来，如果对concretize的结果不满意，可以修改specs
+## Spack环境只有一个配置文件，其他诸如packages等配置作为子节点写在总配置文件中
+## （需要本地Spack）
+$ spack config edit
+
+## 查看目前concretize的结果（需要本地Spack）
+$ spack find -c
+
+## 安装所有软件包及依赖项（需要本地Spack）
+$ spack install
+```
+
+> **Spack环境的默认view**
+>
+> 激活Spack环境后，默认也会启用一个view，为我们设置好环境变量。如果该环境中某些软件包没有正确加载，可以使用`spack load`手动加载一下。
+
+> **集群Spack预定义的环境**
+>
+> 集群Spack中可能会预先定义一些只读的环境，如`python3`，它包括了一些常用的Python包，只有在使用集群的共享Spack时才可以加载：
+>
+> ```console
+> $ spack env list
+> $ spack env activate python3
+> ```
+>
+> 推荐用户在本地Spack中创建自己的环境。
 
 ## 用Spack生成modulefiles
 
