@@ -19,7 +19,9 @@ Spack是一个为超算平台设计的包管理工具，用法上类似于Lmod�
 
 Spack的教程非常丰富，可以参考[Tutorial: Spack 101](https://spack-tutorial.readthedocs.io/en/latest/)。
 
-下面简介如何使用集群上已安装的Spack和软件。
+使用Spack的工作流可以参考[Workflows](https://spack.readthedocs.io/en/latest/workflows.html)。
+
+下面简单演示如何使用集群上已安装的Spack和软件。
 
 ```console
 ## 配置Spack环境
@@ -27,7 +29,7 @@ $ export SPACK_ROOT=/apps/spack
 $ . $SPACK_ROOT/share/spack/setup-env.sh
 
 ## 查看已安装的编译器，有的软件会同时存在依赖不同编译器的多个版本
-$ spack compiler list
+$ spack compilers
 
 ## 查看已安装的软件及版本
 $ spack find cmake
@@ -93,9 +95,12 @@ $ spack find -L --paths hdf5
 
 Spack把安装的软件包按照架构（target）和编译器分类。在目前的集群Spack中，架构统一为x86_64，这是为了兼容集群中不同型号的处理器。
 
-使用`spack find`可以看到，不同编译器下面会有同名的软件包。
+使用`spack find`可以看到，不同编译器下面会有同名的软件包。例如，查看已安装的所有`mpi`包如下
 
-```
+```console
+## mpi属于virtual package，查询它就会显示所有提供mpi的包
+$ spack find mpi
+
 ==> 4 installed packages
 -- linux-centos7-x86_64 / clang@11.0.0
 --------------------------
@@ -105,6 +110,12 @@ mpich@3.3.2  openmpi@4.0.5
 ----------------------------
 mpich@3.3.2  openmpi@4.0.5
 ```
+
+> **spec的语法**
+>
+> spec的语法可以在Spack网站上找到，也可以直接用命令查看：
+>
+> `$ spack help --spec`
 
 ### `spack info`
 
@@ -203,13 +214,12 @@ repos.yaml
 ## 检查repos
 $ spack config get repos
 
-## 添加镜像位置。编辑配置文件，修改为如下三行
+## 编辑配置文件，添加镜像位置
 $ spack config edit mirrors
 
 mirrors.yaml
   1 mirrors:
   2   cluster-public: file:///apps/sources/spack
-  3   cluster-public-cache: file:///apps/spack/var/spack/cache
 
 ## 检查mirrors
 $ spack config get mirrors
@@ -266,6 +276,7 @@ $ spack find
 - `spack spec`：查看软件包的spec，包括编译选项、依赖项等
 - `spack install`：安装软件包
 - `spack uninstall`：解除安装（删除）
+- `spack dependents`：列出依赖于某个包的软件包
 - `spack gc`：垃圾回收，清理依赖项
 - `spack mark`：标记软件包
 
@@ -319,7 +330,15 @@ $ spack spec -t cmake
 $ spack mark -e ncurse
 ```
 
-## 让Spack使用外部软件包（externel）
+`spack gc`和`spack uninstall`都会考虑依赖项。使用`spack uninstall`时，如果要删除的包是其他某个软件包的依赖，Spack会给出提示。我们也可以事先用命令确认一下一个软件包到底被哪些软件包使用着。
+
+```console
+## 列出已安装的软件包中依赖于zlib的
+## 一定要带上参数-i限制范围在已安装的软件包，否则会搜索所有可安装的软件包
+$ spack dependents -i zlib
+```
+
+## 让Spack使用外部软件包
 
 参考：
 
@@ -338,7 +357,7 @@ Spack非常擅长build软件包，我们通常不需要关心装一个东西需�
 
 不过我们也可能会有不需要Spack来安装的、已经存在的软件包。比如，集群上的默认gcc和slurm都在系统路径里，不需要Spack来安装，只需要Spack能识别它们，把它们当成一个普通的软件包来处理就行。
 
-在这种情况下，我们应该使用`external packages`，将已经存在的软件定义为external，并且禁止Spack重新安装它们。
+在这种情况下，我们可以使用*external packages*，将已经存在的软件定义为external，并且禁止Spack重新安装它们。
 
 ```console
 ## 假设我们已经在/apps/software/Boost/底下安装了boost，想放在Spack里使用
@@ -368,6 +387,12 @@ $ spack load boost@1.70.0-system
 >
 > 路径：`/apps/spack/etc/spack/packages.yaml`
 
+> **外部软件包的依赖**
+>
+> 外部软件包可能是由其他包管理软件安装的，也可能是由用户手动编译安装的，它们也有自己的依赖。
+>
+> 比如，编译安装openmpi时，可能会依赖于某个路径下的hwloc。在添加该openmpi为Spack外部软件包时，一定要尽量让编译的openmpi使用RPATH，即把依赖的路径硬编码在二进制文件中。否则，在加载时很可能被动态链接到其他版本的hwloc，产生不易发现的错误。
+
 ## 自定义软件包
 
 > 详细说明请参考Spack文档的教程。
@@ -393,18 +418,91 @@ Spack可安装的每个软件包都有相应的Python配置文件，每个包都
 
 当我们使用`spack list`找不到想要的软件包时，我们可以自己写配置文件。一般流程如下：
 
-1. 使用`spack create <url>`自动生成配置文件，Spack会根据提供的下载链接`url`尝试解析出软件包名称、版本等关键信息；
-2. 创建后的配置文件会自动被打开；
-3. 或者，可使用`spack edit <pkg_name>`打开配置文件；
-4. 修改配置文件以满足自己安装的需要；
-5. 使用`spack install <pkg_name>`尝试安装软件包；
-6. 如果出现错误，可以手动build以排查：
-
 ```console
-## 切换到刚刚的build目录
-$ spack cd <pkg_name>
+## 根据软件包的下载地址，提取名称、版本等信息自动生成配置文件草稿
+$ spack create https://url/to/package
+
+## 配置文件在生成后会自动被打开，若没有打开，可以使用edit命令
+$ spack edit <package name>
+
+## 调整配置文件后，使用Spack安装该软件包
+$ spack install <package name>
+
+## 如果安装失败，可以切换到刚刚的build目录手动处理
+$ spack cd <package name>
 
 ## 手动build
-$ spack build-env <pkg_name> bash
+$ spack build-env <package name> bash
+
+## 也可以直接使用make等工具
+$ make
+
+## 反复调整配置文件直到能够成功安装
+## spack install <package name>
 ```
-7. 重复3~6直到安装成功。
+
+## 创建文件系统视图
+
+参考：
+
+- [Workflows - Filesystem views](https://spack.readthedocs.io/en/latest/workflows.html)
+
+相关命令：
+
+- `spack view`
+
+Spack：
+
+- 本地
+
+Spack安装的所有软件包都按照Spack的命名规则存放在同一目录下，我们也可以将某些软件包映射到传统linux文件系统层次：包含`bin/`、`lib/`的目录层次。
+
+```console
+## 在指定目录中为软件包建立软链接
+$ spack view add $HOME/data/mytools petsc%gcc scorep%gcc
+
+## 将软链接所在目录添加到环境变量
+$ export PATH=$HOME/data/mytools/bin:$PATH
+$ export LIBRARY_PATH=$HOME/data/mytools/lib:$LIBRARY_PATH
+$ export LD_LIBRARY_PATH=$HOME/data/mytools/lib:$LD_LIBRARY_PATH
+$ export CPATH=$HOME/data/mytools/include:$CPATH
+
+## 不再使用时，删除外所有软链接
+$ spack view remove --all $HOME/data/mytools
+```
+
+## 用Spack生成modulefiles
+
+参考：
+
+- [Modules](https://spack.readthedocs.io/en/latest/module_file_support.html)
+
+相关命令：
+
+- `spack module`
+
+Spack加载软件包的速度比Lmod要慢，好在它提供了两种简单的方式让我们能快速加载想要的环境：
+
+- `spack view`：建立文件系统视图，前面已经介绍过
+- `spack module`：为软件包创建modulefiles，之后便可通过`module`加载
+
+Spack能够创建`lmod`和`tcl`两种类型的modulefiles，在实验室集群上，两种都可以使用。我们以`lmod`为例。
+
+```console
+## 为某些软件包创建modulefiles
+$ spack module lmod refresh autoconf automake boost
+
+## 创建完成后，可以通过module查看这些modulefiles
+## module avail
+
+## 也可以直接用Spack查看
+$ spack module lmod find boost
+
+boost/1.70.0-d42gtzk
+
+## 还可以用Spack生成加载软件包用的module命令
+## 通常可以为一批软件包生成module load命令，存放在自己的脚本里批量加载
+$ spack module lmod loads boost
+
+module load boost/1.70.0-d42gtzk
+```

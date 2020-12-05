@@ -1,11 +1,11 @@
 ---
-id: sofrware-list
-title: 预装软件（编译器、软件及库）
+id: software-list
+title: 软件列表 - Lmod
 ---
 
-集群上安装的软件及工具包列如下，可用的编译器及工具类软件也可以利用 module 工具查看。
+集群上可用module加载的主要软件及工具包如下。
 
-推荐使用工具链 *intel/gmpich/gompi/foss/impich/iompi/cgmpich*。
+推荐使用工具链 *gompi/gmpich/intel/foss/impich/iompi/cgmpich*。
 
 ## MPI 工具链
 

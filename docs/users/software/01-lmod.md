@@ -52,9 +52,9 @@ $ module list                   # 列出已加载的模块
 $ module unload GCC/8.2.0       # 卸载模块
 $ module key GCC                # 在模块名称和描述中查找关键字
 
-$ module save [mymods]          # 保存已加载的模块到列表中
+$ module save mymods            # 保存已加载的模块到列表中
 $ module savelist               # 查看已保存的加载方案
-$ module restore [mymods]       # 恢复已保存的加载方案
+$ module restore mymods         # 恢复已保存的加载方案
 
 $ ml                            # module命令的前端，单独调用相当于 module list
 $ ml av                         # module avail
