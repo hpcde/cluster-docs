@@ -156,9 +156,21 @@ $ spack unload cmake
 $ spack unload -a
 ```
 
+除了普通的软件包，集群上还定义了一些*bundle package*，也就是一组软件。这些bundle package主要用于代替Easybuild & Lmod的*toolchain*，版本规则也类似于toolchain：年份+字母。例如，`gompi@2020b`就包含了GCC和OpenMPI，软件的安装时间为2020年下半年。
+
+```console
+$ spack find gompi
+
+$ spack load gompi@2020b
+```
+
 > **关于依赖项**
 >
 > 使用Spack安装的软件都会尽可能用RPATH，依赖项的位置会写在二进制文件里。因此通常不需要加载依赖项就可以使用软件包。例如，使用`openmpi%gcc@10.2.0`时，不需要加载`gcc@10.2.0`，mpicc会指向正确的gcc位置。
+
+> **自定义bundle package**
+>
+> 参考后续创建软件包的说明和[Bundle package](https://spack.readthedocs.io/en/latest/build_systems/bundlepackage.html)。
 
 ## 用Spack加载Python
 
@@ -292,11 +304,11 @@ $ spack install
 
 > **集群Spack预定义的环境**
 >
-> 集群Spack中可能会预先定义一些只读的环境，如`python3`、`gompi`，它们通常是一些常用的软件包，只有在使用集群的共享Spack时才可以加载：
+> 集群Spack中可能会预先定义一些只读的环境，如`python3`，它们通常是一些常用的软件包，只有在使用集群的共享Spack时才可以加载：
 >
 > ```console
 > $ spack env list
-> $ spack env activate gompi
+> $ spack env activate python3
 > ```
 >
 > 如果需要定制Spack环境，请配置本地Spack。
