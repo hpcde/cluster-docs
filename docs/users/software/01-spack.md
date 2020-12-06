@@ -3,11 +3,11 @@ id: spack
 title: 使用集群上的软件 - Spack
 ---
 
-Spack是一个为超算平台设计的包管理工具，用法上类似于Lmod、Anaconda。目前，Spack 0.16.0支持Linux和macOS两种系统，可以安装C/C++、Fortran、Python、R等语言的软件包。
+Spack是一个为超算平台设计的包管理工具，它能较好地处理依赖关系，用法上类似于Lmod、Anaconda。目前，Spack 0.16.0支持Linux和macOS两种系统，可以安装C/C++、Fortran、Python、R等语言的软件包。
 
-总的来说，它和EasyBuild & Lmod的方案能相互替代，但它对依赖的管理能力要更强大。Spack主要特点如下：
+在实验室集群上，Spack用来替代EasyBuild & Lmod的软件管理方案。Spack的主要特点如下：
 
-- 查询：软件信息，包括版本、依赖项等（比EasyBuild强大）；
+- 查询：软件信息，包括版本、依赖项等；
 - 加载：动态加载、卸载、更换软件（相当于module load/unload/swap）；
 - 安装：安装软件、软件栈，处理软件的依赖关系；
 - 删除：删除软件及其依赖；
@@ -160,6 +160,183 @@ $ spack unload -a
 >
 > 使用Spack安装的软件都会尽可能用RPATH，依赖项的位置会写在二进制文件里。因此通常不需要加载依赖项就可以使用软件包。例如，使用`openmpi%gcc@10.2.0`时，不需要加载`gcc@10.2.0`，mpicc会指向正确的gcc位置。
 
+## 用Spack加载Python
+
+参考：
+
+- [Extensions & Python support](https://spack.readthedocs.io/en/latest/basic_usage.html#extensions-python-support)
+
+相关命令：
+
+- `spack extensions`：列出Python包
+
+Spack把Python包归为*extensions*，可以通过相应的命令查看Python包列表。Python包的加载有多种方式，这里只介绍最简单的方式。
+
+```console
+## 查看所有已安装的Python包
+$ spack extensions -s installed python
+
+## 查看目前已加载的Python包
+$ spack extensions -s activated python
+
+## 加载Python和想用的Python包
+$ spack load python
+$ spack load py-numpy
+
+## 使用Python包
+$ python3
+
+>>> import numpy
+```
+
+> **集群预装的Spack环境**
+>
+> 如果对Python包的版本没有特殊要求，可以使用预装的Spack环境。
+>
+> ```console
+> $ spack env activate python3
+> ```
+>
+> 关于Spack环境的说明见后续内容。
+
+## 创建文件系统视图
+
+参考：
+
+- [Workflows - Filesystem views](https://spack.readthedocs.io/en/latest/workflows.html)
+
+相关命令：
+
+- `spack view`
+
+Spack安装的所有软件包都按照Spack的命名规则存放在同一目录下，我们也可以将某些软件包映射到传统linux文件系统层次：包含`bin/`、`lib/`的目录层次。
+
+```console
+## 在指定目录中为软件包建立软链接
+$ spack view add $HOME/data/mytools petsc%gcc scorep%gcc
+
+## 将软链接所在目录添加到环境变量
+$ export PATH=$HOME/data/mytools/bin:$PATH
+$ export LIBRARY_PATH=$HOME/data/mytools/lib:$LIBRARY_PATH
+$ export LD_LIBRARY_PATH=$HOME/data/mytools/lib:$LD_LIBRARY_PATH
+$ export CPATH=$HOME/data/mytools/include:$CPATH
+
+## 不再使用时，删除外所有软链接
+$ spack view remove --all $HOME/data/mytools
+```
+
+## 创建虚拟环境
+
+参考：
+
+- [Environments](https://spack.readthedocs.io/en/latest/environments.html)
+
+相关命令：
+
+- `spack env`
+- `spack add`
+- `spack concretize`
+- `spack install`
+
+Spack提供了一个与Anaconda的虚拟环境类似的功能，也称为*environments*。Spack的环境可以用于批量操作软件包specs，也可以用于管理文件系统视图，像Anaconda的虚拟环境一样激活、反激活，一次性加载其中的所有软件包。
+
+同一个环境里的specs可以批量操作，指的是：
+
+- *add*：批量添加specs，但不执行后续操作
+- *concretize*：批量concretize，解析所有依赖
+- *install*：批量安装
+
+因此，把specs组织成多个环境既有助于我们管理软件包，也有助于我们切换开发用的环境变量。要注意的是，操作Spack的虚拟环境需要修改权限，普通用户只能修改本地Spack，不能修改集群的共享Spack。
+
+> 关于本地Spack的配置见后续内容。
+
+Spack环境的简单用法如下：
+
+```console
+## 创建一个名为python3的空环境（需要本地Spack）
+$ spack env create python3
+
+## 查看目前有哪些环境
+$ spack env list
+
+## 激活Spack环境
+$ spack env activate python3
+
+## 查看当前位于哪个环境中
+$ spack env status
+
+## 查看当前环境中有哪些软件包
+$ spack find
+
+## 添加一些抽象specs到环境中
+$ spack add py-numpy py-h5py
+
+## 执行concretize，解析所有依赖（需要本地Spack）
+$ spack concretize --force
+
+## 已安装的specs会直接被拉到环境中来，如果对concretize的结果不满意，可以修改specs
+## Spack环境只有一个配置文件，其他诸如packages等配置作为子节点写在总配置文件中
+## （需要本地Spack）
+$ spack config edit
+
+## 查看目前concretize的结果（需要本地Spack）
+$ spack find -c
+
+## 安装所有软件包及依赖项（需要本地Spack）
+$ spack install
+```
+
+> **Spack环境的默认view**
+>
+> 激活Spack环境后，默认也会启用一个view，为我们设置好环境变量。如果该环境中某些软件包没有正确加载，可以使用`spack load`手动加载一下。
+
+> **集群Spack预定义的环境**
+>
+> 集群Spack中可能会预先定义一些只读的环境，如`python3`、`gompi`，它们通常是一些常用的软件包，只有在使用集群的共享Spack时才可以加载：
+>
+> ```console
+> $ spack env list
+> $ spack env activate gompi
+> ```
+>
+> 如果需要定制Spack环境，请配置本地Spack。
+
+## 生成modulefiles
+
+参考：
+
+- [Modules](https://spack.readthedocs.io/en/latest/module_file_support.html)
+
+相关命令：
+
+- `spack module`
+
+Spack加载软件包的速度比Lmod要慢，好在它提供了两种简单的方式让我们能快速加载想要的环境：
+
+- `spack view`：建立文件系统视图，前面已经介绍过
+- `spack module`：为软件包创建modulefiles，之后便可通过`module`加载
+
+Spack能够创建`lmod`和`tcl`两种类型的modulefiles，在实验室集群上，两种都可以使用。我们以`lmod`为例。
+
+```console
+## 为某些软件包创建modulefiles
+$ spack module lmod refresh autoconf automake boost
+
+## 创建完成后，可以通过module查看这些modulefiles
+## module avail
+
+## 也可以直接用Spack查看
+$ spack module lmod find boost
+
+boost/1.70.0-d42gtzk
+
+## 还可以用Spack生成加载软件包用的module命令
+## 通常可以为一批软件包生成module load命令，存放在自己的脚本里批量加载
+$ spack module lmod loads boost
+
+module load boost/1.70.0-d42gtzk
+```
+
 ## 配置本地Spack并连接集群Spack
 
 参考：
@@ -265,7 +442,7 @@ $ spack find
 >
 > 解决方法三：在配置文件[packages.yaml](https://spack.readthedocs.io/en/latest/build_settings.html#build-settings)中设置某个版本为优先。
 
-## 使用Spack安装软件包
+## 安装或删除软件包
 
 参考：
 
@@ -281,10 +458,11 @@ $ spack find
 - `spack dependents`：列出依赖于某个包的软件包
 - `spack gc`：垃圾回收，清理依赖项
 - `spack mark`：标记软件包
+- `spack clean`：清理build临时文件、下载的源文件
 
 Spack：
 
-- 本地Spack
+- 本地
 
 配置好本地Spack并连接到集群Spack后，我们可以在本地安装自己需要的软件包。安装软件的一般流程如下
 
@@ -316,6 +494,10 @@ $ spack gc
 
 ## 删除已安装的软件包
 $ spack uninstall cmake@3.15.0
+
+## 清理build产生的临时文件、下载的源文件（源文件可重复利用，不建议清除）
+$ spack clean
+$ spack clean -d
 ```
 
 `spack gc`可清理的主要是build-time依赖和test依赖，它们不会链接到安装的软件包中，也不会在运行时被调用。
@@ -353,7 +535,7 @@ $ spack dependents -i zlib
 
 Spack：
 
-- 本地Spack
+- 本地
 
 Spack非常擅长build软件包，我们通常不需要关心装一个东西需要多少依赖，也不用关心一个依赖是不是反复被gc又反复被build，完全可以全部交给Spack。
 
@@ -441,144 +623,4 @@ $ make
 
 ## 反复调整配置文件直到能够成功安装
 ## spack install <package name>
-```
-
-## 创建文件系统视图
-
-参考：
-
-- [Workflows - Filesystem views](https://spack.readthedocs.io/en/latest/workflows.html)
-
-相关命令：
-
-- `spack view`
-
-Spack：
-
-- 本地
-
-Spack安装的所有软件包都按照Spack的命名规则存放在同一目录下，我们也可以将某些软件包映射到传统linux文件系统层次：包含`bin/`、`lib/`的目录层次。
-
-```console
-## 在指定目录中为软件包建立软链接
-$ spack view add $HOME/data/mytools petsc%gcc scorep%gcc
-
-## 将软链接所在目录添加到环境变量
-$ export PATH=$HOME/data/mytools/bin:$PATH
-$ export LIBRARY_PATH=$HOME/data/mytools/lib:$LIBRARY_PATH
-$ export LD_LIBRARY_PATH=$HOME/data/mytools/lib:$LD_LIBRARY_PATH
-$ export CPATH=$HOME/data/mytools/include:$CPATH
-
-## 不再使用时，删除外所有软链接
-$ spack view remove --all $HOME/data/mytools
-```
-
-## 创建虚拟环境
-
-参考：
-
-- [Environments](https://spack.readthedocs.io/en/latest/environments.html)
-
-相关命令：
-
-- `spack env`
-- `spack add`
-- `spack concretize`
-- `spack install`
-
-Spack提供了一个与Anaconda的虚拟环境类似的功能，也称为*environments*。Spack的环境可以用于批量操作软件包specs，也可以用于管理文件系统视图，像Anaconda的虚拟环境一样激活、反激活，一次性加载其中的所有软件包。
-
-同一个环境里的specs可以批量操作，指的是：
-
-- *add*：批量添加specs，但不执行后续操作
-- *concretize*：批量concretize，解析所有依赖
-- *install*：批量安装
-
-因此，把specs组织成多个环境既有助于我们管理软件包，也有助于我们切换开发用的环境变量。要注意的是，操作Spack的虚拟环境需要修改权限，普通用户只能修改本地Spack，不能修改集群的共享Spack。
-
-Spack环境的简单用法如下：
-
-```console
-## 创建一个名为python3的空环境（需要本地Spack）
-$ spack env create python3
-
-## 查看目前有哪些环境
-$ spack env list
-
-## 激活Spack环境
-$ spack env activate python3
-
-## 查看当前位于哪个环境中
-$ spack env status
-
-## 查看当前环境中有哪些软件包
-$ spack find
-
-## 添加一些抽象specs到环境中
-$ spack add py-numpy py-h5py
-
-## 执行concretize，解析所有依赖（需要本地Spack）
-$ spack concretize --force
-
-## 已安装的specs会直接被拉到环境中来，如果对concretize的结果不满意，可以修改specs
-## Spack环境只有一个配置文件，其他诸如packages等配置作为子节点写在总配置文件中
-## （需要本地Spack）
-$ spack config edit
-
-## 查看目前concretize的结果（需要本地Spack）
-$ spack find -c
-
-## 安装所有软件包及依赖项（需要本地Spack）
-$ spack install
-```
-
-> **Spack环境的默认view**
->
-> 激活Spack环境后，默认也会启用一个view，为我们设置好环境变量。如果该环境中某些软件包没有正确加载，可以使用`spack load`手动加载一下。
-
-> **集群Spack预定义的环境**
->
-> 集群Spack中可能会预先定义一些只读的环境，如`python3`，它包括了一些常用的Python包，只有在使用集群的共享Spack时才可以加载：
->
-> ```console
-> $ spack env list
-> $ spack env activate python3
-> ```
->
-> 推荐用户在本地Spack中创建自己的环境。
-
-## 用Spack生成modulefiles
-
-参考：
-
-- [Modules](https://spack.readthedocs.io/en/latest/module_file_support.html)
-
-相关命令：
-
-- `spack module`
-
-Spack加载软件包的速度比Lmod要慢，好在它提供了两种简单的方式让我们能快速加载想要的环境：
-
-- `spack view`：建立文件系统视图，前面已经介绍过
-- `spack module`：为软件包创建modulefiles，之后便可通过`module`加载
-
-Spack能够创建`lmod`和`tcl`两种类型的modulefiles，在实验室集群上，两种都可以使用。我们以`lmod`为例。
-
-```console
-## 为某些软件包创建modulefiles
-$ spack module lmod refresh autoconf automake boost
-
-## 创建完成后，可以通过module查看这些modulefiles
-## module avail
-
-## 也可以直接用Spack查看
-$ spack module lmod find boost
-
-boost/1.70.0-d42gtzk
-
-## 还可以用Spack生成加载软件包用的module命令
-## 通常可以为一批软件包生成module load命令，存放在自己的脚本里批量加载
-$ spack module lmod loads boost
-
-module load boost/1.70.0-d42gtzk
 ```
