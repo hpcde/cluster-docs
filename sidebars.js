@@ -38,7 +38,6 @@ module.exports = {
         "users/profile/scorep",
         "users/profile/vtune"
       ],
-      "其他说明": ["users/cautions"],
       "Q&A": ["users/question_and_answer"]
     },
     admin: {

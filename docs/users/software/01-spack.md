@@ -258,7 +258,7 @@ Spack提供了一个与Anaconda的虚拟环境类似的功能，也称为*enviro
 - *concretize*：批量concretize，解析所有依赖
 - *install*：批量安装
 
-因此，把specs组织成多个环境既有助于我们管理软件包，也有助于我们切换开发用的环境变量。要注意的是，操作Spack的虚拟环境需要修改权限，普通用户只能修改本地Spack，不能修改集群的共享Spack。
+因此，把specs组织成多个环境既有助于我们管理软件包，也有助于我们切换开发用的环境变量。要注意的是，操作Spack的虚拟环境需要修改权限，普通用户只能修改本地Spack，不能修改集群的公共Spack。
 
 > 关于本地Spack的配置见后续内容。
 
@@ -304,7 +304,7 @@ $ spack install
 
 > **集群Spack预定义的环境**
 >
-> 集群Spack中可能会预先定义一些只读的环境，如`python3`，它们通常是一些常用的软件包，只有在使用集群的共享Spack时才可以加载：
+> 集群Spack中可能会预先定义一些只读的环境，如`python3`，它们通常是一些常用的软件包，只有在使用集群的公共Spack时才可以加载：
 >
 > ```console
 > $ spack env list
@@ -361,11 +361,11 @@ module load boost/1.70.0-d42gtzk
 - `spack config`：查看、修改Spack配置文件
 - `spack compiler`：查看、查找编译器
 
-实验室集群只安装了一个共享的Spack，位于`/apps/spack`，它其中的软件包由管理员维护，普通用户不能在里面增加新的软件包。
+实验室集群只安装了一个公共的Spack，位于`/apps/spack`，它其中的软件包由管理员维护，普通用户不能在里面增加新的软件包。
 
 为了完全使用Spack的功能，需要在自己的目录下克隆Spack仓库并做一些配置：
 
-- 设置共享Spack为upstream
+- 设置公共Spack为upstream
 - 添加repos（可选，集群的repo会包含自定义软件包）
 - 添加mirrors（可选，凡是集群安装过的软件都不用重复下载）
 - 修改target（可选，修改软件包的默认target为x86_64）
@@ -384,7 +384,7 @@ $ . $SPACK_ROOT/share/spack/setup-env.sh
 ## 检查一下是否能找到Spack
 $ which spack
 
-## 将共享Spack作为upstream。编辑配置文件，修改为如下三行
+## 将公共Spack作为upstream。编辑配置文件，修改为如下三行
 $ spack config edit upstreams
 
 upstreams.yaml
@@ -432,7 +432,7 @@ $ spack compiler find
 $ spack compiler list
 $ spack config get compilers
 
-## 配置完成，查看已安装的软件包，包括共享Spack中的和自己本地的
+## 配置完成，查看已安装的软件包，包括公共Spack中的和自己本地的
 $ spack find
 ```
 
@@ -440,7 +440,7 @@ $ spack find
 
 > **关于优先级**
 >
-> 如果共享Spack和本地Spack存在相同的软件包，本地的会优先被选择。
+> 如果公共Spack和本地Spack存在相同的软件包，本地的会优先被选择。
 
 > **关于Spack版本**
 >
@@ -579,7 +579,7 @@ $ spack load boost@1.70.0-system
 
 > **集群的packages.yaml**
 >
-> 集群的共享Spack配置了许多外部软件包，用户可以参考该配置文件来写自己的配置。
+> 集群的公共Spack配置了许多外部软件包，用户可以参考该配置文件来写自己的配置。
 >
 > 路径：`/apps/spack/etc/spack/packages.yaml`
 
