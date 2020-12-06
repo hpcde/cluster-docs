@@ -15,13 +15,11 @@ Spack是一个为超算平台设计的包管理工具，它能较好地处理依
 - 兼容性：可以导出lmod或tcl格式的modulefiles；
 - 易于迁移：可以方便的添加软件的repos、mirrors，也可以自定义新的软件，支持docker。
 
+Spack官方教程：[Tutorial: Spack 101](https://spack-tutorial.readthedocs.io/en/latest/)
+
+Spack工作流：[Workflows](https://spack.readthedocs.io/en/latest/workflows.html)
+
 ## 快速入门
-
-Spack的教程非常丰富，可以参考[Tutorial: Spack 101](https://spack-tutorial.readthedocs.io/en/latest/)。
-
-使用Spack的工作流可以参考[Workflows](https://spack.readthedocs.io/en/latest/workflows.html)。
-
-下面简单演示如何使用集群上已安装的Spack和软件。
 
 ```console
 ## 配置Spack环境
