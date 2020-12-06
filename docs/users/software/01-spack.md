@@ -21,6 +21,10 @@ Spack工作流：[Workflows](https://spack.readthedocs.io/en/latest/workflows.ht
 
 ## 快速入门
 
+参考：
+
+- [Spack](https://spack.io/)
+
 ```console
 ## 配置Spack环境
 $ export SPACK_ROOT=/apps/spack
@@ -47,7 +51,7 @@ $ mpicc --version
 $ spack unload -a
 ```
 
-## 查看集群上的软件
+## 查询软件包
 
 参考：
 
@@ -127,7 +131,7 @@ mpich@3.3.2  openmpi@4.0.5
 $ spack info openmpi
 ```
 
-## 使用集群上的软件
+## 使用软件包
 
 参考：
 
