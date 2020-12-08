@@ -536,6 +536,14 @@ $ spack mark -e ncurse
 $ spack dependents -i zlib
 ```
 
+> **仅安装依赖**
+>
+> `spack install` 默认会安装软件包及其依赖。如果用户需要的只是依赖项，希望自己编译特定的程序，可用参数`--only`来指定：
+>
+> ```console
+> $ spack install --only dependencies petsc
+> ```
+
 ## 让Spack使用外部软件包
 
 参考：
