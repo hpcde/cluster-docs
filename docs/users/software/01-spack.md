@@ -446,13 +446,13 @@ $ spack find
 
 > **Spack版本的影响**
 >
-> 不同Spack版本在安装软件包时，包的默认版本不同。例如，集群Spack安装的cmake可能是3.18.4，用户本地Spack中的默认cmake却是3.19.1，导致默认情况下不会使用集群的cmake。
+> 不同Spack版本在安装软件包时，包的默认版本不同。例如，集群Spack安装的cmake可能是3.19.0，用户本地Spack中的默认cmake却是3.19.1，导致默认情况下不会使用集群的cmake。
 >
 > 解决方法一：把本地的Spack仓库切换到和集群Spack相同的git分支。要获知集群Spack在哪个分支，使用集群Spack执行
 >
 > `spack debug report`
 >
-> 解决方法二：在安装软件包时额外指定依赖的版本，例如`^cmake@3.18.4`。
+> 解决方法二：在安装软件包时额外指定依赖的版本，例如`^cmake@3.19.1`。
 >
 > 解决方法三：在配置文件[packages.yaml](https://spack.readthedocs.io/en/latest/build_settings.html#build-settings)中设置某个版本为优先。
 

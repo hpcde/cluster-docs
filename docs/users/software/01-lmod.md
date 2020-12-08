@@ -162,36 +162,38 @@ OpenMPI: OpenMPI/3.1.3
 
 ## 切换软件版本
 
-集群上有的软件是用同一编译器编译的。假设有4个模块（不代表集群上的实际版本和依赖关系），两个GCC和两个CMake： `GCC/6.4.0`、`CMake/3.10.2`、`CMake/3.18.3`、`GCC/8.2.0`。其中两个CMake都是由`GCC/6.4.0`编译的。
-
+集群上有的软件是用同一编译器编译的。假设有4个模块：`GCC/8.2.0`、`OpenMPI/3.1.3`、`OpenMPI/4.0.0`、`GCC/9.1.0`。其中两个OpenMPI都是由`GCC/8.2.0`编译的。在下面的演示中，我们先加载一个OpenMPI，再切换到另一个OpenMPI版本，最后切换GCC的版本。
 
 ```console
-## 使用CMake之前必须加载GCC/6.4.0，否则报错
-## ml CMake/3.10.2
-$ ml GCC/6.4.0-2.28 CMake/3.10.2
+## 使用OpenMPI之前必须加载GCC/8.2.0，否则报错
+## ml OpenMPI/3.1.3
+$ ml GCC/8.2.0-2.31.1 OpenMPI/3.1.3
 
-## 成功加载CMake/3.10.2后，想切换到CMake/3.18.3
-$ ml CMake/3.18.3
-
-## 在加载了GCC/6.4.0和CMake的情况下，切换到GCC/8.2.0
-## 此时CMake会进入inactive状态
-$ ml GCC/8.2.0-2.31.1
-
-Inactive Modules:
-  1) CMake/3.10.2
-
-Due to MODULEPATH changes, the following have been reloaded:
-  1) ncurses/6.0
+## 成功加载OpenMPI/3.1.3后，切换到OpenMPI/4.0.0
+$ ml OpenMPI/4.0.0
 
 The following have been reloaded with a version change:
-  1) GCC/6.4.0-2.28 => GCC/8.2.0-2.31.1     2) GCCcore/6.4.0 => GCCcore/8.2.0     3) binutils/2.28 => binutils/2.31.1
+  1) OpenMPI/3.1.3 => OpenMPI/4.0.0     2) hwloc/1.11.11 => hwloc/2.0.2
+
+## 在加载了GCC/8.2.0和OpenMPI/3.1.3的情况下，切换到GCC/9.1.0
+## 此时OpenMPI会进入inactive状态
+$ ml GCC/9.1.0-2.32
+
+Inactive Modules:
+  1) OpenMPI/4.0.0     2) hwloc/2.0.2     3) libxml2/2.9.8
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) XZ/5.2.4     2) libpciaccess/0.14     3) numactl/2.0.12     4) zlib/1.2.11
+
+The following have been reloaded with a version change:
+  1) GCC/8.2.0-2.31.1 => GCC/9.1.0-2.32     2) GCCcore/8.2.0 => GCCcore/9.1.0     3) binutils/2.31.1 => binutils/2.32
 ```
 
 最后一条命令输出了三类信息：
 
-- ***Inactive Modules***：模块不再生效。这是由于 `CMake/3.9.1` 并没有针对 `GCC/8.2.0` 安装的版本。当我们把原本的 `GCC/6.4.0` 切换为 `GCC/8.2.0` 后，Lmod 找不到这个版本的编译器对应的 `CMake/3.9.1`。解决办法：加载 `GCC/8.2.0` 对应的 `CMake` 版本。
+- ***Inactive Modules***：模块不再生效。这是由于`OpenMPI/4.0.0`这些软件包并没有针对`GCC/9.1.0`安装的版本。当我们把原本的`GCC/8.2.0`切换为`GCC/9.1.0`后，Lmod 找不到这个版本的编译器对应的 `OpenMPI/4.0.0`。解决办法：查看并加载`GCC/9.1.0`对应的OpenMPI版本。
 
-- ***...have been reloaded***：模块被重新加载。这是由于 `ncurses/6.0` 在两个GCC版本下都存在，但安装路径不同。
+- ***...have been reloaded***：模块被重新加载。这是由于`libpciaccess/0.14`这些软件包在两个GCC版本下都存在，但安装路径不同。
 
 - ***...reloaded with a version change***：模块被重新加载为不同版本。这是由于这些模块在两个GCC版本下都存在，但版本和路径都不同。
 
@@ -305,7 +307,7 @@ $ ml -gompi/2019a gmpich/2019a
 
 ```console
 ## 加载一些模块
-$ ml CMake/3.18.3 GCC/8.2.0-2.31-1 OpenMPI/3.1.3
+$ ml CMake/3.19.1 GCC/8.2.0-2.31-1 OpenMPI/3.1.3
 
 ## 保存到名为devtools的列表
 $ ml save devtools
