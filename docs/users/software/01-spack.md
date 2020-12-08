@@ -77,8 +77,8 @@ $ spack find hdf5
 ## '@'用于指定软件包版本
 $ spack find hdf5@1.10.7
 
-## '%'用于指定编译器，编译器后面可接'@'等继续限定软件包
-$ spack find hdf5@1.10.7%gcc
+## '%'用于指定编译器，编译器后面可接'@'继续限定编译器版本
+$ spack find hdf5@1.10.7%gcc@10.2.0
 
 ## '^'用于指定依赖项，可以有多个
 $ spack find hdf5@1.10.7%gcc ^openmpi
@@ -91,11 +91,11 @@ $ spack find -vd --show-full-compiler hdf5
 
 ## 查看软件包的hash值和安装路径
 ## 虽然这些软件包是同名、同版本的，但它们的编译选项、编译器、依赖项各不相同，因此
-## 有不同的spec，产生不同的hash值
+## 有不同的spec，产生不同的hash值。hash值也可以在加载软件包的时候使用。
 $ spack find -L --paths hdf5
 ```
 
-Spack把安装的软件包按照架构（target）和编译器分类。在目前的集群Spack中，架构统一为x86_64，这是为了兼容集群中不同型号的处理器。
+Spack把安装的软件包按照架构（target）和编译器（compiler/compiler driver）分类。在目前的集群Spack中，架构统一为x86_64，这是为了兼容集群中不同型号的处理器。
 
 使用`spack find`可以看到，不同编译器下面会有同名的软件包。例如，查看已安装的所有`mpi`包如下
 
@@ -480,7 +480,7 @@ $ spack find
 > - 实验室集群的Spack mirror，位于`/apps/sources/spack`；
 > - 实验室集群的Spack repo，位于`/apps/spack_repo`。
 >
-> 拷贝数据到其他超算后，参考实验室集群文档中关于Spack的说明、公共Spack的配置（config.yaml、packages.yaml等配置文件）来配置本地Spack，然后使用Spack安装软件即可。如果需要安装的软件在集群的Spack mirror中没有源代码，用户可以自行下载。
+> 拷贝数据到超算后，参考实验室集群文档中关于Spack的说明、公共Spack的配置（config.yaml、packages.yaml等配置文件）来配置本地Spack，然后使用Spack安装软件即可。如果需要安装的软件在集群的Spack mirror中没有源代码，用户可以自行下载。
 
 ## 安装或删除软件包
 
