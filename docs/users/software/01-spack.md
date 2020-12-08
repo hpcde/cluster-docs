@@ -470,6 +470,18 @@ $ spack find
 > - `git`或`curl`，用于在缺少软件包时下载其源代码；
 > - 可选的`gnupg2`，用于GPG。
 
+> **在超算上安装软件**
+>
+> 在超算上配置Spack可以让我们快速批量安装软件。Spack安装的软件默认使用RPATH（可关闭），实验室集群上的公共软件包不能直接拷贝到超算，需要重新编译。如果要交叉编译后直接拷贝到超算，注意取消RPATH。
+>
+> 为了在超算上用Spack安装软件包，用户需要准备以下数据：
+>
+> - Spack的git仓库，从官网下载即可；
+> - 实验室集群的Spack mirror，位于`/apps/sources/spack`；
+> - 实验室集群的Spack repo，位于`/apps/spack_repo`。
+>
+> 拷贝数据到其他超算后，参考实验室集群文档中关于Spack的说明、公共Spack的配置（config.yaml、packages.yaml等配置文件）来配置本地Spack，然后使用Spack安装软件即可。如果需要安装的软件在集群的Spack mirror中没有源代码，用户可以自行下载。
+
 ## 安装或删除软件包
 
 参考：
