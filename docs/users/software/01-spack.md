@@ -373,7 +373,7 @@ module load boost/1.70.0-d42gtzk
 - 修改target（可选，修改软件包的默认target为x86_64）
 - 添加compilers（可选，添加集群Spack的编译器到本地Spack）
 
-具体步骤如下：
+配置本地Spack具体步骤如下：
 
 ```console
 ## 克隆Spack仓库到自己目录下
@@ -444,7 +444,7 @@ $ spack find
 >
 > 如果公共Spack和本地Spack存在相同的软件包，本地的会优先被选择。
 
-> **关于Spack版本**
+> **Spack版本的影响**
 >
 > 不同Spack版本在安装软件包时，包的默认版本不同。例如，集群Spack安装的cmake可能是3.18.4，用户本地Spack中的默认cmake却是3.19.1，导致默认情况下不会使用集群的cmake。
 >
@@ -455,6 +455,20 @@ $ spack find
 > 解决方法二：在安装软件包时额外指定依赖的版本，例如`^cmake@3.18.4`。
 >
 > 解决方法三：在配置文件[packages.yaml](https://spack.readthedocs.io/en/latest/build_settings.html#build-settings)中设置某个版本为优先。
+
+> **Spack所需的依赖**
+>
+> Spack运行、安装软件包所需的依赖见：[Prerequisites](https://spack.readthedocs.io/en/latest/getting_started.html#prerequisites)
+>
+> 以下列出Spack 0.16.0所需的依赖：
+>
+> - Python 2 (2.6 or 2.7) 或 3 (3.5 - 3.9)，用于运行Spack；
+> - C/C++编译器，用于软件包的编译链接；
+> - `make`，用于软件包的编译链接；
+> - `tar`、`gzip`、`bzip2`、`xz`、可选的`zstd`，用于解压下载的压缩包；
+> - `patch`，用于给软件包打补丁；
+> - `git`或`curl`，用于在缺少软件包时下载其源代码；
+> - 可选的`gnupg2`，用于GPG。
 
 ## 安装或删除软件包
 
@@ -542,6 +556,12 @@ $ spack dependents -i zlib
 >
 > ```console
 > $ spack install --only dependencies petsc
+> ```
+>
+> `spack load`也有同样的参数用于仅加载依赖项：
+>
+> ```console
+> $ spack load --only dependencies petsc
 > ```
 
 ## 让Spack使用外部软件包
