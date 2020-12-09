@@ -11,7 +11,8 @@ module.exports = {
       "集群概况": ["users/cluster-overview"],
       "登录到集群": [
         "users/login/normal-login",
-        "users/login/proxy-login"
+        "users/login/proxy-login",
+        "users/login/terminal-multiplexer"
       ],
       "软件与工具": [
         "users/software/lmod",
