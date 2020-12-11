@@ -7,23 +7,21 @@ Spack是一个为超算平台设计的包管理工具，它能较好地处理依
 
 在实验室集群上，Spack用来替代EasyBuild & Lmod的软件管理方案。Spack的主要特点如下：
 
-- 查询：软件信息，包括版本、依赖项等；
-- 加载：动态加载、卸载、更换软件（相当于module load/unload/swap）；
-- 安装：安装软件、软件栈，处理软件的依赖关系；
-- 删除：删除软件及其依赖；
-- 多用户：设计了有优先级的配置文件，用户级配置可以覆盖系统配置文件；
-- 兼容性：可以导出lmod或tcl格式的modulefiles；
-- 易于迁移：可以方便的添加软件的repos、mirrors，也可以自定义新的软件，支持docker。
+- **查询**：软件信息，包括版本、依赖项等；
+- **加载**：动态加载、卸载、更换软件（相当于module load/unload/swap）；
+- **安装**：安装软件、软件栈，处理软件的依赖关系；
+- **删除**：删除软件及其依赖；
+- **多用户**：设计了有优先级的配置文件，用户级配置可以覆盖系统配置文件；
+- **兼容性**：可以导出lmod或tcl格式的modulefiles；
+- **易于迁移**：可以方便的添加软件的repos、mirrors，也可以自定义新的软件，支持docker。
+
+Spack官方网站：[Spack](https://spack.io/)
 
 Spack官方教程：[Tutorial: Spack 101](https://spack-tutorial.readthedocs.io/en/latest/)
 
 Spack工作流：[Workflows](https://spack.readthedocs.io/en/latest/workflows.html)
 
 ## 快速入门
-
-参考：
-
-- [Spack](https://spack.io/)
 
 ```bash
 ## 配置Spack环境
@@ -50,6 +48,12 @@ $ mpicc --version
 ## 卸载当前加载的所有软件包
 $ spack unload -a
 ```
+
+> **切换Spack环境**
+>
+> 如果机器上配置了多个Spack，切换Spack环境时直接使用`source setup-env.sh`可能不会生效。问题在于该脚本会检查`PATH`变量里面是否已经有Spack路径，并且该脚本定义了几个变量、函数可能不会被新脚本覆盖。
+>
+> 最简单的办法就是在`source`之前，用`env`检查一下自己的环境，从`PATH`里去掉Spack路径，并且删除Spack定义的函数。
 
 ## 查询软件包
 
