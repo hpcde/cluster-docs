@@ -3,15 +3,15 @@ id: easybuild
 title: EasyBuild - 软件安装工具
 ---
 
-EasyBuild 是一个用于在超算上安装科学计算软件的框架，它与 Lmod 配合使用能够替代 Spack。
+EasyBuild 是一个用于在超算上安装科学计算软件的框架，它与 Lmod 配合使用能够替代 Spack，但它目前的关注量远不如 Spack。
 它的命令行工具、依赖项解析等方面都要稍逊于 Spack，但是它与 Environment Module 整合地非常好。
 出于维护现有软件的目的，本节简要介绍 EasyBuild 的用法，并尝试将它与 Spack 做个简单对比。
 
 :::caution
-EasyBuild 安装的软件不好维护，相关配置文件也不容易迁到超算上使用，请尽量使用Spack。
+EasyBuild 安装的软件不好维护，相关配置文件也不容易迁到超算上使用，请尽量使用 Spack。
 :::
 
-## 使用EasyBuild安装软件
+## 基本概念
 
 参考：
 
@@ -20,15 +20,15 @@ EasyBuild 安装的软件不好维护，相关配置文件也不容易迁到超�
 
 EasyBuild 提供命令 `eb` 用于安装软件，每个具体的软件包都由两个文件定义：*Easyblock* 和*Easyconfig*。基本概念如下：
 
-- [EasyBuild framework](https://github.com/easybuilders/easybuild-framework)：框架本身，由Python写成，包括面向autotools、CMake等各种工具的安装逻辑；
+- [EasyBuild framework](https://github.com/easybuilders/easybuild-framework)：框架本身，由 Python 写成，包括面向 autotools、CMake 等各种工具的安装逻辑；
 
-- [Easyblocks](https://github.com/easybuilders/easybuild-easyblocks)：每个软件包的安装逻辑，由Python写成；
+- [Easyblocks](https://github.com/easybuilders/easybuild-easyblocks)：每个软件包的安装逻辑，由 Python 写成；
 
 - [Easyconfigs](https://github.com/easybuilders/easybuild-easyconfigs)：软件包具体版本的配置信息，纯文本；
 
-- [Toolchains](https://easybuild.readthedocs.io/en/latest/Common-toolchains.html#common-toolchains)：预定义的软件包集合，如`gompi`；
+- [Toolchains](https://easybuild.readthedocs.io/en/latest/Common-toolchains.html#common-toolchains)：预定义的软件包集合，如 `gompi`；
 
-- [Extensions](https://easybuild.readthedocs.io/en/latest/Partial_installations.html#installing-additional-extensions-using-k-skip)：软件的额外包/插件，如Python包。
+- [Extensions](https://easybuild.readthedocs.io/en/latest/Partial_installations.html#installing-additional-extensions-using-k-skip)：软件的额外包/插件，如 Python 包。
 
 ## 安装 EasyBuild
 
@@ -104,10 +104,10 @@ $ eb --software=OpenMPI,4.0.5 --try-toolchain=GCC,10.2.0
 
 ## EasyBuild和Spack的对比
 
-EasyBuild 和 Spack 在设计上的一个区别是把软件包的具体配置放在了纯文本中。
+EasyBuild 和 Spack 的一个比较明显的区别是 EasyBuild 把软件包的具体配置放在了纯文本中。
 Spack 的一个配置文件（.py）相当于 EasyBuild 的一个 Easyblock（.py）加上所有与它相关的 Easyconfig（.eb，纯文本）。
 
-对于 Spack 来说，用户总是可以通过命令行参数来控制软件包的版本、依赖等信息；对于 EasyBuild 来说，用命令行参数控制版本、依赖是试验性功能（v4），不太稳定。
+对于 Spack 来说，用户总是可以通过命令行参数来控制软件包的版本、依赖等信息；对于 EasyBuild 来说，主要依赖于文本文件，用命令行参数控制版本、依赖仍是试验性功能（v4），不太稳定。
 
 |                  | EasyBuild                                                    | Spack                                                        |
 | ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
