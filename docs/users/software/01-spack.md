@@ -189,6 +189,7 @@ $ spack info openmpi
 参考：
 
 - [Using installed packages](https://spack.readthedocs.io/en/latest/basic_usage.html#using-installed-packages)
+- [Bundle package](https://spack.readthedocs.io/en/latest/build_systems/bundlepackage.html)
 
 用于加载/卸载软件包的命令分别如下：  
 - `spack load`：加载软件包
@@ -222,10 +223,6 @@ $ spack load gompi@2020b
 使用 Spack 安装的软件都会尽可能用 **RPATH**，依赖项的位置会写在二进制文件里。
 因此通常不需要加载依赖项就可以使用软件包。
 例如，使用 `openmpi%gcc@10.2.0` 时，不需要加载 `gcc@10.2.0` ，mpicc 会指向正确的 gcc 位置。
-:::
-
-:::info 自定义bundle package
-参考后续创建软件包的说明和 [Bundle package](https://spack.readthedocs.io/en/latest/build_systems/bundlepackage.html)。
 :::
 
 ## 加载 Python 包
@@ -649,6 +646,11 @@ $ spack install --only dependencies petsc
 ```bash
 $ spack load --only dependencies petsc
 ```
+
+:::info 只有依赖项的 spec
+实验室集群上的 `gompi`、`gmpich` 等软件包都是只有依赖项的 bundle package，它们和文件系统视图、虚拟环境都可以用于批量管理常用软件包。
+用户也可以为自己常用的工具集创建 bundle package。
+:::
 
 ## 让Spack使用外部软件包
 
