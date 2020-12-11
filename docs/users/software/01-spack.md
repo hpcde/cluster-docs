@@ -703,11 +703,18 @@ $ spack load boost@1.70.0-system
 
 比如，编译安装 `openmpi` 时，可能会依赖于某个路径下的 `hwloc`。在添加该 `openmpi` 为 Spack 外部软件包时，一定要尽量让编译的 `openmpi` 使用 RPATH，即把依赖的路径硬编码在二进制文件中。否则，在加载时很可能被动态链接到其他版本的 `hwloc`，产生不易发现的错误。
 
-:::tip 集群的外部软件包配置
-集群的公共Spack配置了许多外部软件包，用户可以参考该配置文件来写自己的配置。
+### 可供参考的配置
 
-路径：`/apps/spack/etc/spack/packages.yaml`
-:::
+集群的公共 Spack 配置了许多外部软件包，用户可以参考该配置文件来写自己的配置。其路径为
+
+```bash
+/apps/spack/etc/spack/packages.yaml
+```
+
+在加载了公共 Spack 时也可用命令查看
+```bash
+$ spack config --scope site get packages
+```
 
 :::info 实验室集群上软件包的路径
 用户为Spack配置外部软件包时，可能会涉及多个分散的软件安装路径。主要的路径和所在节点列在这里以供参考
@@ -715,8 +722,8 @@ $ spack load boost@1.70.0-system
 - `$HOME`：位于登录节点，用户可能有自己安装的软件；
 - `$HOME/data`：位于数据节点，用户可能有自己安装的软件；
 - `/opt`：位于登录节点，存放的多是手动安装的软件；
-- `/apps/software`：位于软件安装节点，存放的是由EasyBuild安装或手动安装的软件；
-- `/apps/spack/opt/spack`：位于软件安装节点，存放的是由公共Spack安装的软件；
+- `/apps/software`：位于软件安装节点，存放的是由 EasyBuild 安装或手动安装的软件；
+- `/apps/spack/opt/spack`：位于软件安装节点，存放的是由公共 Spack 安装的软件；
 
 :::
 
@@ -739,7 +746,7 @@ Spack：
 
 - 用户级
 
-Spack可安装的每个软件包都有相应的Python配置文件，每个包都是Spack定义的某个类的实例。目前，Spack内置了5000多个软件包（0.16），大多是常用的开发工具、数值计算软件，不过这并不能完全满足我们的需求。
+Spack 可安装的每个软件包都有相应的 Python 配置文件，每个包都是 Spack 定义的某个类的实例。目前，Spack 内置了5000多个软件包（0.16），大多是常用的开发工具、数值计算软件，不过这并不能完全满足我们的需求。
 
 当我们使用 `spack list` 找不到想要的软件包时，我们可以自己写配置文件。一般流程如下：
 
