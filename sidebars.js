@@ -43,18 +43,5 @@ module.exports = {
     },
     admin: {
       // "First Category": ["doc4", "doc5"]
-      "概要": [
-        "admin/getting-started", 
-      ],
-      "文件系统": [
-        "admin/autofs",
-      ],
-      "Module 环境": [
-        "admin/lmod",
-      ],
-      "作业系统 SLURM": [
-        "admin/slurm-overview",
-      ]
     },
-  
 };
