@@ -239,7 +239,7 @@ $ python3
 
 - [Workflows - Filesystem views](https://spack.readthedocs.io/en/latest/workflows.html)
 
-用于创建文件系统视图的命令为：
+用于创建、修改文件系统视图的命令为：
 
 - `spack view`
 
@@ -265,8 +265,14 @@ $ spack view remove --all $HOME/data/mytools
 
 - [Environments](https://spack.readthedocs.io/en/latest/environments.html)
 
-熟悉 Python 的应该都了解虚拟环境，Spack 也提供了对虚拟环境的支持。
-Spack 提供的虚拟环境与 Anaconda 的虚拟环境功能类似，也称为 *environments*。  
+用于管理虚拟环境的主要命令有：
+- `spack env`：创建、修改虚拟环境（需要写权限）
+- `spack add`：在虚拟环境中添加抽象specs（仅添加到配置文件）
+- `spack concretize`：对所有specs执行`concretize`（检查、解析依赖等，可能会格式化配置文件）
+- `spack install`：安装所有 concretized specs
+
+熟悉 Python 的应该都了解虚拟环境，Spack 也提供了对虚拟环境（在 Spack 中称为 *environments*）的支持。
+Spack 提供的虚拟环境与 Anaconda 的虚拟环境功能类似。  
 Spack的环境可以用于批量操作软件包 specs，也可以用于管理文件系统视图，以及像 Anaconda 的虚拟环境一样激活、反激活，一次性加载其中的所有软件包等。
 
 同一个环境里的specs可以批量操作，指的是：
@@ -279,13 +285,6 @@ Spack的环境可以用于批量操作软件包 specs，也可以用于管理文
 :::note
 要注意的是，操作Spack的虚拟环境需要修改权限，普通用户只能修改用户级 Spack（关于用户级 Spack的配置见后续内容），不能修改集群的公共Spack。
 :::
-
-Spack 提供的和虚拟环境相关的命令有：
-- `spack env`
-- `spack add`
-- `spack concretize`
-- `spack install`
-
 
 Spack 环境的简单用法如下：
 
@@ -382,20 +381,20 @@ module load boost/1.70.0-d42gtzk
 
 相关命令：
 
-- `spack config`：查看、修改Spack配置文件
+- `spack config`：查看、修改 Spack 配置文件
 - `spack compiler`：查看、查找编译器
 
 实验室集群只安装了一个公共的 Spack，位于`/apps/spack`，它其中的软件包由管理员维护，普通用户不能在里面增加新的软件包。
 
 为了完全使用 Spack 的功能（例如安装自己需要的包），需要在自己的目录下克隆 Spack 仓库并做一些配置：
 
-- 设置公共Spack为 upstream
+- 设置公共 Spack 为 upstream
 - 添加 repos（可选，集群的 repo 会包含自定义软件包）
 - 添加 mirrors（可选，凡是集群安装过的软件都不用重复下载）
 - 修改 target（可选，修改软件包的默认 target 为 x86_64）
 - 添加 compilers（可选，添加集群 Spack 的编译器到用户级 Spack）
 
-配置用户级 Spack具体步骤如下：
+配置用户级 Spack 具体步骤如下：
 
 ```bash
 # 克隆Spack仓库到自己目录下
@@ -460,10 +459,10 @@ $ spack config get compilers
 $ spack find
 ```
 
-完成配置后，可以随意安装、删除用户级 Spack的软件包。有关安装路径、外部软件包等设置，请参考Spack配置文件的手册。
+完成配置后，可以随意安装、删除用户级 Spack 的软件包。有关安装路径、外部软件包等设置，请参考 Spack 配置文件的手册。
 
 :::note 关于软件包的优先级
-如果公共Spack和用户级 Spack存在相同的软件包，用户级的会优先被选择。
+如果公共 Spack 和用户级 Spack 存在相同的软件包，用户级的会优先被选择。
 :::
 
 :::tip Spack版本的影响
@@ -471,11 +470,11 @@ $ spack find
 例如，集群 Spack 安装的 `cmake` 可能是3.19.0，用户级 Spack 中的默认 `cmake` 却是 3.19.1，导致默认情况下不会使用集群的 `cmake`。
 - 解决方法一：把用户级的 Spack 仓库切换到和集群 Spack 相同的 git 分支。要获知集群 Spack 在哪个分支，使用集群 Spack 执行 `spack debug report`
 - 解决方法二：在安装软件包时额外指定依赖的版本，例如 `^cmake@3.19.1` 。
-- 解决方法三：在配置文件[packages.yaml](https://spack.readthedocs.io/en/latest/build_settings.html#build-settings)中设置某个版本为优先。
+- 解决方法三：在配置文件 [packages.yaml](https://spack.readthedocs.io/en/latest/build_settings.html#build-settings) 中设置某个版本为优先。
 :::
 
 :::tip Spack所需的依赖
-Spack运行、安装软件包所需的依赖见：[Prerequisites](https://spack.readthedocs.io/en/latest/getting_started.html#prerequisites)
+Spack运行、安装软件包所需的依赖参考：[Prerequisites](https://spack.readthedocs.io/en/latest/getting_started.html#prerequisites)
 
 以下列出Spack 0.16.0所需的依赖：
 
