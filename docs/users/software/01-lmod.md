@@ -10,7 +10,7 @@ title: 使用集群上的软件 - Lmod
 - 切换不同软件，如 Anaconda 和 Python；
 - 切换同一软件的不同版本，如 GCC 7.3.0 和 GCC 8.2.0。
 
-当用户想要使用软件时，只要运行相应命令来加载软件的环境变量即可。Lmod 提供了 `module`和`ml`命令供用户选择，让用户能够用命令来“加载”、”卸载“、查找已安装的软件。
+当用户想要使用软件时，只要运行相应命令来加载软件的环境变量即可。Lmod 提供了 `module`和`ml`命令供用户选择，让用户能够用命令来加载、卸载、查找已安装的软件。
 
 :::caution
 目前，实验室的集群已经用 Lmod 代替了以前的基于 Tcl 的 Environment Module System。
@@ -40,9 +40,8 @@ $ ml                    # 查看已加载的软件
 $ ml -GCC               # 卸载软件的环境变量
 ```
 
-:::info
-如果不加载软件，用户使用的就是系统自带的软件，如 gcc 可能使用的就是/usr/bin 下面的 gcc 4.8.5, 
-Python 可能使用的是 /usr/bin 下面的 Python 2.7.5。
+:::info 初始环境变量
+如果不加载软件，用户使用的就是系统自带的软件，例如， GCC 可能使用的就是 /usr/bin 下面的 GCC 4.8.5，Python 可能使用的是 /usr/bin 下面的 Python 2.7.5。
 :::
 
 ## 快速入门
@@ -107,9 +106,9 @@ $ ml GCC/8.2.0
 科学计算软件的依赖比较复杂，许多软件在特定编译器/依赖版本下能顺利编译和运行，换作其他编译器/依赖就出现很多意想不到的错误（如链接库错误）。
 EasyBuild & Lmod 使用模块层次来处理这种软件间的依赖关系。
 
-Lmod的每个模块都可以依赖于其他模块，依赖关系也有不同类型，最终形成像文件系统一样的层次结构。用户可以用 `module avail` 查看**当前**可加载的模块，该命令的结果会随着用户加载的模块不同而变化，因为模块文件所在的路径 `$MODULEPATH` 会在运行时被修改。
+Lmod 的每个模块都可以依赖于其他模块，依赖关系也有不同类型，最终形成像文件系统一样的层次结构。用户可以用 `module avail` 查看**当前**可加载的模块，该命令的结果会随着用户加载的模块不同而变化，因为模块文件所在的路径 `$MODULEPATH` 会在运行时被修改。
 
-例如，OpenMPI只有在加载了特定编译器之后才会显示在`module avail`结果中：
+例如，OpenMPI 只有在加载了特定编译器之后才会显示在 `module avail` 结果中：
 
 ```bash
 ## 清空所有已加载的模块，保证环境是干净的
@@ -154,18 +153,18 @@ OpenMPI: OpenMPI/3.1.3
   	GCC/8.2.0-2.31.1
 ```
 
-在用户没有加载任何模块的情况下，可以加载的模块称为 **核心 (Core)** 模块。其模块所在路径也以 **Core** 命名：
+在用户没有加载任何模块的情况下，可以加载的模块称为 *核心 (Core)* 模块。其模块所在路径也以 *Core* 命名：
 
 ```
 /apps/modulefiles/Core
 /apps/lmod/lmod/modulefiles/Core
 ```
 
-为了避免手动加载依赖项，用户可以为当前加载的模块创建*savelist*，或者使用核心模块中的*toolchain*（工具链）。关于工具链的说明见后续小节。
+为了避免手动加载依赖项，用户可以为当前加载的模块创建 *savelist* ，或者使用核心模块中的*toolchain*（工具链）。关于工具链的说明见后续小节。
 
 
-:::note 关于模块名及版本
-集群上所有 Lmod 的模块文件均由EasyBuild生成，采用EasyBuild的命名规则。
+:::note 模块名称及版本
+集群上所有 Lmod 的模块文件均由 EasyBuild 生成，采用 EasyBuild 的命名规则。
 :::note
 
 ## 切换软件版本
@@ -249,11 +248,7 @@ $ echo 'module_version("2.31.1","default")' > $MY_GCC_DIR/.modulerc.lua
 使用工具链可以很方便地编译绝大多数的 C/C++/Fortran 程序。
 加载工具链和卸载工具链可以帮助用户快速切换所需的编译器，而不用手动加载依赖项。
 
-:::info Spack的工具链
-集群上的公共Spack使用*bundle package*定义工具链，具体请参考文档中对Spack用法的说明。
-:::
-
-例如，`gmpich`就是一些与MPICH相关的编译工具，它包括`gcc`、`mpicc`； `gompi`则是一些与OpenMPI相关的编译工具。 下面两条命令分别加载了这两个工具链的默认版本。
+例如，`gmpich` 就是一些与MPICH相关的编译工具，它包括`gcc`、`mpicc`； `gompi`则是一些与OpenMPI相关的编译工具。 下面两条命令分别加载了这两个工具链的默认版本。
 
 ```bash
 ## 加载工具链gmpich
@@ -292,6 +287,10 @@ depends_on("GCC/8.2.0-2.31.1")
 depends_on("OpenMPI/3.1.3")
 ```
 
+:::info Spack的工具链
+集群上的公共 Spack 也可以加载 `gompi`、`gmpich` 等少量工具链，具体用法请参考文档中 Spack 章节。
+:::
+
 ### 卸载工具链
 卸载工具链时会把所有依赖项全部卸载。
 
@@ -304,8 +303,8 @@ No modules loaded
 ```
 
 ### 切换工具链
-切换工具链时，建议使用`ml`的切换语法或者`swap`等切换命令。
-例如，我们可以通过以下命令在加载 `gompi/2019a`之后切换到 `gmpich/2019a`：
+切换工具链时，建议使用 `ml` 的切换语法或者 `swap` 等切换命令。
+例如，我们可以通过以下命令在加载 `gompi/2019a` 之后切换到 `gmpich/2019a`：
 
 ```bash
 ## 加载gompi
@@ -315,7 +314,7 @@ $ ml gompi/2019a
 $ ml -gompi/2019a gmpich/2019a
 ```
 
-常用的工具链见集群文档的软件列表。
+常用的工具链见集群文档的公共软件列表。
 
 ## 保存加载的模块
 
@@ -354,27 +353,29 @@ $ ml disable devtools
 
 - [Modulefile Examples from simple to complex](https://lmod.readthedocs.io/en/latest/100_modulefile_examples.html)
 
-预装的软件都以是特定的编译选项编译的，可能无法完全满足你的需求。普通用户无法更改公共的软件，但可以在安装软件后向Lmod添加自定义的模块文件，步骤大致如下：
+预装的软件都以是特定的编译选项编译的，可能无法完全满足你的需求。普通用户无法更改公共的软件，但可以向 Lmod 添加自定义的模块文件。因此，我们只要为自己安装的软件写 modulefile，让 Lmod 能够搜索到即可。
 
-1. 安装软件到自己的家目录（`$HOME`）；
-2. 写一个相应的modulefile，放在某个目录下（例如`$HOME/modulefiles/`）；
-3. 添加 modulefiles 目录到 Lmod 搜索路径。
+步骤总结如下：
 
-一个modulefile中最主要的就是各种环境变量，例如`PATH`和`LIBRARY_PATH`。用户使用`module load`加载这个modulefile时，实际上就是在当前shell设置这些环境变量。因此，用户在安装完软件后，通常需要把`bin`、`include`、`lib`等目录的绝对路径写在modulefile中。
+- 建立一个目录用于存放 modulefiles，如 `$HOME/modulefiles/`；
+- 使用 `module use` 添加该目录到 Lmod 搜索路径；
+- 安装软件到自己的家目录（`$HOME`）；
+- 为安装的软件写一个 modulefile，放在自己的 modulefiles 目录下。
 
-假设用户安装了GCC 10.2.0，并且写了一个名为 `gcc-10.2.0.lua` 的 modulefile 放在 `$HOME/modulefiles/` 目录下。为了让 Lmod 能搜索到这个模块，用户可以使用以下命令：
+假设用户安装了GCC 10.2.0，并且写了一个名为 `gcc-10.2.0.lua` 的 modulefile 放在 `$HOME/modulefiles/` 目录下。为了让 Lmod 能搜索到这个模块，执行命令
 
 ```bash
 $ module use $HOME/modulefiles
 ```
 
-随后，使用如下命令加载自定义的模块：
+随后便可以加载自定义的模块
 
 ```bash
 $ module load gcc-10.2.0
 ```
 
-在这个例子中，我们的模块文件名为`gcc-10.2.0.lua`，由`module`命令显示的名称为`gcc-10.2.0`。根据Lmod的模块层次，如果我们想要一个名为`gcc/10.2.0/mpich/3.3.2`的模块，就应该创建如下文件
+在这个例子中，我们的模块文件名为 `gcc-10.2.0.lua`，由 `module` 命令显示的名称为 `gcc-10.2.0`。
+根据 Lmod 的模块层次，如果我们想要一个名为 `gcc/10.2.0/mpich/3.3.2` 的模块，就应该创建如下文件
 
 ```bash
 $ mkdir -p $HOME/modulefiles/gcc/10.2.0/mpich
@@ -384,19 +385,28 @@ $ touch $HOME/modulefiles/gcc/10.2.0/mpich/3.3.2.lua
 $ module use $HOME/modulefiles
 ```
 
-:::note 自定义模块的命名
+### 自定义模块的命名
 
-为防止自定义模块与系统中安装的模块发生冲突，请尽量以不同方式命名。例如，系统中已安装 `MPICH/3.2`，如果用户想使用自己编译的MPICH，可以命名为 `mpich/3.2, user/mpich/3.2` 等。
-:::
+为防止自定义模块与系统中安装的模块发生冲突，有两种解决方法。
 
-:::note 集群上的模块文件
+第一种是以不同风格命名。例如，系统中已安装 `MPICH/3.2`，如果用户想使用自己编译的 MPICH，可以命名为 `mpich/3.2, user/mpich/3.2` 等。
+
+第二种是修改 Lmod 搜索路径。只有处于 Lmod 搜索路径中的同名模块才会冲突，我们可以在需要时去掉现存的路径（例如默认加载的 `Core/` 路径），只使用自己的路径。
+比如，集群上的 `showlegacy` 模块文件里实际上是一句 `module use`，它启用了一个新的搜索路径让 Lmod 能找到 Tcl 旧模块。
+我们可以仿照 `showlegacy` 模块的做法，写一个模块文件，启用自定义路径的同时删除公共模块文件的路径。
+
+### 编写模块文件
+
+一个modulefile中最主要的就是各种环境变量，例如 `PATH` 和 `LIBRARY_PATH`。
+用户使用 `module load` 加载这个modulefile时，实际上就是在当前shell设置这些环境变量。
+因此，用户在安装完软件后，通常需要把 `bin`、`include`、`lib` 等目录的绝对路径写在modulefile 中。
+
 自定义模块文件时，可以用命令查看集群上已有模块的配置文件供参考，例如，查看GCC-8.2.0的模块文件：
 
 ```bash
 $ module show GCC/8.2.0-2.31.1
 ```
 需要注意的是，集群上的模块文件通常都是 Lua 语法，在其他超算上可能需要 Tcl。Tcl 的模块文件可以参考 Tcl 旧模块。
-:::
 
 ## Tcl 旧模块的处理
 
