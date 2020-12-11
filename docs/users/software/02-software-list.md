@@ -1,6 +1,6 @@
 ---
 id: software-list
-title: 软件列表
+title: 公共软件列表
 ---
 
 ## 编译 & 运行时
