@@ -100,7 +100,7 @@ $ cd BOUT-dev
 $ ./configure --with-petsc --with-sundials && make -j16
 ```
 
-参考：
+## 参考资料
 
 - [BOUT++ - Getting started](https://bout-dev.readthedocs.io/en/latest/user_docs/installing.html)
 - [BOUT++ - Python configuration](https://bout-dev.readthedocs.io/en/latest/user_docs/installing.html#python-configuration)
