@@ -1,7 +1,32 @@
 ---
 id: easybuild
-title: 使用集群上的软件 - EasyBuild
+title: 在集群上安装软件 - EasyBuild
 ---
+
+## 使用EasyBuild安装软件
+
+参考：
+
+- [EasyBuild](https://easybuild.readthedocs.io/en/latest/)
+- [Concepts and terminology](https://easybuild.readthedocs.io/en/latest/Concepts_and_Terminology.html)
+
+EasyBuild是一个用于在超算上安装科学计算软件的框架，它主要与Lmod配合使用。
+
+EasyBuild提供命令`eb`用于安装软件，每个具体的软件包都由两个文件定义：*Easyblock*和*Easyconfig*。基本概念如下：
+
+- [EasyBuild framework](https://github.com/easybuilders/easybuild-framework)：框架本身，由Python写成，包括面向autotools、CMake等各种工具的安装逻辑；
+
+- [Easyblocks](https://github.com/easybuilders/easybuild-easyblocks)：每个软件包的安装逻辑，由Python写成；
+
+- [Easyconfigs](https://github.com/easybuilders/easybuild-easyconfigs)：软件包具体版本的配置信息，纯文本；
+
+- [Toolchains](https://easybuild.readthedocs.io/en/latest/Common-toolchains.html#common-toolchains)：预定义的软件包集合，如`gompi`；
+
+- [Extensions](https://easybuild.readthedocs.io/en/latest/Partial_installations.html#installing-additional-extensions-using-k-skip)：软件的额外包/插件，如Python包。
+
+:::info
+EasyBuild安装的软件不好维护，请尽量使用Spack。
+:::
 
 ## 安装 EasyBuild
 
