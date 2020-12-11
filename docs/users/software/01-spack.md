@@ -274,16 +274,16 @@ $ python3
 Spack 安装的所有软件包都按照 Spack 的命名规则存放在同一目录下，但我们也可以建立文件系统视图，将某些软件包的文件聚在一起。
 
 ```bash
-## 在指定目录中为软件包建立软链接
+# 在指定目录中为软件包建立软链接
 $ spack view add $HOME/data/mytools petsc%gcc scorep%gcc
 
-## 将软链接所在目录添加到环境变量
+# 将软链接所在目录添加到环境变量
 $ export PATH=$HOME/data/mytools/bin:$PATH
 $ export LIBRARY_PATH=$HOME/data/mytools/lib:$LIBRARY_PATH
 $ export LD_LIBRARY_PATH=$HOME/data/mytools/lib:$LD_LIBRARY_PATH
 $ export CPATH=$HOME/data/mytools/include:$CPATH
 
-## 不再使用时，删除所有软链接
+# 不再使用时，删除所有软链接
 $ spack view remove --all $HOME/data/mytools
 ```
 
@@ -349,10 +349,10 @@ $ spack find -c
 $ spack install
 ```
 
-:::tip Spack 环境的默认 view
-激活 Spack 环境后，默认也会启用一个 view，为我们设置好环境变量。
+创建 Spack 环境时，默认也会创建一个文件系统视图，该环境的所有软件包都会加到这个视图中管理。
+这种情况下，文件系统视图的限制也同样作用于 Spack 环境。
+激活环境时，Spack 会根据文件系统视图管理的各个路径为我们设置相应环境变量。
 如果该环境中某些软件包没有正确加载，可以使用 `spack load` 命令手动加载一下。
-:::
 
 :::tip 集群 Spack 预定义的环境
 集群 Spack 中可能会预先定义一些只读的环境，如 `python3`，它们通常是一些常用的软件包，只有在使用集群的公共 Spack 时才可以加载：
@@ -481,7 +481,7 @@ $ spack compiler find
 $ spack compiler list
 $ spack config get compilers
 
-## 设置默认 target 为通用x86_64。编辑配置文件，修改为如下三行
+# 设置默认 target 为通用x86_64。编辑配置文件，修改为如下三行
 $ spack config edit packages
 
 packages.yaml
@@ -629,8 +629,8 @@ $ spack mark -e ncurse
 `spack gc` 和 `spack uninstall` 都会考虑依赖项。使用 `spack uninstall` 时，如果要删除的包是其他某个软件包的依赖，Spack 会给出提示。我们也可以事先用命令确认一下一个软件包到底被哪些软件包使用着。
 
 ```bash
-## 列出已安装的软件包中依赖于zlib的
-## 一定要带上参数-i限制范围在已安装的软件包，否则会搜索所有可安装的软件包
+# 列出已安装的软件包中依赖于zlib的
+# 一定要带上参数-i限制范围在已安装的软件包，否则会搜索所有可安装的软件包
 $ spack dependents -i zlib
 ```
 
@@ -676,8 +676,8 @@ Spack 很擅长编译安装软件包，我们通常不需要关心装一个东�
 为了利用已有的软件包，我们可以使用 *external packages*。只要给已经存在的软件拟定一个 spec，并把 spec 连同软件的路径写在配置文件 `packages.yaml` 的 `externals` 中，它们就能正常被 Spack 加载。此外，我们还能禁止 Spack 重新安装它们。
 
 ```bash
-## 假设我们已经在/apps/software/Boost/底下安装了boost，想放在Spack里使用
-## 编辑配置文件如下
+# 假设我们已经在/apps/software/Boost/底下安装了boost，想放在Spack里使用
+# 编辑配置文件如下
 $ spack config edit packages
 
 packages.yaml
@@ -688,10 +688,10 @@ packages.yaml
   5     - spec: boost@1.70.0-system
   6       prefix: /apps/software/Boost/1.70.0-gompi-2019a/
 
-## 添加这个外部软件包到Spack
+# 添加这个外部软件包到Spack
 $ spack install boost@1.70.0-system
 
-## 像普通Spack软件包一样使用
+# 像普通Spack软件包一样使用
 $ spack load boost@1.70.0-system
 ```
 
@@ -753,26 +753,26 @@ Spack 可安装的每个软件包都有相应的 Python 配置文件，每个包
 当我们使用 `spack list` 找不到想要的软件包时，我们可以自己写配置文件。一般流程如下：
 
 ```bash
-## 根据软件包的下载地址，提取名称、版本等信息自动生成配置文件草稿
+# 根据软件包的下载地址，提取名称、版本等信息自动生成配置文件草稿
 $ spack create https://url/to/package
 
-## 配置文件在生成后会自动被打开，若没有打开，可以使用edit命令
+# 配置文件在生成后会自动被打开，若没有打开，可以使用edit命令
 $ spack edit <package name>
 
-## 调整配置文件后，使用Spack安装该软件包
+# 调整配置文件后，使用Spack安装该软件包
 $ spack install <package name>
 
-## 如果安装失败，可以切换到刚刚的build目录手动处理
+# 如果安装失败，可以切换到刚刚的build目录手动处理
 $ spack cd <package name>
 
-## 手动build
+# 手动build
 $ spack build-env <package name> bash
 
-## 也可以直接使用make等工具
+# 也可以直接使用make等工具
 $ make
 
-## 反复调整配置文件直到能够成功安装
-## spack install <package name>
+# 反复调整配置文件直到能够成功安装
+# spack install <package name>
 ```
 
 :::info 编写配置文件
