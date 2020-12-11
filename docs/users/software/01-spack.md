@@ -567,6 +567,8 @@ Spack：
 
 - 用户级
 
+### 工作流
+
 配置好用户级 Spack并连接到集群Spack后，我们可以在本地安装自己需要的软件包。安装软件的一般流程如下
 
 - 检查软件包是否存在
@@ -603,6 +605,8 @@ $ spack clean
 $ spack clean -d
 ```
 
+### 清理依赖项
+
 `spack gc`可清理的主要是 build-time 依赖和 test 依赖，它们不会链接到安装的软件包中，也不会在运行时被调用。
 
 一个软件包的依赖有四种类型：build、link、run、test。使用命令可以看到所有依赖对应的类型：
@@ -625,7 +629,7 @@ $ spack mark -e ncurse
 $ spack dependents -i zlib
 ```
 
-:::info 仅安装依赖
+### 仅安装依赖
 `spack install` 默认会安装软件包及其依赖。如果用户需要的只是依赖项，希望自己编译特定的程序，可用参数 `--only` 来指定：
 
 ```bash
@@ -637,7 +641,6 @@ $ spack install --only dependencies petsc
 ```bash
 $ spack load --only dependencies petsc
 ```
-:::
 
 ## 让Spack使用外部软件包
 
