@@ -3,9 +3,9 @@ id: spack
 title: 使用集群上的软件 - Spack
 ---
 
-Spack是一个为超算平台设计的包管理工具，它能较好地处理依赖关系，用法上类似于Lmod、Anaconda。目前，Spack 0.16.0支持Linux和macOS两种系统，可以安装C/C++、Fortran、Python、R等语言的软件包。
+Spack是一个为超算平台设计的包管理工具，它能较好地处理依赖关系，用法上类似于 Lmod、Anaconda。目前，Spack 0.16.0 支持 Linux 和 macOS 两种系统，可以安装 C/C++、Fortran、Python、R 等语言的软件包。
 
-在实验室集群上，Spack用来替代EasyBuild & Lmod的软件管理方案。Spack的主要特点如下：
+在实验室集群上，Spack用来替代 EasyBuild & Lmod 的软件管理方案。Spack的主要特点如下：
 
 - **查询**：软件信息，包括版本、依赖项等；
 - **加载**：动态加载、卸载、更换软件（相当于module load/unload/swap）；
@@ -50,9 +50,9 @@ $ spack unload -a
 ```
 
 :::info 切换Spack环境
-如果机器上配置了多个Spack，切换Spack环境时直接使用`source setup-env.sh`可能不会生效。问题在于该脚本会检查`PATH`变量里面是否已经有Spack路径，并且该脚本定义了几个变量、函数可能不会被新脚本覆盖。
+如果机器上配置了多个Spack，切换Spack环境时直接使用 `source setup-env.sh` 可能不会生效。问题在于该脚本会检查 `PATH` 变量里面是否已经有 Spack 路径，并且该脚本定义了几个变量、函数可能不会被新脚本覆盖。
 
-最简单的办法就是在`source`之前，用`env`检查一下自己的环境，从`PATH`里去掉Spack路径，并且删除Spack定义的函数。
+最简单的办法就是在 `source` 之前，用 `env` 检查一下自己的环境，从 `PATH` 里去掉Spack路径，并且删除Spack定义的函数。
 :::
 
 ## 查询软件包
@@ -67,7 +67,7 @@ $ spack unload -a
 - `spack find`：查看已安装软件
 - `spack info`：查看软件的介绍，包括版本、选项等
 
-在Spack中，每个软件包都由一个`spec`（specification）唯一表示，`spec`中包含了软件名称、版本、选项、编译器spec、依赖项spec等，因此它是递归定义的。`spec`中信息的改变会导致软件包的hash值发生变化，因此，只要`spec`中有关键信息变了，就会得到新的软件包。更详细的说明见[Specs & dependencies](https://spack.readthedocs.io/en/latest/basic_usage.html#specs-dependencies)。
+在Spack中，每个软件包都由一个 `spec`（specification）唯一表示，`spec` 中包含了软件名称、版本、选项、编译器spec、依赖项spec等，因此它是递归定义的。`spec` 中信息的改变会导致软件包的hash值发生变化，因此，只要 `spec` 中有关键信息变了，就会得到新的软件包。更详细的说明见 [Specs & dependencies](https://spack.readthedocs.io/en/latest/basic_usage.html#specs-dependencies)。
 
 ### `spack find`
 
@@ -101,7 +101,7 @@ $ spack find -L --paths hdf5
 
 Spack把安装的软件包按照架构（target）和编译器（compiler/compiler driver）分类。在目前的集群Spack中，架构统一为x86_64，这是为了兼容集群中不同型号的处理器。
 
-使用`spack find`可以看到，不同编译器下面会有同名的软件包。例如，查看已安装的所有`mpi`包如下
+使用 `spack find` 可以看到，不同编译器下面会有同名的软件包。例如，查看已安装的所有 `mpi` 包如下
 
 ```bash
 ## mpi属于virtual package，查询它就会显示所有提供mpi的包
@@ -118,7 +118,7 @@ mpich@3.3.2  openmpi@4.0.5
 ```
 
 :::note spec的语法
-spec的语法可以在Spack网站上找到，也可以直接用命令查看：
+`spec` 的语法可以在Spack网站上找到，也可以直接用命令查看：
 
 ```bash
 $ spack help --spec
@@ -127,7 +127,7 @@ $ spack help --spec
 
 ### `spack info`
 
-如果对于某一软件不熟悉，或者不清楚该软件的编译选项有什么含义，可以使用`spack info`来确认。
+如果对于某一软件不熟悉，或者不清楚该软件的编译选项有什么含义，可以使用 `spack info` 来确认。
 
 该命令会显示软件包的帮助信息，包括简介、版本、下载地址、编译选项说明、编译安装阶段说明、依赖项列表等。
 
@@ -146,7 +146,7 @@ $ spack info openmpi
 - `spack load`：加载软件包
 - `spack unload`：卸载软件包
 
-通过Spack使用软件包和Environment Module的用法类似，分为加载和卸载两个命令。
+通过Spack使用软件包和 Environment Module 的用法类似，分为加载和卸载两个命令。
 
 ```bash
 ## 加载软件包
@@ -162,7 +162,7 @@ $ spack unload cmake
 $ spack unload -a
 ```
 
-除了普通的软件包，集群上还定义了一些*bundle package*，也就是一组软件。这些bundle package主要用于代替Easybuild & Lmod的*toolchain*，版本规则也类似于toolchain：年份+字母。例如，`gompi@2020b`就包含了GCC和OpenMPI，软件的安装时间为2020年下半年。
+除了普通的软件包，集群上还定义了一些 *bundle package*，也就是一组软件。这些 bundle package 主要用于代替 Easybuild & Lmod 的 *toolchain*，版本规则也类似于toolchain：年份+字母。例如，`gompi@2020b` 就包含了 `gcc` 和 `openmpi`，软件的安装时间为2020年下半年。
 
 ```bash
 $ spack find gompi
@@ -171,11 +171,11 @@ $ spack load gompi@2020b
 ```
 
 :::info 关于依赖项
-使用Spack安装的软件都会尽可能用RPATH，依赖项的位置会写在二进制文件里。因此通常不需要加载依赖项就可以使用软件包。例如，使用`openmpi%gcc@10.2.0`时，不需要加载`gcc@10.2.0`，mpicc会指向正确的gcc位置。
+使用Spack安装的软件都会尽可能用 [RPATH](http://en.wikipedia.org/wiki/Rpath)，依赖项的位置会写在二进制文件里。因此通常不需要加载依赖项就可以使用软件包。例如，使用 `openmpi%gcc@10.2.0` 时，不需要加载 `gcc@10.2.0`，`mpicc` 会指向正确的 `gcc` 位置。
 :::
 
 :::info 自定义bundle package
-参考后续创建软件包的说明和[Bundle package](https://spack.readthedocs.io/en/latest/build_systems/bundlepackage.html)。
+参考后续创建软件包的说明和 [Bundle package](https://spack.readthedocs.io/en/latest/build_systems/bundlepackage.html)。
 :::
 
 ## 用Spack加载Python
@@ -188,7 +188,7 @@ $ spack load gompi@2020b
 
 - `spack extensions`：列出Python包
 
-Spack把Python包归为*extensions*，可以通过相应的命令查看Python包列表。Python包的加载有多种方式，这里只介绍最简单的方式。
+Spack把Python包归为 *extensions*，可以通过相应的命令查看Python包列表。Python包的加载有多种方式，这里只介绍最简单的方式。
 
 ```bash
 ## 查看所有已安装的Python包
@@ -227,7 +227,7 @@ $ spack env activate python3
 
 - `spack view`
 
-Spack安装的所有软件包都按照Spack的命名规则存放在同一目录下，我们也可以将某些软件包映射到传统linux文件系统层次：包含`bin/`、`lib/`的目录层次。
+Spack安装的所有软件包都按照Spack的命名规则存放在同一目录下，我们也可以将某些软件包映射到传统linux文件系统层次：包含 `bin/`、`lib/` 的目录层次。
 
 ```bash
 ## 在指定目录中为软件包建立软链接
@@ -239,7 +239,7 @@ $ export LIBRARY_PATH=$HOME/data/mytools/lib:$LIBRARY_PATH
 $ export LD_LIBRARY_PATH=$HOME/data/mytools/lib:$LD_LIBRARY_PATH
 $ export CPATH=$HOME/data/mytools/include:$CPATH
 
-## 不再使用时，删除外所有软链接
+## 不再使用时，删除所有软链接
 $ spack view remove --all $HOME/data/mytools
 ```
 
@@ -256,7 +256,7 @@ $ spack view remove --all $HOME/data/mytools
 - `spack concretize`
 - `spack install`
 
-Spack提供了一个与Anaconda的虚拟环境类似的功能，也称为*environments*。Spack的环境可以用于批量操作软件包specs，也可以用于管理文件系统视图，像Anaconda的虚拟环境一样激活、反激活，一次性加载其中的所有软件包。
+Spack提供了一个与Anaconda的虚拟环境类似的功能，也称为 *environments*。Spack的环境可以用于批量操作软件包specs，也可以用于管理文件系统视图，像Anaconda的虚拟环境一样激活、反激活，一次性加载其中的所有软件包。
 
 同一个环境里的specs可以批量操作，指的是：
 
@@ -307,11 +307,11 @@ $ spack install
 ```
 
 :::info Spack环境的默认view
-激活Spack环境后，默认也会启用一个view，为我们设置好环境变量。如果该环境中某些软件包没有正确加载，可以使用`spack load`手动加载一下。
+激活Spack环境后，默认也会启用一个view，为我们设置好环境变量。如果该环境中某些软件包没有正确加载，可以使用 `spack load` 手动加载一下。
 :::
 
 :::info 集群Spack预定义的环境
-集群Spack中可能会预先定义一些只读的环境，如`python3`，它们通常是一些常用的软件包，只有在使用集群的公共Spack时才可以加载：
+集群Spack中可能会预先定义一些只读的环境，如 `python3`，它们通常是一些常用的软件包，只有在使用集群的公共Spack时才可以加载：
 
 ```bash
 $ spack env list
@@ -334,9 +334,9 @@ $ spack env activate python3
 Spack加载软件包的速度比Lmod要慢，好在它提供了两种简单的方式让我们能快速加载想要的环境：
 
 - `spack view`：建立文件系统视图，前面已经介绍过
-- `spack module`：为软件包创建modulefiles，之后便可通过`module`加载
+- `spack module`：为软件包创建 modulefiles，之后便可通过 `module` 加载
 
-Spack能够创建`lmod`和`tcl`两种类型的modulefiles，在实验室集群上，两种都可以使用。我们以`lmod`为例。
+Spack能够创建 `lmod` 和 `tcl` 两种类型的 modulefiles，在实验室集群上，两种都可以使用。我们以 `lmod` 为例。
 
 ```bash
 ## 为某些软件包创建modulefiles
@@ -357,7 +357,7 @@ $ spack module lmod loads boost
 module load boost/1.70.0-d42gtzk
 ```
 
-## 配置本地Spack并连接集群Spack
+## 配置本地Spack并连接公共Spack
 
 参考：
 
@@ -369,15 +369,15 @@ module load boost/1.70.0-d42gtzk
 - `spack config`：查看、修改Spack配置文件
 - `spack compiler`：查看、查找编译器
 
-实验室集群只安装了一个公共的Spack，位于`/apps/spack`，它其中的软件包由管理员维护，普通用户不能在里面增加新的软件包。
+实验室集群只安装了一个公共的Spack，位于 `/apps/spack`，它其中的软件包由管理员维护，普通用户不能在里面增加新的软件包。
 
 为了完全使用Spack的功能，需要在自己的目录下克隆Spack仓库并做一些配置：
 
 - 设置公共Spack为upstream
-- 添加repos（可选，集群的repo会包含自定义软件包）
-- 添加mirrors（可选，凡是集群安装过的软件都不用重复下载）
-- 修改target（可选，修改软件包的默认target为x86_64）
-- 添加compilers（可选，添加集群Spack的编译器到本地Spack）
+- 添加 repos（可选，集群的repo会包含自定义软件包）
+- 添加 mirrors（可选，凡是集群安装过的软件都不用重复下载）
+- 修改 target（可选，修改软件包的默认target为x86_64）
+- 添加 compilers（可选，添加集群Spack的编译器到本地Spack）
 
 配置本地Spack具体步骤如下：
 
@@ -451,11 +451,13 @@ $ spack find
 :::
 
 :::info Spack版本的影响
-不同Spack版本在安装软件包时，包的默认版本不同。例如，集群Spack安装的cmake可能是3.19.0，用户本地Spack中的默认cmake却是3.19.1，导致默认情况下不会使用集群的cmake。
+不同Spack版本在安装软件包时，包的默认版本不同。例如，集群Spack安装的 `cmake` 可能是 3.19.0，用户本地Spack中的默认 `cmake` 却是 3.19.1，导致默认情况下不会使用集群的 `cmake`。
 
-解决方法一：把本地的Spack仓库切换到和集群Spack相同的git分支。要获知集群Spack在哪个分支，使用集群Spack执行
+解决方法一：把本地的Spack仓库切换到和集群Spack相同的 git 分支。要获知集群Spack在哪个分支，使用集群Spack执行
 
-`spack debug report`
+```bash
+$ spack debug report
+```
 
 解决方法二：在安装软件包时额外指定依赖的版本，例如`^cmake@3.19.1`。
 
@@ -477,15 +479,15 @@ Spack运行、安装软件包所需的依赖见：[Prerequisites](https://spack.
 :::
 
 :::info 在超算上安装软件
-在超算上配置Spack可以让我们快速批量安装软件。Spack安装的软件默认使用RPATH（可关闭），实验室集群上的公共软件包不能直接拷贝到超算，需要重新编译。如果要交叉编译后直接拷贝到超算，注意取消RPATH。
+在超算上配置Spack可以让我们快速批量安装软件。Spack安装的软件默认使用 RPATH（可关闭），实验室集群上的公共软件包不能直接拷贝到超算，需要重新编译。如果要交叉编译后直接拷贝到超算，注意取消 RPATH。
 
 为了在超算上用Spack安装软件包，用户需要准备以下数据：
 
 - Spack的git仓库，从官网下载即可；
-- 实验室集群的Spack mirror，位于`/apps/sources/spack`；
-- 实验室集群的Spack repo，位于`/apps/spack_repo`。
+- 实验室集群的Spack mirror，位于 `/apps/sources/spack`；
+- 实验室集群的Spack repo，位于 `/apps/spack_repo`。
 
-拷贝数据到超算后，参考实验室集群文档中关于Spack的说明、公共Spack的配置（config.yaml、packages.yaml等配置文件）来配置本地Spack，然后使用Spack安装软件即可。如果需要安装的软件在集群的Spack mirror中没有源代码，用户可以自行下载。
+拷贝数据到超算后，参考实验室集群文档中关于Spack的说明、公共Spack的配置（config.yaml、packages.yaml 等配置文件）来配置本地Spack，然后使用Spack安装软件即可。如果需要安装的软件在集群的 Spack mirror 中没有源代码，用户可以自行下载。
 :::
 
 ## 安装或删除软件包
@@ -519,7 +521,7 @@ Spack：
 - 清理依赖
 - 删除软件包（若不再使用）
 
-假设我们要用集群Spack的gcc来安装一个低版本cmake，演示如下
+假设我们要用集群Spack的 `gcc` 来安装一个低版本 `cmake`，演示如下
 
 ```bash
 ## 检查软件包是否存在，若不存在，可考虑spack create来创建
@@ -546,7 +548,7 @@ $ spack clean
 $ spack clean -d
 ```
 
-`spack gc`可清理的主要是build-time依赖和test依赖，它们不会链接到安装的软件包中，也不会在运行时被调用。
+`spack gc`可清理的主要是 build-time 依赖和 test 依赖，它们不会链接到安装的软件包中，也不会在运行时被调用。
 
 一个软件包的依赖有四种类型：build、link、run、test。使用命令可以看到所有依赖对应的类型：
 
@@ -560,7 +562,7 @@ $ spack spec -t cmake
 $ spack mark -e ncurse
 ```
 
-`spack gc`和`spack uninstall`都会考虑依赖项。使用`spack uninstall`时，如果要删除的包是其他某个软件包的依赖，Spack会给出提示。我们也可以事先用命令确认一下一个软件包到底被哪些软件包使用着。
+`spack gc` 和 `spack uninstall` 都会考虑依赖项。使用 `spack uninstall` 时，如果要删除的包是其他某个软件包的依赖，Spack会给出提示。我们也可以事先用命令确认一下一个软件包到底被哪些软件包使用着。
 
 ```bash
 ## 列出已安装的软件包中依赖于zlib的
@@ -569,13 +571,13 @@ $ spack dependents -i zlib
 ```
 
 :::info 仅安装依赖
-`spack install` 默认会安装软件包及其依赖。如果用户需要的只是依赖项，希望自己编译特定的程序，可用参数`--only`来指定：
+`spack install` 默认会安装软件包及其依赖。如果用户需要的只是依赖项，希望自己编译特定的程序，可用参数 `--only` 来指定：
 
 ```bash
 $ spack install --only dependencies petsc
 ```
 
-`spack load`也有同样的参数用于仅加载依赖项：
+`spack load` 也有同样的参数用于仅加载依赖项：
 
 ```bash
 $ spack load --only dependencies petsc
@@ -597,11 +599,11 @@ Spack：
 
 - 本地
 
-Spack非常擅长build软件包，我们通常不需要关心装一个东西需要多少依赖，也不用关心一个依赖是不是反复被gc又反复被build，完全可以全部交给Spack。
+Spack很擅长编译安装软件包，我们通常不需要关心装一个东西需要多少依赖，也不用关心一个依赖是不是反复被 gc 又反复被 build，完全可以全部交给Spack。
 
-不过我们也可能会有不需要Spack来安装的、已经存在的软件包。比如，集群上的默认gcc和slurm都在系统路径里，不需要Spack来安装，只需要Spack能识别它们，把它们当成一个普通的软件包来处理就行。
+不过我们也可能会有不需要Spack来安装的、已经存在的软件包。比如，集群上的默认 `gcc` 和 `slurm` 都在系统路径里，不需要Spack来安装，只需要Spack能识别它们，把它们当成一个普通的软件包来处理就行。
 
-在这种情况下，我们可以使用*external packages*，将已经存在的软件定义为external，并且禁止Spack重新安装它们。
+在这种情况下，我们可以使用 *external packages*，将已经存在的软件定义在 `externals` 中，并且禁止Spack重新安装它们。
 
 ```bash
 ## 假设我们已经在/apps/software/Boost/底下安装了boost，想放在Spack里使用
@@ -623,7 +625,7 @@ $ spack install boost@1.70.0-system
 $ spack load boost@1.70.0-system
 ```
 
-在这个例子中，我们在配置文件中增加了一个外部软件包，指定了它的名字、版本和路径。同时，我们将`buildable`设置为`false`，禁止Spack安装别的boost版本，仅使用我们自己提供的版本。
+在这个例子中，我们在配置文件中增加了一个外部软件包，指定了它的名字、版本和路径。同时，我们将 `buildable` 设置为 `false`，禁止Spack安装其他版本的 `boost`，仅使用我们自己提供的版本。
 
 :::info 集群的packages.yaml
 集群的公共Spack配置了许多外部软件包，用户可以参考该配置文件来写自己的配置。
@@ -634,7 +636,7 @@ $ spack load boost@1.70.0-system
 :::info 外部软件包的依赖
 外部软件包可能是由其他包管理软件安装的，也可能是由用户手动编译安装的，它们也有自己的依赖。
 
-比如，编译安装openmpi时，可能会依赖于某个路径下的hwloc。在添加该openmpi为Spack外部软件包时，一定要尽量让编译的openmpi使用RPATH，即把依赖的路径硬编码在二进制文件中。否则，在加载时很可能被动态链接到其他版本的hwloc，产生不易发现的错误。
+比如，编译安装 `openmpi` 时，可能会依赖于某个路径下的 `hwloc`。在添加该 `openmpi` 为Spack外部软件包时，一定要尽量让编译的 `openmpi` 使用 RPATH，即把依赖的路径硬编码在二进制文件中。否则，在加载时很可能被动态链接到其他版本的 `hwloc`，产生不易发现的错误。
 :::
 
 ## 自定义软件包
@@ -662,7 +664,7 @@ Spack：
 
 Spack可安装的每个软件包都有相应的Python配置文件，每个包都是Spack定义的某个类的实例。目前，Spack内置了5000多个软件包（0.16），大多是常用的开发工具、数值计算软件，不过这并不能完全满足我们的需求。
 
-当我们使用`spack list`找不到想要的软件包时，我们可以自己写配置文件。一般流程如下：
+当我们使用 `spack list` 找不到想要的软件包时，我们可以自己写配置文件。一般流程如下：
 
 ```bash
 ## 根据软件包的下载地址，提取名称、版本等信息自动生成配置文件草稿
