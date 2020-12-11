@@ -1,6 +1,6 @@
 ---
 id: lmod
-title: 使用集群上的软件 - Lmod
+title: Lmod - 使用集群上的软件
 ---
 
 [Lmod](https://github.com/TACC/Lmod) 是一个环境变量管理软件，是基于 Lua 的 Environment Module System 实现。

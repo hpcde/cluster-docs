@@ -1,6 +1,6 @@
 ---
 id: spack
-title: 使用集群上的软件 - Spack
+title: Spack - 使用集群上的软件
 ---
 
 Spack是一个为超算平台设计的包管理工具，它能较好地处理依赖关系，用法上类似于 Lmod、Anaconda。

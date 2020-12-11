@@ -1,6 +1,6 @@
 ---
 id: easybuild
-title: 在集群上安装软件 - EasyBuild
+title: EasyBuild - 软件安装工具
 ---
 
 EasyBuild 是一个用于在超算上安装科学计算软件的框架，它与 Lmod 配合使用能够替代 Spack。
