@@ -5,7 +5,7 @@ author: one
 author_title: PhD student at USTB
 author_url: https://github.com/alephpiece
 author_image_url: https://github.com/alephpiece.png
-tags: [tutorial]
+tags: [tutorial, bout++, spack]
 ---
 
 本文演示了如何使用实验室集群上安装的BOUT++。
