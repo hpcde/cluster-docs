@@ -403,6 +403,7 @@ module load boost/1.70.0-d42gtzk
 
 参考：
 
+- [Prerequisites](https://spack.readthedocs.io/en/latest/getting_started.html#prerequisites)
 - [Chaining spack installations](https://spack.readthedocs.io/en/latest/chain.html)
 - [Configuration files](https://spack.readthedocs.io/en/latest/configuration.html)
 - [Concretization preferences](https://spack.readthedocs.io/en/latest/build_settings.html#concretization-preferences)
@@ -414,15 +415,21 @@ module load boost/1.70.0-d42gtzk
 
 实验室集群只安装了一个公共的 Spack，位于`/apps/spack`，它其中的软件包由管理员维护，普通用户不能在里面增加新的软件包。
 
-为了完全使用 Spack 的功能（例如安装自己需要的包），需要在自己的目录下克隆 Spack 仓库并做一些配置：
+为了完全使用 Spack 的功能（例如安装自己需要的包），需要在自己的目录下安装 Spack并做一些配置。
 
-- 设置公共 Spack 为 upstream
-- 添加 repos（可选，集群的 repo 会包含自定义软件包）
-- 添加 mirrors（可选，凡是集群安装过的软件都不用重复下载）
-- 修改 target（可选，修改软件包的默认 target 为 x86_64）
-- 添加 compilers（可选，添加集群 Spack 的编译器到用户级 Spack）
+### 安装 Spack
 
-配置用户级 Spack 具体步骤如下：
+根据 Spack 文档，运行 Spack 0.16.0 运行以下依赖：
+
+- Python 2 (2.6 or 2.7) 或 3 (3.5 - 3.9)，用于运行Spack；
+- C/C++编译器，用于软件包的编译链接；
+- `make`，用于软件包的编译链接；
+- `tar`、`gzip`、`bzip2`、`xz`、可选的`zstd`，用于解压下载的压缩包；
+- `patch`，用于给软件包打补丁；
+- `git`或`curl`，用于在缺少软件包时下载其源代码；
+- 可选的`gnupg2`，用于GPG。
+
+由于 Spack 基本都是 Python，我们只需要克隆它的仓库、添加 Python 路径便可使用。
 
 ```bash
 # 克隆Spack仓库到自己目录下
@@ -434,7 +441,21 @@ $ . $SPACK_ROOT/share/spack/setup-env.sh
 
 # 检查一下是否能找到Spack
 $ which spack
+```
 
+### 修改配置文件
+
+准备好 Spack 仓库之后，我们要针对目前实验室集群的配置来修改 Spack 的配置文件：
+
+- 设置公共 Spack 为 upstream
+- 添加 repos（可选，集群的 repo 会包含自定义软件包）
+- 添加 mirrors（可选，凡是集群安装过的软件都不用重复下载）
+- 修改 target（可选，修改软件包的默认 target 为 x86_64）
+- 添加 compilers（可选，添加集群 Spack 的编译器到用户级 Spack）
+
+为用户级 Spack 修改配置的具体步骤如下：
+
+```bash
 # 将公共Spack作为upstream。编辑配置文件，修改为如下三行
 $ spack config edit upstreams
 
@@ -495,37 +516,34 @@ $ spack find
 
 :::tip Spack版本的影响
 不同Spack版本在安装软件包时，包的默认版本不同。
-例如，集群 Spack 安装的 `cmake` 可能是3.19.0，用户级 Spack 中的默认 `cmake` 却是 3.19.1，导致默认情况下不会使用集群的 `cmake`。
+例如，集群 Spack 安装的 `cmake` 可能是 3.19.0，用户级 Spack 中的默认 `cmake` 却是 3.19.1，导致默认情况下不会使用集群的 `cmake`。
 - 解决方法一：把用户级的 Spack 仓库切换到和集群 Spack 相同的 git 分支。要获知集群 Spack 在哪个分支，使用集群 Spack 执行 `spack debug report`
 - 解决方法二：在安装软件包时额外指定依赖的版本，例如 `^cmake@3.19.1` 。
 - 解决方法三：在配置文件 [packages.yaml](https://spack.readthedocs.io/en/latest/build_settings.html#build-settings) 中设置某个版本为优先。
 :::
 
-:::tip Spack所需的依赖
-Spack运行、安装软件包所需的依赖参考：[Prerequisites](https://spack.readthedocs.io/en/latest/getting_started.html#prerequisites)
+### 在超算上使用Spack
 
-以下列出Spack 0.16.0所需的依赖：
+当用户在超算上做开发时，可能需要安装有较多依赖的软件。手动管理这些依赖是非常麻烦的，此时我们可以在超算上配置 Spack，这不仅可以让我们快速批量安装软件，同时能利用实验室集群上已有的配置文件、软件包源码达到节省时间的目的。
+Spack 安装的软件默认使用 RPATH（可关闭），实验室集群上的公共软件包不能直接拷贝到超算，需要重新编译。如果要交叉编译后直接拷贝到超算，注意取消 RPATH。
 
-- Python 2 (2.6 or 2.7) 或 3 (3.5 - 3.9)，用于运行Spack；
-- C/C++编译器，用于软件包的编译链接；
-- `make`，用于软件包的编译链接；
-- `tar`、`gzip`、`bzip2`、`xz`、可选的`zstd`，用于解压下载的压缩包；
-- `patch`，用于给软件包打补丁；
-- `git`或`curl`，用于在缺少软件包时下载其源代码；
-- 可选的`gnupg2`，用于GPG。
-:::
+为了在超算上用 Spack 安装软件包，用户需要准备以下数据：
 
-:::tip 在超算上安装软件
-在超算上配置 Spack 可以让我们快速批量安装软件。Spack 安装的软件默认使用 RPATH（可关闭），实验室集群上的公共软件包不能直接拷贝到超算，需要重新编译。如果要交叉编译后直接拷贝到超算，注意取消 RPATH。
+- Spack 的 git 仓库，从官网下载或直接从实验室集群上拷贝均可；
+- 实验室集群的 Spack mirror，位于 `/apps/sources/spack`；
+- 实验室集群的 Spack repo，位于 `/apps/spack_repo`。
 
-为了在超算上用Spack安装软件包，用户需要准备以下数据：
+拷贝数据到超算后，参考实验室集群文档中关于 Spack 的说明、公共 Spack 的配置（config.yaml、packages.yaml 等配置文件）来配置用户级 Spack，然后使用 Spack 安装软件即可。如果需要安装的软件在集群的 Spack mirror 中没有源代码，用户可以自行下载。
 
-- Spack的git仓库，从官网下载即可；
-- 实验室集群的Spack mirror，位于 `/apps/sources/spack`；
-- 实验室集群的Spack repo，位于 `/apps/spack_repo`。
+实验室集群的公共 Spack 配置文件可以在加载公共 Spack 环境后用命令查看：
 
-拷贝数据到超算后，参考实验室集群文档中关于Spack的说明、公共Spack的配置（config.yaml、packages.yaml 等配置文件）来配置用户级 Spack，然后使用Spack安装软件即可。如果需要安装的软件在集群的 Spack mirror 中没有源代码，用户可以自行下载。
-:::
+```bash
+# 打印config.yaml文件中的配置
+$ spack config --scope site get config
+
+# 查看config.yaml文件
+$ spack config --scope site edit config
+```
 
 ## 安装或删除软件包
 
