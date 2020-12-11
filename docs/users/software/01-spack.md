@@ -722,10 +722,6 @@ $ spack load boost@1.70.0-system
 
 ## 自定义软件包
 
-:::info
-详细说明请参考Spack文档的教程。
-:::
-
 参考：
 
 - [Package creation tutorial](https://spack-tutorial.readthedocs.io/en/latest/tutorial_packaging.html)
@@ -769,3 +765,7 @@ $ make
 ## 反复调整配置文件直到能够成功安装
 ## spack install <package name>
 ```
+
+:::info
+自定义软件包的详细说明请参考 Spack 文档的教程。`package.py` 文件的写法可参考 Spack 文档或使用 `spack edit` 参考现有文件。
+:::
