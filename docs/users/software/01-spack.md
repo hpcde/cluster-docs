@@ -58,14 +58,6 @@ $ spack unload -a
 ## 基本概念
 在使用 Spack 之前，建议先熟悉 Spack 中的相关概念，如包的命名规则。
 
-### spec
-
-在 Spack 中，每个软件包都由一个 `spec`（specification）唯一表示，
-它是递归定义的，`spec`中包含了软件名称、版本、选项、编译器 spec、依赖项 spec 等。
-`spec` 中信息的改变会导致软件包的 hash 值发生变化，也就是说，只要 `spec` 中有关键信息变了，就会得到新的软件包。
-
-更详细的说明见[Specs & dependencies](https://spack.readthedocs.io/en/latest/basic_usage.html#specs-dependencies)。
-
 ### 公共 Spack
 
 公共 Spack 指的是由管理员安装在实验室集群上的 Spack，仅管理员有写权限。
@@ -79,6 +71,49 @@ $ spack unload -a
 ### 用户级 Spack
 
 用户级 Spack（或者本地 Spack）指的是由用户自行安装在家目录下的 Spack，用户对该 Spack 拥有完全的读写权限。用户级 Spack 默认情况下无法用于加载集群上安装的软件，需要进行相关配置将它连接到公共 Spack。
+
+### spec
+
+参考：[Specs & dependencies](https://spack.readthedocs.io/en/latest/basic_usage.html#specs-dependencies)
+
+在 Spack 中，每个软件包都由一个 *spec*（specification）唯一表示。一个 spec 中包含了软件名称、版本、选项、编译器 spec、依赖项 spec 等，也就是说，它是递归定义的。
+spec 中信息的改变会导致软件包的 hash 值发生变化，也就是说，只要 spec 中有关键信息变了，就会被视为新的 spec，在安装时会被当作新的软件包。
+
+spec 的语法可以查阅参考文档，也可以在机器上用命令查看
+
+```bash
+$ spack help --spec
+```
+
+### add, concretize, install
+
+Spack 将软件包的管理分为多个阶段：
+
+- *add*：添加 spec，通常仅仅修改配置文件
+- *concretize*：完成 spec 检索、依赖项解析等工作，可能会修改配置文件（包括`.lock`文件），这个过程也会发现已安装的软件包、有冲突的 specs
+- *install*：完成下载、编译安装、索引生成等工作，结束后用户便可使用软件包
+
+用户使用 `spack install` 时，所有阶段都会执行。只有在使用 Spack 虚拟环境时，用户才能手动执行各个阶段。
+
+### environment
+
+参考：[Environments](https://spack.readthedocs.io/en/latest/environments.html)
+
+熟悉 Python 的应该都了解虚拟环境，Spack 也提供了对虚拟环境（在 Spack 中称为 *environments*）的支持。
+Spack 提供的虚拟环境与 Anaconda 的虚拟环境功能类似。  
+Spack的环境可以用于批量操作软件包 specs，也可以用于管理文件系统视图，以及像 Anaconda 的虚拟环境一样激活、反激活，一次性加载其中的所有软件包等。
+
+### view
+
+参考：[Filesystem Views](https://spack.readthedocs.io/en/latest/workflows.html#filesystem-views)
+
+Spack 的文件系统视图（*filesystem views*）是一种帮助用户批量使用软件包的方式。它可以为指定的软件包建立软/硬链接，按照Linux的目录结构来组织。例如，为指定的一些软件在目录 `myview/` 建立文件系统视图后，该目录内容通常包含
+
+- `myview/bin`：存放所有指定软件包的`bin/*`
+- `myview/lib`：存放所有指定软件包的`lib/*`
+- `myview/include`：存放所有指定软件包的`include/*`
+
+从上述说明可知，一个文件系统视图中通常不能有两个同名软件包，否则无法创建。
 
 ## 查询软件包
 
@@ -138,10 +173,6 @@ mpich@3.3.2  openmpi@4.0.5
 ----------------------------
 mpich@3.3.2  openmpi@4.0.5
 ```
-
-:::info spec 的语法
-`spec` 的语法可以在 Spack 网站上找到，也可以直接用 `spack help --spec` 命令查看：
-:::
 
 ### `spack info`
 
@@ -243,7 +274,7 @@ $ python3
 
 - `spack view`
 
-Spack安装的所有软件包都按照Spack的命名规则存放在同一目录下，我们也可以将某些软件包映射到传统linux文件系统层次：包含 `bin/`、`lib/` 的目录层次。
+Spack 安装的所有软件包都按照 Spack 的命名规则存放在同一目录下，但我们也可以建立文件系统视图，将某些软件包的文件聚在一起。
 
 ```bash
 ## 在指定目录中为软件包建立软链接
@@ -263,7 +294,7 @@ $ spack view remove --all $HOME/data/mytools
 
 参考：
 
-- [Environments](https://spack.readthedocs.io/en/latest/environments.html)
+- [Using environments](https://spack.readthedocs.io/en/latest/environments.html#using-environments)
 
 用于管理虚拟环境的主要命令有：
 - `spack env`：创建、修改虚拟环境（需要写权限）
@@ -271,15 +302,11 @@ $ spack view remove --all $HOME/data/mytools
 - `spack concretize`：对所有specs执行`concretize`（检查、解析依赖等，可能会格式化配置文件）
 - `spack install`：安装所有 concretized specs
 
-熟悉 Python 的应该都了解虚拟环境，Spack 也提供了对虚拟环境（在 Spack 中称为 *environments*）的支持。
-Spack 提供的虚拟环境与 Anaconda 的虚拟环境功能类似。  
-Spack的环境可以用于批量操作软件包 specs，也可以用于管理文件系统视图，以及像 Anaconda 的虚拟环境一样激活、反激活，一次性加载其中的所有软件包等。
-
-同一个环境里的specs可以批量操作，指的是：
+同一个环境里的specs可以批量操作，可使用的操作（阶段）为：
 
 - *add*：批量添加specs，但不执行后续操作
 - *concretize*：批量concretize，解析所有依赖
-- *install*：批量安装
+- *install*：批量下载、编译安装
 
 因此，把specs组织成多个环境既有助于我们管理软件包，也有助于我们切换开发用的环境变量。
 :::note
@@ -378,6 +405,7 @@ module load boost/1.70.0-d42gtzk
 
 - [Chaining spack installations](https://spack.readthedocs.io/en/latest/chain.html)
 - [Configuration files](https://spack.readthedocs.io/en/latest/configuration.html)
+- [Concretization preferences](https://spack.readthedocs.io/en/latest/build_settings.html#concretization-preferences)
 
 相关命令：
 
@@ -636,7 +664,7 @@ $ spack load boost@1.70.0-system
 
 在这个例子中，我们在配置文件里增加了一个外部软件包，指定了它的名字、版本和路径。同时，我们将 `buildable` 设置为 `false`，禁止Spack安装其他版本的 `boost`，仅使用我们自己提供的版本。
 
-:::tip 集群的packages.yaml
+:::tip 集群的外部软件包配置
 集群的公共Spack配置了许多外部软件包，用户可以参考该配置文件来写自己的配置。
 
 路径：`/apps/spack/etc/spack/packages.yaml`
