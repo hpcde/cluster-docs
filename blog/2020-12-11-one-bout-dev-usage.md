@@ -8,6 +8,27 @@ author_image_url: https://github.com/alephpiece.png
 tags: [tutorial]
 ---
 
+本文演示了如何使用实验室集群上安装的BOUT++。
+
+使用已安装的某版本BOUT++库：
+
+```bash
+$ spack load bout-dev ~openmp+scorep
+```
+
+使用BOUT++的依赖，但不包括BOUT++库本身：
+
+```bash
+$ spack load --only dependencies ~openmp+scorep
+```
+
+查看当前BOUT++的配置：
+```bash
+$ bout-config --all
+```
+
+<!--truncate-->
+
 ## 链接集群上已安装的BOUT++库
 
 BOUT++通常需要开发者在源代码目录下编译，也就是*in-source build*。完成build后有以下几个比较重要的文件：
@@ -78,8 +99,6 @@ $ cd BOUT-dev
 ## 按照自己的需要完成build
 $ ./configure --with-petsc --with-sundials && make -j16
 ```
-
-<!--truncate-->
 
 参考：
 
