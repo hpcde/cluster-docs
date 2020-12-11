@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # see also: https://github.com/facebook/docusaurus/issues/2798#issuecomment-636602951
 
       - name: Setup Node
         uses: actions/setup-node@v1
