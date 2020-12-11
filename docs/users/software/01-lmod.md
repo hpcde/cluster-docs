@@ -3,28 +3,31 @@ id: lmod
 title: 使用集群上的软件 - Lmod
 ---
 
-Lmod是一个环境变量管理软件，是基于Lua的Environment Module System实现。我们在超算上使用的通常是另一个基于Tcl的Environment Module System。
+[Lmod](https://github.com/TACC/Lmod) 是一个环境变量管理软件，是基于 Lua 的 Environment Module System 实现。
+在其他超算系统上，使用的通常是另一个[基于 Tcl 的 Environment Module System](https://github.com/cea-hpc/modules)。
 
-Lmod可以帮助用户
-
+通过 Lmod，用户可以:
 - 切换不同软件，如 Anaconda 和 Python；
-
 - 切换同一软件的不同版本，如 GCC 7.3.0 和 GCC 8.2.0。
 
 当用户想要使用软件时，只要运行相应命令来加载软件的环境变量即可。Lmod 提供了 `module`和`ml`命令供用户选择，让用户能够用命令来“加载”、”卸载“、查找已安装的软件。
 
-> 注：目前，实验室的集群已经用 Lmod 代替了以前的基于 Tcl 的 Environment Module System。使用旧的 Module System 的用户请参考[Tcl旧模块的处理](#Tcl旧模块的处理)。
+:::caution
+目前，实验室的集群已经用 Lmod 代替了以前的基于 Tcl 的 Environment Module System。
+使用旧的 Module System 的用户请参考[Tcl旧模块的处理](#Tcl旧模块的处理)。
+:::
 
 ## 常用命令
 
-常用的查询、加载等命令如下：
+常用的用于查询、加载等功能的命令如下：
 
 ```bash
 $ module avail              # 查看当前可加载的软件
-$ module spider             # 查看集群上所有可加载的软件
-$ module load Anaconda3     # 加载软件的环境变量
+$ module spider             # 查看/搜索集群上所有可加载的软件
+$ module load GCC           # 加载某个软件(如GCC)的环境变量
 $ module list               # 查看已加载的软件
-$ module unload Anaconda3   # 卸载软件的环境变量
+$ module unload GCC         # 卸载某个软件(如GCC)的环境变量
+$ module pruge              # 清除所有已经加载等环境变量
 ```
 
 或者，使用简化的命令：
@@ -32,18 +35,17 @@ $ module unload Anaconda3   # 卸载软件的环境变量
 ```bash
 $ ml av                 # 查看当前可加载的软件
 $ ml spider             # 查看集群上所有可加载的软件
-$ ml Anaconda3          # 加载软件的环境变量
+$ ml GCC                # 加载软件的环境变量
 $ ml                    # 查看已加载的软件
-$ ml -Anaconda3         # 卸载软件的环境变量
+$ ml -GCC               # 卸载软件的环境变量
 ```
 
-> 注：如果不加载软件，用户使用的就是系统自带的软件，如 Python 2.7.5。
+:::info
+如果不加载软件，用户使用的就是系统自带的软件，如 gcc 可能使用的就是/usr/bin 下面的 gcc 4.8.5, 
+Python 可能使用的是 /usr/bin 下面的 Python 2.7.5。
+:::
 
 ## 快速入门
-
-参考：
-- [Lmod: A New Environment Module System](https://lmod.readthedocs.io/en/latest/index.html)
-- [User Guide for Lmod](https://lmod.readthedocs.io/en/latest/010_user.html)
 
 ```bash
 $ man module                    # manpage
@@ -76,20 +78,24 @@ Lmod有两个查询命令：`module avail`和`module spider`，Tcl版本只有`m
 - `module spider` (Lmod)：查询**所有**可加载的软件包。
 - `module avail` (Tcl)：查询**所有**可加载的软件包。
 
-> **Shell的配置**
->
-> 目前默认的配置是bash，如果需要使用其他shell加载模块，可以在Lmod目录下找相应的配置脚本，或联系管理员解决。
+:::tip TIP: Shell的配置
+目前默认的配置是bash，如果需要使用其他shell加载模块，可以在Lmod目录下找相应的配置脚本，或联系管理员解决。
+:::
 
-> **依赖项的切换**
->
-> 多数情况下使用Lmod切换模块都不需要卸载之前的模块，例如，
->
-> ```bash
-> $ ml GCC/7.3.0
-> $ ml GCC/8.2.0
-> ```
->
-> 执行第二条命令会自动切换相应的依赖项。
+:::tip TIP: 依赖项的切换
+多数情况下使用Lmod切换模块都不需要卸载之前的模块，例如，
+
+```bash
+$ ml GCC/7.3.0
+$ ml GCC/8.2.0
+```
+
+执行第二条命令会自动切换相应的依赖项。
+:::
+
+更多关于 Lmod 的用法，可参考官方文档：
+- [Lmod: A New Environment Module System](https://lmod.readthedocs.io/en/latest/index.html)
+- [User Guide for Lmod](https://lmod.readthedocs.io/en/latest/010_user.html)
 
 ## 模块层次
 
@@ -98,7 +104,8 @@ Lmod有两个查询命令：`module avail`和`module spider`，Tcl版本只有`m
 - [How to use a Software Module hierarchy](https://lmod.readthedocs.io/en/latest/080_hierarchy.html)
 - [Dependent Modules](https://lmod.readthedocs.io/en/latest/098_dependent_modules.html)
 
-科学计算软件的依赖比较复杂，许多软件在特定编译器/依赖版本下能顺利编译和运行，换作其他编译器/依赖就频繁报错。EasyBuild & Lmod使用模块层次来处理这种软件间的依赖关系。
+科学计算软件的依赖比较复杂，许多软件在特定编译器/依赖版本下能顺利编译和运行，换作其他编译器/依赖就出现很多意想不到的错误（如链接库错误）。
+EasyBuild & Lmod 使用模块层次来处理这种软件间的依赖关系。
 
 Lmod的每个模块都可以依赖于其他模块，依赖关系也有不同类型，最终形成像文件系统一样的层次结构。用户可以用 `module avail` 查看**当前**可加载的模块，该命令的结果会随着用户加载的模块不同而变化，因为模块文件所在的路径 `$MODULEPATH` 会在运行时被修改。
 
@@ -156,13 +163,15 @@ OpenMPI: OpenMPI/3.1.3
 
 为了避免手动加载依赖项，用户可以为当前加载的模块创建*savelist*，或者使用核心模块中的*toolchain*（工具链）。关于工具链的说明见后续小节。
 
-> **模块名、版本**
->
-> 集群上所有Lmod的模块文件均由EasyBuild生成，采用EasyBuild的命名规则。
+
+:::note 关于模块名及版本
+集群上所有 Lmod 的模块文件均由EasyBuild生成，采用EasyBuild的命名规则。
+:::note
 
 ## 切换软件版本
 
-集群上有的软件是用同一编译器编译的。假设有4个模块：`GCC/8.2.0`、`OpenMPI/3.1.3`、`OpenMPI/4.0.0`、`GCC/9.1.0`。其中两个OpenMPI都是由`GCC/8.2.0`编译的。在下面的演示中，我们先加载一个OpenMPI，再切换到另一个OpenMPI版本，最后切换GCC的版本。
+集群上有的软件是用同一编译器编译的。假设有4个模块：`GCC/8.2.0`, `OpenMPI/3.1.3`, `OpenMPI/4.0.0`, `GCC/9.1.0`。
+其中两个 OpenMPI 都是由 `GCC/8.2.0` 编译的。在下面的演示中，我们先加载一个 OpenMPI，再切换到另一个 OpenMPI 版本，最后切换 GCC 的版本。
 
 ```bash
 ## 使用OpenMPI之前必须加载GCC/8.2.0，否则报错
@@ -197,9 +206,9 @@ The following have been reloaded with a version change:
 
 - ***...reloaded with a version change***：模块被重新加载为不同版本。这是由于这些模块在两个GCC版本下都存在，但版本和路径都不同。
 
-> **ml和module swap**
->
-> 基于Tcl的模块系统只能用`module swap`或`module switch`切换软件包的版本，但Lmod还可以使用`ml`命令完成切换。
+:::tip ml 和 module swap
+基于Tcl的模块系统只能用 `module swap` 或 `module switch` 切换软件包的版本，但 Lmod 还可以使用 `ml` 命令完成切换。
+:::
 
 ## 默认模块
 
@@ -232,13 +241,17 @@ $ echo 'module_version("2.31.1","default")' > $MY_GCC_DIR/.modulerc.lua
 
 ## 工具链
 
-在科学计算中，多个编译工具、数学库往往会组合在一起使用。实验室集群使用EasyBuild生成Lmod模块文件，除了单个软件包的模块，还提供了**工具链（toolchains）**，每个工具链都是一组模块，这些软件模块相互之间有依赖关系。
+在科学计算中，多个编译工具、数学库往往会组合在一起使用。
+实验室集群使用 EasyBuild 来生成 Lmod 模块文件，除了单个软件包的模块，还提供了**工具链（toolchains）**，每个工具链都是一组模块，这些软件模块相互之间有依赖关系。
 
-加载一个工具链时，相当于同时加载了一系列模块。使用工具链可以很方便地编译绝大多数的C/C++/Fortran程序。加载工具链和卸载工具链可以帮助用户快速切换所需的编译器，而不用手动加载依赖项。
+### 加载工具链
+加载一个工具链时，相当于同时加载了一系列模块。
+使用工具链可以很方便地编译绝大多数的 C/C++/Fortran 程序。
+加载工具链和卸载工具链可以帮助用户快速切换所需的编译器，而不用手动加载依赖项。
 
-> **Spack的工具链**
->
-> 集群上的公共Spack使用*bundle package*定义工具链，具体请参考文档中对Spack用法的说明。
+:::info Spack的工具链
+集群上的公共Spack使用*bundle package*定义工具链，具体请参考文档中对Spack用法的说明。
+:::
 
 例如，`gmpich`就是一些与MPICH相关的编译工具，它包括`gcc`、`mpicc`； `gompi`则是一些与OpenMPI相关的编译工具。 下面两条命令分别加载了这两个工具链的默认版本。
 
@@ -253,7 +266,7 @@ $ module purge
 $ module load gompi
 ```
 
-每个工具链都依赖于一些编译器和库。例如，`gompi/2019a`工具链主要依赖于 `GCC/8.2.0-2.31-1` 和 `OpenMPI/3.1.3`，其中的`GCC`和`OpenMPI`又有各自的依赖项。
+每个工具链都依赖于一些编译器和库。例如，在实验室集群上，`gompi/2019a`工具链主要依赖于 `GCC/8.2.0-2.31-1` 和 `OpenMPI/3.1.3`，其中的`GCC`和`OpenMPI`又有各自的依赖项。
 
 如果想确认一个工具链里具体包含哪些模块，我们可以先加载工具链，再用命令查看所有加载进来的模块：
 
@@ -270,7 +283,7 @@ Currently loaded Modules:
   3) GCC/8.2.0-2.31-1   6) XZ/5.2.4         9) hwloc/1.11.11
 ```
 
-或者检查modulefile中的`depends_on`语句：
+或者检查 modulefile 中的`depends_on`语句：
 
 ```bash
 $ ml show gompi/2019a |& grep depends_on
@@ -279,6 +292,7 @@ depends_on("GCC/8.2.0-2.31.1")
 depends_on("OpenMPI/3.1.3")
 ```
 
+### 卸载工具链
 卸载工具链时会把所有依赖项全部卸载。
 
 ```bash
@@ -289,7 +303,9 @@ $ ml
 No modules loaded
 ```
 
-切换工具链时，最好使用`ml`的切换语法或者`swap`等切换命令。例如，我们加载 `gompi/2019a`之后切换到 `gmpich/2019a`：
+### 切换工具链
+切换工具链时，建议使用`ml`的切换语法或者`swap`等切换命令。
+例如，我们可以通过以下命令在加载 `gompi/2019a`之后切换到 `gmpich/2019a`：
 
 ```bash
 ## 加载gompi
@@ -303,7 +319,8 @@ $ ml -gompi/2019a gmpich/2019a
 
 ## 保存加载的模块
 
-用户在使用 Lmod 时，可以把已经加载的模块保存起来，便于下次使用：
+用户在使用 Lmod 时，通过 `ml save` 命令，可以把已经加载的模块保存起来，便于下次使用。
+保存模块的配置信息位于用户的 `~/.lmod.d` 目录下。
 
 ```bash
 ## 加载一些模块
@@ -339,9 +356,9 @@ $ ml disable devtools
 
 预装的软件都以是特定的编译选项编译的，可能无法完全满足你的需求。普通用户无法更改公共的软件，但可以在安装软件后向Lmod添加自定义的模块文件，步骤大致如下：
 
-- 安装软件到自己的家目录（`$HOME`）；
-- 写一个相应的modulefile，放在某个目录下（例如`$HOME/modulefiles/`）；
-- 添加modulefiles目录到Lmod搜索路径。
+1. 安装软件到自己的家目录（`$HOME`）；
+2. 写一个相应的modulefile，放在某个目录下（例如`$HOME/modulefiles/`）；
+3. 添加 modulefiles 目录到 Lmod 搜索路径。
 
 一个modulefile中最主要的就是各种环境变量，例如`PATH`和`LIBRARY_PATH`。用户使用`module load`加载这个modulefile时，实际上就是在当前shell设置这些环境变量。因此，用户在安装完软件后，通常需要把`bin`、`include`、`lib`等目录的绝对路径写在modulefile中。
 
@@ -367,25 +384,26 @@ $ touch $HOME/modulefiles/gcc/10.2.0/mpich/3.3.2.lua
 $ module use $HOME/modulefiles
 ```
 
-> **模块的命名**
->
-> 为防止自定义模块与系统中安装的模块发生冲突，请尽量以不同方式命名。例如，系统中已安装 `MPICH/3.2`，如果用户想使用自己编译的MPICH，可以命名为 `mpich/3.2, user/mpich/3.2` 等。
+:::note 自定义模块的命名
 
-> **集群上的模块文件**
->
-> 自定义模块文件时，可以用命令查看集群上已有模块的配置文件供参考，例如，查看GCC-8.2.0的模块文件：
->
-> ```bash
-> $ module show GCC/8.2.0-2.31.1
-> ```
->
-> 要注意的是，集群上的模块文件通常都是Lua语法，在其他超算上可能需要Tcl。Tcl的模块文件可以参考Tcl旧模块。
+为防止自定义模块与系统中安装的模块发生冲突，请尽量以不同方式命名。例如，系统中已安装 `MPICH/3.2`，如果用户想使用自己编译的MPICH，可以命名为 `mpich/3.2, user/mpich/3.2` 等。
+:::
 
-## Tcl旧模块的处理
+:::note 集群上的模块文件
+自定义模块文件时，可以用命令查看集群上已有模块的配置文件供参考，例如，查看GCC-8.2.0的模块文件：
 
-Environment Module System 的迁移并不影响旧的软件模块的使用。
+```bash
+$ module show GCC/8.2.0-2.31.1
+```
+需要注意的是，集群上的模块文件通常都是 Lua 语法，在其他超算上可能需要 Tcl。Tcl 的模块文件可以参考 Tcl 旧模块。
+:::
 
-旧的模块都转移到另一个路径了，因此无法直接用 `module avail` 命令看到。如果要使用旧的模块，请执行：
+## Tcl 旧模块的处理
+
+Environment Module System 的迁移（指从 Tcl 模块系统迁移到 Lua 的模块系统）并不影响 Tcl 旧的软件模块的使用，
+因为 lmod 同样兼容 Tcl 模块文件。
+
+目前，实验室集群上 Tcl 旧的模块都转移到另一个路径了，因此无法直接用 `module avail` 命令看到。如果要使用旧的模块，请执行：
 
 ```bash
 $ ml showlegacy
@@ -393,9 +411,9 @@ $ ml showlegacy
 
 旧模块提供的软件安装在 `/opt` 下，新模块提供的软件安装在 `/apps` 下。
 
-> **冲突的模块**
->
-> 为防止模块冲突，在`/opt`中安装编译工具、科学计算软件Tcl模块时尽量不要与Lmod模块同名（如 GCC, OpenMPI, MPICH, PETSc）等。除此之外，其他手动安装的软件都可随意使用。
+:::note 冲突的模块
+为防止模块冲突，在`/opt`中安装编译工具、科学计算软件Tcl模块时尽量不要与Lmod模块同名（如 GCC, OpenMPI, MPICH, PETSc）等。除此之外，其他手动安装的软件都可随意使用。
+:::
 
 ## 使用EasyBuild安装软件
 
@@ -417,118 +435,3 @@ EasyBuild提供命令`eb`用于安装软件，每个具体的软件包都由两�
 - [Toolchains](https://easybuild.readthedocs.io/en/latest/Common-toolchains.html#common-toolchains)：预定义的软件包集合，如`gompi`；
 
 - [Extensions](https://easybuild.readthedocs.io/en/latest/Partial_installations.html#installing-additional-extensions-using-k-skip)：软件的额外包/插件，如Python包。
-
-### 安装EasyBuild
-
-参考：
-
-- [Bootstrapping procedure](https://easybuild.readthedocs.io/en/latest/Installation.html#bootstrapping-procedure)
-
-最简单的安装方式是使用EasyBuild提供的bootstrapping脚本。
-
-```bash
-## 设置安装路径
-EASYBUILD_PREFIX=$HOME/.local/easybuild
-
-## 下载安装脚本
-$ wget https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
-
-## 安装EasyBuild、Easyblocks和预定义的Easyconfigs
-$ python bootstrap_eb.py $EASYBUILD_PREFIX
-
-## 安装完成后会生成EasyBuild的模块文件，加载即可
-$ module use $EASYBUILD_PREFIX/modules/all
-$ module load EasyBuild
-```
-
-### 基本工作流
-
-参考：
-
-- [Getting started](https://easybuild.readthedocs.io/en/latest/index.html#getting-started)
-- [Using the EasyBuild command line](https://easybuild.readthedocs.io/en/latest/Using_the_EasyBuild_command_line.html)
-
-使用EasyBuild安装软件的工作流如下：
-
-- 搜索软件包；
-- 确定工具链；
-- 确定软件包版本、查看具体的依赖项；
-- 安装软件包。
-
-如果要安装的软件版本搜索不到，可以修改Easyconfig文本文件或使用命令行参数调整；如果要安装的软件名称不存在，需要增加Easyblock。
-
-```bash
-## 搜索特定名称的软件包（不区分大小写）
-$ eb --search openmpi
-
-## 在安装之前可以查看所有可用的工具链
-## eb --list-toolchains
-
-## 仅打印依赖项或安装过程，不实际安装
-$ eb --dry-run OpenMPI-4.0.5-GCC-9.3.0.eb
-
-## 安装软件包，同时生成modulefile
-## 可使用Easyconfig作为输入
-$ eb OpenMPI-4.0.5-GCC-9.3.0.eb --robot
-
-## 或用参数指定软件名称、版本
-## eb --software=OpenMPI,4.0.5 --toolchain=GCC,9.3.0
-
-## 工具链、软件版本需要完全匹配，若Easyconfig文件不存在，调整参数
-$ eb --software=OpenMPI,4.0.5 --try-toolchain=GCC,8.3.0
-
-## 加载安装好的软件包，注意Lmod的模块层次
-$ module load GCC/9.3.0 OpenMPI/4.0.5
-```
-
-> **软件包版本的匹配**
->
-> 各软件、工具链的版本需要完全匹配，如果某个版本没有对应的Easyconfig文件，解析会失败。例如，如果不存在`GCC-10.2.0.eb`，下述命令就无法成功执行：
->
-> ```bash
-> $ eb --software=OpenMPI,4.0.5 --try-toolchain=GCC,10.2.0
-> ```
->
-> 用户可以手写相应的Easyconfig，然后使用参数`-r`把自定义Easyconfig的目录传给`eb`。要注意的是，自定义Easyconfig中写的所有依赖项（事实上是整个依赖图中的每一项）都必须有对应的Easyconfig。
-
-### EasyBuild和Spack的对比
-
-EasyBuild和Spack在设计上的一个区别是把软件包的具体配置放在了纯文本中。Spack的一个配置文件（.py）相当于EasyBuild的一个Easyblock（.py）加上所有与它相关的Easyconfig（.eb，纯文本）。
-
-对于Spack来说，用户总是通过命令行参数来控制软件包的版本、依赖等信息，该过程称为*concretize*；对于EasyBuild来说，用命令行参数控制版本、依赖是试验性功能（v4），不太稳定。
-
-**软件包的安装和删除**
-
-EasyBuild：一键安装，删除时需要找到所有路径、Lmod模块文件逐个删除；
-
-Spack：一键安装，一键删除。
-
-**软件包的分类**
-
-EasyBuild：软件包按工具链组织，每个包都基于某个工具链编译，比如GCC就是一个工具链；
-
-Spack：软件包按编译器组织，每个包都基于某个编译器。
-
-**软件包的定义**
-
-EasyBuild：由一个Easyblock和一个Easyconfig定义。自定义较为麻烦，很可能两个文件都要写，预定义的安装选项可由`eb -a`查看；
-
-Spack：由一个package.py定义。
-
-**依赖项的解析/具体化**
-
-EasyBuild：由Easyblock解析Easyconfig后生成软件包依赖项的具体版本信息，可以用命令`eb --dry-run <package>`看到；
-
-Spack：分为*add*和*concretize*两个阶段，由软件包的配置文件定义，依赖图可以用命令`spack spec -d <package>`看到。
-
-**软件包加载速度**
-
-EasyBuild：自身只有安装功能，加载功能由Lmod实现，速度很快；
-
-Spack：自身的加载功能速度很慢，但可以为Lmod生成modulefiles。
-
-**对Environment Module的支持**
-
-EasyBuild：与Lmod整合地很好，有许多相关选项可以调整modulefile的生成；
-
-Spack：目前仅能简单地生成、删除、查询modulefiles。
