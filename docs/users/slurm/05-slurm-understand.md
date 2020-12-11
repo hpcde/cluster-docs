@@ -15,7 +15,7 @@ title: 关于SLURM的额外知识
 
 使用这个选项之前，最好先确认一下要申请的节点是否能满足这个限制。比如，如果节点只有1个 socket，就无法指定2个。
 
-```
+```bash
 -B, --extra-node-info=S[:C[:T]]            Expands to:
   --sockets-per-node=S   number of sockets per node to allocate
   --cores-per-socket=C   number of cores per socket to allocate
@@ -57,7 +57,7 @@ title: 关于SLURM的额外知识
 
 因此，对于我们的机器而言，CPU 指的是逻辑核（或者叫逻辑CPU、线程）。正如前面所有的示例脚本中说明的，我们申请的是逻辑 CPU，而实际上可能需要超线程，也可能不需要超线程。总之，如何申请资源以达到自己的目的，这需要仔细调整脚本中的参数。我们集群中的不同分区有不同的配置，但所有分区的可消耗资源都是物理核（不是逻辑核），即以物理核为基本单位分配资源。使用以下命令可以看到分区中节点的可消耗资源数量：
 
-```
+```bash
 $ sinfo -lNe
 ```
 

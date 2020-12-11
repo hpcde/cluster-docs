@@ -144,13 +144,13 @@ $ screen -r myalloc
 
 该命令用于提交作业并实时运行。它是个交互式命令，并且会阻塞你的终端。它的参数与`salloc`类似，具体用法请参考官方文档或查看手册：
 
-```console
+```bash
 $ man srun
 ```
 
 下面我们申请一个节点（可以指定节点），开两个进程，每个进程都执行相同的命令：
 
-```console
+```bash
 $ srun -N 1 -n 2 hostname
 node05
 node05

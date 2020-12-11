@@ -13,13 +13,13 @@ title: 使用计算资源 - SLURM
 
 首先检查当前是否有足够的空闲节点：
 
-```console
+```bash
 $ sinfo -t idle
 ```
 
 使用`srun`提交作业，查看计算节点的主机名：
 
-```console
+```bash
 ## 使用srun提交一个作业
 ## "-N 2"指定节点数为
 ## "-p all"指定节点分区名称
@@ -29,7 +29,7 @@ $ srun -N 2 -p all hostname
 
 同样的功能可以用`sbatch`完成，并且不需要等待标准输出：
 
-```console
+```bash
 ## 写一个脚本文件，用"#SBATCH"向SLURM传递参数
 ## "-o names.out"指定日志文件的路径
 $ cat > hostname.slurm << END
@@ -52,7 +52,7 @@ $ cat names.log
 
 把申请资源和使用资源分离开，我们也可以用`salloc`达到`sbatch`的效果：
 
-```console
+```bash
 ## 申请计算资源，申请成功后会进入SLURM打开的shell
 ## "-J test"指名作业名称，便于在squeue命令中分辨自己的作业
 $ salloc -p all -N 2 -J test
@@ -84,7 +84,7 @@ SLURM提供的一系列命令还可以完成更复杂的查询、作业提交、
 
 该命令用于查看当前集群的所有分区信息，包括分区和节点的状态。
 
-```
+```bash
 $ sinfo
 PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
 Balerion     up   1:00:00     4	down* node[17-20]
@@ -106,7 +106,7 @@ Vhagar*      up   3:00:00     6	  mix node[07-12]
 - `NODELIST` : 节点的名称。
 
 给 `sinfo` 命令加上选项，可以查看更详细的信息
-```
+```bash
 $ sinfo -lN
 NODELIST   NODES PARTITION       STATE CPUS    S:C:T MEMORY TMP_DISK WEIGHT AVAIL_FE REASON              
 node05         1   Vhagar*   allocated   24    2:6:2  64156    10240      1   (null) none
@@ -194,21 +194,21 @@ $ sacct -e
 
 查看所有分区信息/查看某个分区的信息：
 
-```
+```bash
 $ scontrol show partition
 $ scontrol show Vhagar
 ```
 
 查看所有节点信息/查看某个节点的信息：
 
-```
+```bash
 $ scontrol show node
 $ scontrol show node node05
 ```
 
 查看所有作业信息/查看某个作业的信息：
 
-```
+```bash
 $ scontrol show job
 $ scontrol show job 103
 ```
