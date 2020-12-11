@@ -57,13 +57,29 @@ $ spack unload -a
 
 ## 基本概念
 在使用 Spack 之前，建议先熟悉 Spack 中的相关概念，如包的命名规则。
-### specification
+
+### spec
+
 在 Spack 中，每个软件包都由一个 `spec`（specification）唯一表示，
 它是递归定义的，`spec`中包含了软件名称、版本、选项、编译器 spec、依赖项 spec 等。
 `spec` 中信息的改变会导致软件包的 hash 值发生变化，也就是说，只要 `spec` 中有关键信息变了，就会得到新的软件包。
+
 更详细的说明见[Specs & dependencies](https://spack.readthedocs.io/en/latest/basic_usage.html#specs-dependencies)。
 
-<!-- todo: 公共的 Spack 和用户级别的 Spack -->
+### 公共 Spack
+
+公共 Spack 指的是由管理员安装在实验室集群上的 Spack，仅管理员有写权限。
+
+普通用户不能用公共 Spack
+
+- 安装或删除软件；
+- 修改集群的 Spack 配置文件；
+- 创建 Spack 虚拟环境（因为虚拟环境路径无法修改）。
+
+### 用户级 Spack
+
+用户级 Spack（或者本地 Spack）指的是由用户自行安装在家目录下的 Spack，用户对该 Spack 拥有完全的读写权限。用户级 Spack 默认情况下无法用于加载集群上安装的软件，需要进行相关配置将它连接到公共 Spack。
+
 ## 查询软件包
 
 参考：
@@ -261,7 +277,7 @@ Spack的环境可以用于批量操作软件包 specs，也可以用于管理文
 
 因此，把specs组织成多个环境既有助于我们管理软件包，也有助于我们切换开发用的环境变量。
 :::note
-要注意的是，操作Spack的虚拟环境需要修改权限，普通用户只能修改本地Spack（关于本地Spack的配置见后续内容），不能修改集群的公共Spack。
+要注意的是，操作Spack的虚拟环境需要修改权限，普通用户只能修改用户级 Spack（关于用户级 Spack的配置见后续内容），不能修改集群的公共Spack。
 :::
 
 Spack 提供的和虚拟环境相关的命令有：
@@ -274,7 +290,7 @@ Spack 提供的和虚拟环境相关的命令有：
 Spack 环境的简单用法如下：
 
 ```bash
-# 创建一个名为python3的空环境（需要本地Spack）
+# 创建一个名为python3的空环境（需要用户级 Spack）
 $ spack env create python3
 
 # 查看目前有哪些环境
@@ -292,18 +308,18 @@ $ spack find
 # 添加一些抽象specs到环境中
 $ spack add py-numpy py-h5py
 
-# 执行concretize，解析所有依赖（需要本地Spack）
+# 执行concretize，解析所有依赖（需要用户级 Spack）
 $ spack concretize --force
 
 # 已安装的specs会直接被拉到环境中来，如果对concretize的结果不满意，可以修改specs
 # Spack环境只有一个配置文件，其他诸如packages等配置作为子节点写在总配置文件中
-# （需要本地Spack）
+# （需要用户级 Spack）
 $ spack config edit
 
-# 查看目前concretize的结果（需要本地Spack）
+# 查看目前concretize的结果（需要用户级 Spack）
 $ spack find -c
 
-# 安装所有软件包及依赖项（需要本地Spack）
+# 安装所有软件包及依赖项（需要用户级 Spack）
 $ spack install
 ```
 
@@ -319,7 +335,7 @@ $ spack env list
 $ spack env activate python3
 ```
 
-如果需要定制Spack环境，请配置本地Spack。
+如果需要定制Spack环境，请配置用户级 Spack。
 :::
 
 ## 生成 modulefiles
@@ -357,7 +373,7 @@ $ spack module lmod loads boost
 module load boost/1.70.0-d42gtzk
 ```
 
-## 配置本地 Spack 并连接公共 Spack
+## 配置用户级 Spack 并连接公共 Spack
 
 参考：
 
@@ -377,16 +393,16 @@ module load boost/1.70.0-d42gtzk
 - 添加 repos（可选，集群的 repo 会包含自定义软件包）
 - 添加 mirrors（可选，凡是集群安装过的软件都不用重复下载）
 - 修改 target（可选，修改软件包的默认 target 为 x86_64）
-- 添加 compilers（可选，添加集群 Spack 的编译器到本地 Spack）
+- 添加 compilers（可选，添加集群 Spack 的编译器到用户级 Spack）
 
-配置本地Spack具体步骤如下：
+配置用户级 Spack具体步骤如下：
 
 ```bash
 # 克隆Spack仓库到自己目录下
 $ export SPACK_ROOT=~/data/spack
 $ git clone https://github.com/spack/spack $SPACK_ROOT
 
-# 加载本地Spack环境
+# 加载用户级 Spack环境
 $ . $SPACK_ROOT/share/spack/setup-env.sh
 
 # 检查一下是否能找到Spack
@@ -440,20 +456,20 @@ $ spack compiler find
 $ spack compiler list
 $ spack config get compilers
 
-# 配置完成，查看已安装的软件包，包括公共 Spack 中的和自己本地的
+# 配置完成，查看已安装的软件包，包括公共的和用户级的 Spack
 $ spack find
 ```
 
-完成配置后，可以随意安装、删除本地Spack的软件包。有关安装路径、外部软件包等设置，请参考Spack配置文件的手册。
+完成配置后，可以随意安装、删除用户级 Spack的软件包。有关安装路径、外部软件包等设置，请参考Spack配置文件的手册。
 
 :::note 关于软件包的优先级
-如果公共Spack和本地Spack存在相同的软件包，本地的会优先被选择。
+如果公共Spack和用户级 Spack存在相同的软件包，用户级的会优先被选择。
 :::
 
 :::tip Spack版本的影响
 不同Spack版本在安装软件包时，包的默认版本不同。
-例如，集群 Spack 安装的 `cmake` 可能是3.19.0，用户本地 Spack 中的默认 `cmake` 却是 3.19.1，导致默认情况下不会使用集群的 `cmake`。
-- 解决方法一：把本地的 Spack 仓库切换到和集群 Spack 相同的 git 分支。要获知集群 Spack 在哪个分支，使用集群 Spack 执行 `spack debug report`
+例如，集群 Spack 安装的 `cmake` 可能是3.19.0，用户级 Spack 中的默认 `cmake` 却是 3.19.1，导致默认情况下不会使用集群的 `cmake`。
+- 解决方法一：把用户级的 Spack 仓库切换到和集群 Spack 相同的 git 分支。要获知集群 Spack 在哪个分支，使用集群 Spack 执行 `spack debug report`
 - 解决方法二：在安装软件包时额外指定依赖的版本，例如 `^cmake@3.19.1` 。
 - 解决方法三：在配置文件[packages.yaml](https://spack.readthedocs.io/en/latest/build_settings.html#build-settings)中设置某个版本为优先。
 :::
@@ -481,7 +497,7 @@ Spack运行、安装软件包所需的依赖见：[Prerequisites](https://spack.
 - 实验室集群的Spack mirror，位于 `/apps/sources/spack`；
 - 实验室集群的Spack repo，位于 `/apps/spack_repo`。
 
-拷贝数据到超算后，参考实验室集群文档中关于Spack的说明、公共Spack的配置（config.yaml、packages.yaml 等配置文件）来配置本地Spack，然后使用Spack安装软件即可。如果需要安装的软件在集群的 Spack mirror 中没有源代码，用户可以自行下载。
+拷贝数据到超算后，参考实验室集群文档中关于Spack的说明、公共Spack的配置（config.yaml、packages.yaml 等配置文件）来配置用户级 Spack，然后使用Spack安装软件即可。如果需要安装的软件在集群的 Spack mirror 中没有源代码，用户可以自行下载。
 :::
 
 ## 安装或删除软件包
@@ -504,9 +520,9 @@ Spack运行、安装软件包所需的依赖见：[Prerequisites](https://spack.
 
 Spack：
 
-- 本地
+- 用户级
 
-配置好本地Spack并连接到集群Spack后，我们可以在本地安装自己需要的软件包。安装软件的一般流程如下
+配置好用户级 Spack并连接到集群Spack后，我们可以在本地安装自己需要的软件包。安装软件的一般流程如下
 
 - 检查软件包是否存在
 - 确认软件包的版本、编译选项
@@ -591,7 +607,7 @@ $ spack load --only dependencies petsc
 
 Spack：
 
-- 本地
+- 用户级
 
 Spack很擅长编译安装软件包，我们通常不需要关心装一个东西需要多少依赖，也不用关心一个依赖是不是反复被 gc 又反复被 build，完全可以全部交给Spack。
 
@@ -665,7 +681,7 @@ $ spack load boost@1.70.0-system
 
 Spack：
 
-- 本地
+- 用户级
 
 Spack可安装的每个软件包都有相应的Python配置文件，每个包都是Spack定义的某个类的实例。目前，Spack内置了5000多个软件包（0.16），大多是常用的开发工具、数值计算软件，不过这并不能完全满足我们的需求。
 
