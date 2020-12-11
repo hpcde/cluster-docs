@@ -18,7 +18,7 @@ BOUT++通常需要开发者在源代码目录下编译，也就是*in-source bui
 
 随后我们可以进到算例的目录下，直接调`make`来编译算例得到可执行文件，例如
 
-```console
+```bash
 $ cd examples/conduction
 $ make
 ```
@@ -29,7 +29,7 @@ $ make
 
 以`examples/conduction/makefile`为例链接实验室集群上安装的BOUT++库：
 
-```console
+```bash
 ## 加载Spack环境
 $ source /apps/spack/share/spack/setup-env.sh
 
@@ -54,7 +54,7 @@ $ make clean && make
 
 若要使用BOUT++源代码目录下的Python包，有两种选择：用自己下载的，或用集群上已安装的。自己下载的可参考文后的链接。下面演示如何使用集群上已有的。
 
-```console
+```bash
 ## 加载集群的BOUT++包
 $ spack load bout-dev +openmp+scorep
 
@@ -68,7 +68,7 @@ $ export PYTHONPATH=$(bout-config --python):$PYTHONPATH
 
 当我们想重新编译BOUT++时，可以使用集群上安装的BOUT++依赖项，通常不需要自己再次安装。涉及Spack的操作可参考集群文档中Spack的说明。
 
-```console
+```bash
 ## 加载BOUT++的依赖项，但不加载BOUT++本身
 $ spack load --only dependencies bout-dev ~openmp+scorep
 
