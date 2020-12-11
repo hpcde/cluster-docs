@@ -15,14 +15,14 @@ title: 实用工具：终端多路复用器
 
 Linux上常用的后台执行程序的命令是`nohup`，它的功能是无视hangup信号，也就是在shell退出时不会自动被挂断。该命令默认会把原本到标准输出的东西重定向到一个文件。
 
-```console
+```bash
 $ nohup ping nodedata
 nohup: ignoring input and appending output to ‘nohup.out’
 ```
 
 执行该命令后，退出shell不会中断它。实际上，它已经不再依赖于任何pts了。不过，我们直接在当前shell执行后（*foreground*），把自己的shell也阻塞了，因此我们要把程序放在后台执行（*background*）。
 
-```console
+```bash
 $ ping nodedata &
 ```
 
@@ -35,7 +35,7 @@ $ ping nodedata &
 
 了解`nohup`和`&`以后，我们可以组合两者，实现后台运行一个不依赖于当前shell的程序。
 
-```console
+```bash
 $ nohup ping nodedata &
 ```
 
@@ -64,7 +64,7 @@ $ nohup ping nodedata &
 
 实际操作的例子如下：
 
-```console
+```bash
 ## 以detached模式创建一个有名字的会话
 $ screen -dmS test
 
@@ -110,7 +110,7 @@ $ screen -r develop
 
 实际操作的例子如下：
 
-```console
+```bash
 ## 以detached模式创建一个有名字的会话
 $ tmux new-session -ds test
 
@@ -139,7 +139,7 @@ $ tmux attach -t develop
 
 例如，我们想在实验室机器上创建会话，在这个会话里面打开一个SSH和一个SFTP到某超算S。假设超算域名是`s.example.cn`，端口是`12345`，我的用户名是`hpcer`。
 
-```console
+```bash
 ## 首先从自己电脑登录实验室集群
 $ ssh hpcer@ssh.hpcer.dev
 
