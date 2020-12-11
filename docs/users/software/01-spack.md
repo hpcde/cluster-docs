@@ -129,30 +129,30 @@ Spack 的文件系统视图（*filesystem views*）是一种帮助用户批量�
 ### `spack find`
 
 ```bash
-## 列出所有已安装的软件包
+# 列出所有已安装的软件包
 $ spack find
 
-## 列出指定名称的软件包，可能会搜出多个同名软件包
+# 列出指定名称的软件包，可能会搜出多个同名软件包
 $ spack find hdf5
 
-## '@'用于指定软件包版本
+# '@'用于指定软件包版本
 $ spack find hdf5@1.10.7
 
-## '%'用于指定编译器，编译器后面可接'@'继续限定编译器版本
+# '%'用于指定编译器，编译器后面可接'@'继续限定编译器版本
 $ spack find hdf5@1.10.7%gcc@10.2.0
 
-## '^'用于指定依赖项，可以有多个
+# '^'用于指定依赖项，可以有多个
 $ spack find hdf5@1.10.7%gcc ^openmpi
 
-## '+'、'~'或'='用于指定编译该软件包所用的选项（称为variants）
+# '+'、'~'或'='用于指定编译该软件包所用的选项（称为variants）
 $ spack find hdf5@1.10.7 +mpi ~fortran
 
-## 查看软件包的编译选项和依赖项，并且注明编译器的版本
+# 查看软件包的编译选项和依赖项，并且注明编译器的版本
 $ spack find -vd --show-full-compiler hdf5
 
-## 查看软件包的hash值和安装路径
-## 虽然这些软件包是同名、同版本的，但它们的编译选项、编译器、依赖项各不相同，因此
-## 有不同的spec，产生不同的hash值。hash值也可以在加载软件包的时候使用。
+# 查看软件包的hash值和安装路径
+# 虽然这些软件包是同名、同版本的，但它们的编译选项、编译器、依赖项各不相同，因此
+# 有不同的spec，产生不同的hash值。hash值也可以在加载软件包的时候使用。
 $ spack find -L --paths hdf5
 ```
 
@@ -161,7 +161,7 @@ Spack把安装的软件包按照架构（target）和编译器（compiler/compil
 使用 `spack find` 可以看到，不同编译器下面会有同名的软件包。例如，查看已安装的所有 `mpi` 包如下
 
 ```bash
-## mpi属于virtual package，查询它就会显示所有提供mpi的包
+# mpi属于virtual package，查询它就会显示所有提供mpi的包
 $ spack find mpi
 
 ==> 4 installed packages
@@ -228,7 +228,7 @@ $ spack load gompi@2020b
 参考后续创建软件包的说明和 [Bundle package](https://spack.readthedocs.io/en/latest/build_systems/bundlepackage.html)。
 :::
 
-## 使用 Spack 加载 Python 包
+## 加载 Python 包
 
 参考：
 
@@ -238,7 +238,7 @@ Spack 中用于加载 Python 包的命令为：
 
 - `spack extensions`：列出Python包
 
-Spack 把 Python 包归为 **extensions**，可以通过相应的命令查看 Python 包列表。
+Spack 把 Python 包归为 *extensions*，可以通过相应的命令查看 Python 包列表。
 Python 包的加载有多种方式，这里只介绍最简单的方式。
 
 ```bash
@@ -298,9 +298,13 @@ $ spack view remove --all $HOME/data/mytools
 
 用于管理虚拟环境的主要命令有：
 - `spack env`：创建、修改虚拟环境（需要写权限）
-- `spack add`：在虚拟环境中添加抽象specs（仅添加到配置文件）
-- `spack concretize`：对所有specs执行`concretize`（检查、解析依赖等，可能会格式化配置文件）
+- `spack add`：在虚拟环境中添加抽象 specs（仅添加到配置文件）
+- `spack concretize`：对所有 specs 执行 `concretize`（检查、解析依赖等，可能会格式化配置文件）
 - `spack install`：安装所有 concretized specs
+
+Spack：
+
+- 用户级
 
 同一个环境里的specs可以批量操作，可使用的操作（阶段）为：
 
@@ -308,15 +312,15 @@ $ spack view remove --all $HOME/data/mytools
 - *concretize*：批量concretize，解析所有依赖
 - *install*：批量下载、编译安装
 
-因此，把specs组织成多个环境既有助于我们管理软件包，也有助于我们切换开发用的环境变量。
+把specs组织成多个环境既有助于我们管理软件包，也有助于我们切换不同开发环境需求的环境变量。
 :::note
-要注意的是，操作Spack的虚拟环境需要修改权限，普通用户只能修改用户级 Spack（关于用户级 Spack的配置见后续内容），不能修改集群的公共Spack。
+要注意的是，操作Spack的虚拟环境需要写权限，普通用户只能修改用户级 Spack（关于用户级 Spack的配置见后续内容），不能修改集群的公共Spack。
 :::
 
 Spack 环境的简单用法如下：
 
 ```bash
-# 创建一个名为python3的空环境（需要用户级 Spack）
+# 创建一个名为python3的空环境
 $ spack env create python3
 
 # 查看目前有哪些环境
@@ -334,18 +338,17 @@ $ spack find
 # 添加一些抽象specs到环境中
 $ spack add py-numpy py-h5py
 
-# 执行concretize，解析所有依赖（需要用户级 Spack）
+# 执行concretize，解析所有依赖
 $ spack concretize --force
 
-# 已安装的specs会直接被拉到环境中来，如果对concretize的结果不满意，可以修改specs
-# Spack环境只有一个配置文件，其他诸如packages等配置作为子节点写在总配置文件中
-# （需要用户级 Spack）
+# 已安装的specs会直接加到环境中，若对concretize的结果不满意，可以修改specs
+# 一个环境只有一个配置文件，其他诸如packages等配置作为子节点写在其中
 $ spack config edit
 
-# 查看目前concretize的结果（需要用户级 Spack）
+# 查看目前concretize的结果
 $ spack find -c
 
-# 安装所有软件包及依赖项（需要用户级 Spack）
+# 安装所有软件包及依赖项
 $ spack install
 ```
 
@@ -399,7 +402,7 @@ $ spack module lmod loads boost
 module load boost/1.70.0-d42gtzk
 ```
 
-## 配置用户级 Spack 并连接公共 Spack
+## 配置用户级 Spack
 
 参考：
 
@@ -419,7 +422,7 @@ module load boost/1.70.0-d42gtzk
 
 ### 安装 Spack
 
-根据 Spack 文档，运行 Spack 0.16.0 运行以下依赖：
+根据 Spack 文档，运行 Spack 0.16.0 需要以下依赖：
 
 - Python 2 (2.6 or 2.7) 或 3 (3.5 - 3.9)，用于运行Spack；
 - C/C++编译器，用于软件包的编译链接；
@@ -443,17 +446,9 @@ $ . $SPACK_ROOT/share/spack/setup-env.sh
 $ which spack
 ```
 
-### 修改配置文件
+### 连接到公共 Spack
 
-准备好 Spack 仓库之后，我们要针对目前实验室集群的配置来修改 Spack 的配置文件：
-
-- 设置公共 Spack 为 upstream
-- 添加 repos（可选，集群的 repo 会包含自定义软件包）
-- 添加 mirrors（可选，凡是集群安装过的软件都不用重复下载）
-- 修改 target（可选，修改软件包的默认 target 为 x86_64）
-- 添加 compilers（可选，添加集群 Spack 的编译器到用户级 Spack）
-
-为用户级 Spack 修改配置的具体步骤如下：
+准备好 Spack 仓库之后，我们首先连接公共 Spack，这样便可以通过自己的 Spack 使用集群上现有的软件。
 
 ```bash
 # 将公共Spack作为upstream。编辑配置文件，修改为如下三行
@@ -466,6 +461,36 @@ upstreams.yaml
 
 # 检查 upstreams
 $ spack config get upstreams
+```
+
+### 修改其他配置文件
+
+除了`upstreams.yaml`，我们还可以修改其他配置文件来充分利用集群上已有的数据：
+
+- 添加 compilers：添加集群现有的编译器到用户级 Spack（推荐）
+- 修改 target：修改软件包的默认 target 为 x86_64（可选）
+- 添加 repos：集群的 repo 会包含自定义软件包（可选）
+- 添加 mirrors：凡是集群安装过的软件都不用重复下载（可选）
+
+为用户级 Spack 修改配置的具体步骤如下：
+
+```bash
+# 按需添加编译器，只要先加载编译器所在的软件包，再执行添加命令
+# 例如，我们想添加集群 Spack 的 gcc 和 clang
+$ spack load gcc llvm
+$ spack compiler find
+
+# 检查 compilers
+$ spack compiler list
+$ spack config get compilers
+
+## 设置默认 target 为通用x86_64。编辑配置文件，修改为如下三行
+$ spack config edit packages
+
+packages.yaml
+  1 packages:
+  2   all:
+  3     target: [x86_64]
 
 # 添加集群的软件包 repo。编辑配置文件，修改为如下两行
 $ spack config edit repos
@@ -486,23 +511,6 @@ mirrors.yaml
 
 # 检查 mirrors
 $ spack config get mirrors
-
-## 设置默认 target 为通用x86_64。编辑配置文件，修改为如下三行
-$ spack config edit packages
-
-packages.yaml
-  1 packages:
-  2   all:
-  3     target: [x86_64]
-
-# 按需添加编译器，只要先加载编译器所在的软件包，再执行添加命令
-# 例如，我们想添加集群 Spack 的 gcc 和 clang
-$ spack load gcc llvm
-$ spack compiler find
-
-# 检查 compilers
-$ spack compiler list
-$ spack config get compilers
 
 # 配置完成，查看已安装的软件包，包括公共的和用户级的 Spack
 $ spack find
@@ -545,7 +553,7 @@ $ spack config --scope site get config
 $ spack config --scope site edit config
 ```
 
-## 安装或删除软件包
+## 安装/删除软件包
 
 参考：
 
@@ -560,8 +568,8 @@ $ spack config --scope site edit config
 - `spack uninstall`：解除安装（删除）
 - `spack dependents`：列出依赖于某个包的软件包
 - `spack gc`：垃圾回收，清理依赖项
-- `spack mark`：标记软件包
-- `spack clean`：清理build临时文件、下载的源文件
+- `spack mark`：标记软件包，显式要求或防止被清理
+- `spack clean`：清理临时文件，也可删除下载的源文件
 
 Spack：
 
@@ -569,38 +577,38 @@ Spack：
 
 ### 工作流
 
-配置好用户级 Spack并连接到集群Spack后，我们可以在本地安装自己需要的软件包。安装软件的一般流程如下
+配置好用户级 Spack 并连接到集群 Spack 后，我们可以在本地安装自己需要的软件包。安装软件的一般流程如下
 
 - 检查软件包是否存在
 - 确认软件包的版本、编译选项
 - 确认软件包的依赖项
 - 安装软件包
 - 清理依赖
-- 删除软件包（若不再使用）
+- 删除软件包
 
 假设我们要用集群 Spack 的 `gcc` 来安装一个低版本 `cmake`，演示如下
 
 ```bash
-## 检查软件包是否存在，若不存在，可考虑spack create来创建
-## spack list支持通配符，传参时用引号引起来，如'*make'
+# 检查软件包是否存在，若不存在，可考虑spack create来创建
+# spack list支持通配符，传参时用引号引起来，如'*make'
 $ spack list cmake
 
-## 确认软件包的版本、编译选项
+# 确认软件包的版本、编译选项
 $ spack info cmake
 
-## 查看软件包的完整spec，为已安装的软件包显示特殊标记
+# 查看软件包的完整spec，为已安装的软件包显示特殊标记
 $ spack spec -It cmake@3.15.0 %gcc@10.2.0
 
-## 安装软件包
+# 安装软件包
 $ spack install cmake@3.15.0 %gcc@10.2.0
 
-## 清理运行时不需要的依赖项，主要是仅用于build的工具
+# 清理运行时不需要的依赖项，主要是仅用于build的工具
 $ spack gc
 
-## 删除已安装的软件包
-$ spack uninstall cmake@3.15.0
+# 若不再使用，可删除已安装的软件包
+# spack uninstall cmake@3.15.0
 
-## 清理build产生的临时文件、下载的源文件（源文件可重复利用，不建议清除）
+# 清理build产生的临时文件、下载的源文件（源文件可重复利用，不建议清除）
 $ spack clean
 $ spack clean -d
 ```
