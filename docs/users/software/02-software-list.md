@@ -1,83 +1,76 @@
 ---
-id: sofrware-list
-title: 预装软件（编译器、软件及库）
+id: software-list
+title: 公共软件列表
 ---
 
-集群上安装的软件及工具包列如下，可用的编译器及工具类软件也可以利用 module 工具查看。
+## 编译 & 运行时
 
-推荐使用工具链 *intel/gmpich/gompi/foss/impich/iompi/cgmpich*。
+| 软件包        | 说明                                                         | 加载        |
+| ------------- | ------------------------------------------------------------ | ----------- |
+| gompi@2020b   | GCC, OpenMPI, Git, CMake, Autoconf, Automake                 | Spack       |
+| gmpich@2020b  | GCC, MPICH, Git, CMake, Autoconf, Automake                   | Spack       |
+| cgompi@2020b  | GCC, Clang, OpenMPI, Git, CMake, Autoconf, Automake          | Spack       |
+| cgmpich@2020b | GCC, Clang, MPICH, Git, CMake, Autoconf, Automake            | Spack       |
+| foss@2020b    | GCC, OpenMPI, Git, CMake, Autoconf, Automake, OpenBLAS, ScaLAPACK, FFTW, ParMETIS, PETSc | Spack       |
+| gompi/2019a   | GCC, OpenMPI                                                 | Lmod        |
+| gmpich/2019a  | GCC, MPICH                                                   | Lmod        |
+| cgmpich/2018a | GCC, Clang, MPICH                                            | Lmod        |
+| foss/2019a    | GCC, OpenMPI, OpenBLAS, ScaLAPACK, FFTW                      | Lmod        |
+| gcc           | GNU Compiler Collection                                      | Spack, Lmod |
+| llvm          | Clang, libc++, libompt                                       | Spack, Lmod |
+| mpich         | MPICH                                                        | Spack, Lmod |
+| openmpi       | OpenMPI                                                      | Spack, Lmod |
+| hpx           | High Performance ParalleX, a runtime system for high performance computing | Spack       |
+| go            | Go language                                                  | Spack, Lmod |
+| julia         | Julia language                                               | Spack       |
+| autoconf      | Autotools                                                    | Spack, Lmod |
+| automake      | Autotools                                                    | Spack, Lmod |
+| cmake         | CMake build system                                           | Spack, Lmod |
+| ninja         | Ninja build system                                           | Spack       |
 
-## MPI 工具链
+## 程序分析 & 调试
 
-| 版本           | 包含的主要                                                         |
-| -------------- | ----------------------------------------------------------------- |
-| intel/2018a    | gcc/6.4.0, icc, ifort, impi, imkl/2018.1.163                      |
-| intel/2018b    | gcc/7.3.0, icc, ifort, impi, imkl/2018.3.222                      |
-| intel/2019a    | gcc/8.2.0, icc, ifort, imkl/2019.1.144, impi/2018.4.274           |
-| gmpich/2016a   | gcc/4.9.3, MPICH/3.2                                              |
-| gmpich/2017.08 | gcc/7.2.0, MPICH/3.2.1                                            |
-| gompi/1.5.16   | gcc/4.8.3, OpenMPI/1.6.5                                          |
-| gompi/2016b    | gcc/5.4.0, OpenMPI/1.10.3                                         |
-| gompi/2018a    | gcc/6.4.0, OpenMPI/2.1.2                                          |
-| gompi/2018b    | gcc/7.3.0, OpenMPI/3.1.1                                          |
-| gompi/2019a    | gcc/8.2.0, OpenMPI/3.1.3                                          |
-| gompi/2019a-debug | gcc/8.2.0, OpenMPI/3.1.3, Valgrind/3.13.0                      |
-| gompi/2019o    | gcc/8.2.0, OpenMPI/4.0.0                                          |
-| foss/2016b     | gompi/2016b, OpenBLAS/0.2.18, ScaLAPACK/2.0.2, FFTW/3.3.4         |
-| foss/2018a     | gompi/2016a, OpenBLAS/0.2.20, ScaLAPACK/2.0.2, FFTW/3.3.7         |
-| foss/2018b     | gompi/2018b, OpenBLAS/0.3.1, ScaLAPACK/2.0.2, FFTW/3.3.8          |
-| foss/2019a     | gompi/2019a, OpenBLAS/0.3.5, ScaLAPACK/2.0.2, FFTW/3.3.8          |
-| impich/2018o   | gcc/7.3.0, icc, ifort/2018.3.222, MPICH/3.2.1                     |
-| iompi/2019.01  | gcc/8.2.0, icc, ifort/2019.1.144, OpenMPI/3.1.3                   | 
-| cgmpich/2018a  | gcc/6.4.0, clang/6.0.1, MPICH/3.2.1                               | 
-| cgmpich/2018b  | gcc/7.3.0, clang/7.0.0, MPICH/3.2.1                               | 
+| 软件包     | 说明                                   | 加载        |
+| ---------- | -------------------------------------- | ----------- |
+| valgrind   | Valgrind                               | Spack, Lmod |
+| gperftools | Google performance tools               | Spack       |
+| scorep     | Score-P, Cube, OPARI2, OTF2            | Spack, Lmod |
+| hpctoolkit | HPCToolkit                             | Spack       |
+| cgdb       | An interface to the GNU Debugger (GDB) | Spack, Lmod |
 
-## 编译工具及版本
 
-| 名称      | 版本                                                         |
-| --------- | ------------------------------------------------------------ |
-| Autoconf  | 2.69                                                         |
-| Automake  | 1.15 / 1.15.1 / 1.16.1                                       |
-| CMake     | 2.8.0 / 3.0.2 / 3.8.0 / 3.11.0<br />3.9.1 / 3.10.2 / 3.11.4 / 3.13.3<br />3.1.3 / 3.12.1 (可单独加载) |
-| GCC       | 4.8.3 / 4.9.3 / 5.4.0 / 6.4.0<br />7.2.0 / 7.3.0 / 8.2.0     |
-| Clang     | 6.0.1 / 7.0.0                                                |
-| icc/ifort | 2018.1.163 / 2018.3.222 / 2019.1.144                         |
-| go        | 1.10.1 / 1.11.1                                              |
-| OpenMPI   | 1.6.5 / 1.8.8 / 1.10.3 <br /> 2.1.2 <br /> 3.1.1 / 3.1.3 <br /> 4.0.0 |
-| MPICH     | 3.2 / 3.2.1                                                  |
+## C/C++
+
+| 软件包     | 说明                                                      | 加载        |
+| ---------- | --------------------------------------------------------- | ----------- |
+| boost      | A set of free peer-reviewed portable C++ source libraries | Spack, Lmod |
+| googletest | GTest, GMock                                              | Spack, Lmod |
+| benchmark  | Google benchmark                                          | Spack       |
+| lcov       | A graphical front-end for gcov                            | Spack       |
+| fmt        | A modern formatting library for C++                       | Spack       |
+| tinyxml2   | A simple, small, efficient, C++ XML parser                | Spack       |
+| pugixml    | A light-weight C++ XML processing library                 | Spack       |
+| yaml-cpp   | A YAML parser and emitter in C++                          | Spack       |
+| toml11     | A C++11 (or later) header-only toml parser/encoder        | Spack       |
 
 ## Python
 
-| 名称      | 版本                                                         |
-| --------- | ------------------------------------------------------------ |
-| Python    | 2.7.14 / 3.6.4 / 3.6.6 / 3.7.0                               |
-| Anaconda3 | 5.3.0                                                        |
-| SWIG      | 3.0.12                                                       |
+| 软件包    | 说明                                                   | 加载        |
+| --------- | ------------------------------------------------------ | ----------- |
+| python    | Python distribution                                    | Spack       |
+| Anaconda3 | Distribution of the Python and R programming languages | Lmod        |
+| swig      | The Simplified Wrapper and Interface Generator (SWIG)  | Spack, Lmod |
 
-## 数学库
+## 科学计算
 
-| 名称      | 版本                                                         |
-| --------- | ------------------------------------------------------------ |
-| METIS     | 5.1.0                                                        |
-| ParMETIS  | 4.0.3                                                        |
-| LAPACK    | 3.5.0 / 3.8.0                                                |
-| OpenBLAS  | 0.2.14 / 0.2.15(with LAPACK-3.6.0) /<br />0.2.20 / 0.3.1 / 0.3.5 |
-| ScaLAPACK | 2.0.2(with OpenBLAS-0.2.20) /<br />2.0.2(with OpenBLAS-0.3.1) /<br />2.0.2(with OpenBLAS-0.3.5) |
-| ATLAS     | 3.10.2(with LAPACK-3.6.1) /<br />3.10.3                      |
-| FFTW      | 2.1.5 /<br />3.3.4 / 3.3.7 / 3.3.8                           |
-| PETSc     | 3.5.4 / 3.9.3                                                |
-
-## 程序分析工具
-
-| 名称      | 版本                                                         |
-| --------- | ------------------------------------------------------------ |
-| Valgrind  | 3.13.0                                                       |
-| VTune     | 2018_update3                                                 |
-| Score-P   | 5.0                                                          |
-
-## 其他工具
-
-| 名称      | 版本                                                         |
-| --------- | ------------------------------------------------------------ |
-| HDF5      | 1.8.20 / 1.10.2                                              |
-| Tcl       | 8.6.7 / 8.6.8                                                |
+| 软件包      | 说明                                                         | 加载        |
+| ----------- | ------------------------------------------------------------ | ----------- |
+| netcdf-c    | netCDF C library                                             | Spack, Lmod |
+| netcdf-cxx4 | netCDF-4 C++ library                                         | Spack, Lmod |
+| hdf5        | Hierarchical Data Format (HDF) 5                             | Spack, Lmod |
+| metis       | Serial graph partitioning programs                           | Spack, Lmod |
+| parmetis    | Parallel Graph Partitioning and Fill-reducing Matrix Ordering (ParMETIS) | Spack, Lmod |
+| openblas    | An optimized BLAS library                                    | Spack, Lmod |
+| scalapack   | Scalable Linear Algebra PACKage (ScaLAPACK)                  | Spack, Lmod |
+| fftw        | A C library for computing discrete Fourier transform (DFT)   | Spack, Lmod |
+| petsc       | A suite of data structures and routines for the scalable (parallel) solution of scientific applications modeled by PDEs | Spack, Lmod |

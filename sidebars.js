@@ -14,8 +14,10 @@ module.exports = {
         "users/login/proxy-login"
       ],
       "软件与工具": [
+        "users/software/spack",
         "users/software/lmod",
-        "users/software/sofrware-list",
+        "users/software/easybuild",
+        "users/software/software-list",
         "users/software/anaconda",
         "users/software/tools"
       ],
@@ -37,11 +39,9 @@ module.exports = {
         "users/profile/scorep",
         "users/profile/vtune"
       ],
-      "其他说明": ["users/cautions"],
       "Q&A": ["users/question_and_answer"]
     },
     admin: {
-      "First Category": ["doc4", "doc5"]
+      // "First Category": ["doc4", "doc5"]
     },
-  
 };
