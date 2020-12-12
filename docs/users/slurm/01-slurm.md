@@ -295,6 +295,8 @@ $ scontrol show job 103
 - `srun`：申请计算资源并实时运行程序，会阻塞终端；
 - `sbatch`：申请计算资源并随后运行程序，不会阻塞终端。
 
+### 提交作业用的选项
+
 这三个命令的命令行选项大多相同，我们在此列举一些常用的选项并作一点注释，方便大家理解。
 各命令的使用在后续小节以例子的形式给出。
 
@@ -307,8 +309,8 @@ $ scontrol show job 103
 | `-p, --partition=<names>`           | 指定分区名称。                                               |
 | `-N, --nodes=<minnodes[-maxnodes]>` | 请求特定的节点数量，给两个参数就是请求一定范围内的节点。     |
 | `-n, --ntasks=<number>`             | 指定要执行的任务（进程）数量，请求分配相应的资源。默认是一个节点执行一个任务。 |
-| `--ntasks-per-node=<ntasks>`        | 请求在每个节点上执行 `ntasks` 个任务。[1]                    |
-| `-c, --cpus-per-task=<ncpus>`       | 请求给每个任务分配 `ncpus` 个 CPU。[2]<br />不加这个选项，控制器会试着为每个任务分配一个 CPU。 |
+| `--ntasks-per-node=<ntasks>`        | 请求在每个节点上执行 `ntasks` 个任务。**[1]**                    |
+| `-c, --cpus-per-task=<ncpus>`       | 请求给每个任务分配 `ncpus` 个 CPU。**[2]**<br />不加这个选项，控制器会试着为每个任务分配一个 CPU。 |
 | `-o, --output=<filename pattern>`   | 指明将 stdout 重定向到某个文件，即打印标准输出。<br />如果不指定 `--error`，则错误信息也输出到这个文件里。 |
 | `-e, --error=<filename pattern>`    | 指明将 stderr 重定向到某个文件，即打印错误信息。             |
 | `-t, --time=<time>`                 | 为作业指定时间限制。格式为<br />"minutes", "minutes:seconds", <br />"hours:minutes:seconds", "days-hours", <br />"days-hours:minutes", "days-hours:minutes:seconds" |
@@ -322,9 +324,12 @@ $ scontrol show job 103
 | `--deadline=<OPT>`                  | 给作业设定期限，到期还未结束就移除这个作业。格式为<br />HH:MM[:SS] [AM\|PM]<br />MMDD[YY] or MM/DD[/YY] or MM.DD[.YY]<br />MM/DD[/YY]-HH:MM[:SS]<br />YYYY-MM-DD[THH:MM[:SS]]] |
 
 :::note 脚注
-[1] `--ntasks` 优先于 `--ntasks-per-node`，如果两个一起用，则`--ntasks-per-node`会被当成单节点任务数量的上限。
+**[1]** `--ntasks` 优先于 `--ntasks-per-node`，如果两个一起用，则`--ntasks-per-node`会被当成单节点任务数量的上限。
 
-[2] `-c` 一般与 `-n` 配合使用，否则，Slurm 会尽量把进程塞满节点。假设节点有8个 CPU，`-N 4 -c 3` 意味着请求4个节点，每个节点1个进程（默认），每个进程3个 CPU。但 Slurm 可能只分配2个节点，每个节点2个进程，每个进程3个 CPU。
+**[2]** `-c` 一般与 `-n` 配合使用，否则，Slurm 会尽量把进程塞满节点。
+假设节点有8个 CPU，`-N 4 -c 3` 意味着请求4个节点，每个节点1个进程（默认），每个进程3个 CPU。
+但 Slurm 可能只分配2个节点，每个节点2个进程，每个进程3个 CPU。
+:::
 
 ## `salloc` - 申请计算资源
 
