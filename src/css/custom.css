@@ -15,6 +15,13 @@
   --ifm-color-primary-lighter: rgb(102, 212, 189);
   --ifm-color-primary-lightest: rgb(146, 224, 208);
   --ifm-code-font-size: 95%;
+
+  --ifm-admonition-note-code-background:rgba(255, 221, 128, 0.36);
+  --ifm-admonition-note-code-color: rgba(192, 52, 29, 0.72);
+}
+html[data-theme=dark] {
+  --ifm-admonition-note-code-background: rgba(80, 86, 107, 1);
+  --ifm-admonition-note-code-color: rgb(255, 221, 128);
 }
 
 .docusaurus-highlight-code-line {
@@ -22,4 +29,9 @@
   display: block;
   margin: 0 calc(-1 * var(--ifm-pre-padding));
   padding: 0 var(--ifm-pre-padding);
+}
+
+.admonition-note .admonition-content code {
+  background-color: var(--ifm-admonition-note-code-background);
+  color: var(--ifm-admonition-note-code-color);
 }
