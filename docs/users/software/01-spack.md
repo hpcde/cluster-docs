@@ -7,19 +7,19 @@ Spack是一个为超算平台设计的包管理工具，它能较好地处理依
 目前，Spack 0.16.0 支持 Linux 和 macOS 两种系统，可以安装 C/C++、Fortran、Python、R 等语言的软件包。
 
 在实验室集群上，Spack 可以用来替代 EasyBuild & Lmod 进行软件包/环境管理。  
-Spack的主要特点如下：
+Spack 的主要特点如下：
 - **查询**：软件信息，包括版本、依赖项等；
-- **加载**：动态加载、卸载、更换软件（相当于module load/unload/swap）；
+- **加载**：动态加载、卸载、更换软件（相当于 `module load/unload/swap`）；
 - **安装**：安装软件、软件栈，处理软件的依赖关系；
 - **删除**：删除软件及其依赖；
 - **多用户**：设计了有优先级的配置文件，用户级配置可以覆盖系统配置文件；
-- **兼容性**：可以导出lmod或tcl格式的modulefiles；
-- **易于迁移**：可以方便的添加软件的repos、mirrors，也可以自定义新的软件，支持docker。
+- **兼容性**：可以导出 Lmod 或 Tcl 格式的 modulefiles；
+- **易于迁移**：可以方便的添加软件的 repos、mirrors，也可以自定义新的软件，支持 docker。
 
 相关参考资料和链接如下：  
 Spack官方网站：https://spack.io/  
-Spack官方教程 (Tutorial: Spack 101): https://spack-tutorial.readthedocs.io/en/latest/  
-Spack工作流：[Spack Workflows](https://spack.readthedocs.io/en/latest/workflows.html)
+Spack 101: https://spack-tutorial.readthedocs.io/en/latest/  
+Spack工作流：https://spack.readthedocs.io/en/latest/workflows.html
 
 ## 快速入门
 
