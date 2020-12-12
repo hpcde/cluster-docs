@@ -385,6 +385,15 @@ $ touch $HOME/modulefiles/gcc/10.2.0/mpich/3.3.2.lua
 $ module use $HOME/modulefiles
 ```
 
+:::info 更新 cache
+实验室集群上的 Lmod 配置了 cache 文件来加快模块的访问速度，这些文件每小时都被更新。
+新的模块被添加后，若 Lmod 的 cache 文件没有正常更新，就需要管理员来手动更新。相关命令和路径如下：
+
+- 命令：`/apps/lmod/lmod/libexec/update_lmod_system_cache_files`
+- cache 目录：`/apps/moduleData/cacheDir`
+- system 目录：`/apps/moduleData/system.txt`
+:::
+
 ### 自定义模块的命名
 
 为防止自定义模块与系统中安装的模块发生冲突，有两种解决方法。
