@@ -20,9 +20,9 @@ module.exports = {
         "users/software/tools"
       ],
       "使用计算资源": [
-        "users/slurm/slurm",
+        "users/slurm/basics",
+        "users/slurm/quickstart",
         "users/slurm/mpi-omp",
-        "users/slurm/understand",
         "users/slurm/advanced"
       ],
       "调试": [
