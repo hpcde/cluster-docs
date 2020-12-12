@@ -108,6 +108,8 @@ $ eb --software=OpenMPI,4.0.5 --try-toolchain=GCC,10.2.0
 
 要想删除之前用 EasyBuild 安装的软件，我们只能找出所有相关的目录和文件逐个删除。要删除的主要是模块文件路径和软件安装路径。模块文件路径就是 Lmod 看到的层次，比较容易找到。软件安装路径要麻烦一些。
 
+### 搜索并删除安装路径
+
 首先，要清楚安装路径的命名规则。命名规则有两种，一种是默认的，目录较少，另一种目录较多。默认情况下，安装路径中会包含以下内容：
 
 `<name>/<version>-<toolchain>-<dependencies>`
@@ -116,19 +118,28 @@ $ eb --software=OpenMPI,4.0.5 --try-toolchain=GCC,10.2.0
 
 其次，要注意顶层目录的位置。有的软件以自己的名称为顶层目录，有的会放在别的目录下，这跟 EasyBuild 版本、具体的软件都有关系。例如
 
-- `GCC/`，以自己名称为顶层目录
-- `Core/GCC`，以 `Core/` 为顶层目录
-- `MPI/GCC`，以 `MPI` 为顶层目录
+- `GCC/`：以自己名称为顶层目录
+- `Core/GCC`：以 `Core/` 为顶层目录
+- `MPI/GCC`：以 `MPI` 为顶层目录
 
 顶层目录不是软件名的，通常是与 Lmod 对应，反映了模块的依赖关系。
 
 了解 EasyBuild 的模块文件和安装路径的组织方式后，我们可以开始删除软件了。一个软件可能有很多依赖，我们要利用 `module` 命令查看依赖，因此在完全删除安装文件之前不要动模块文件。为了删除软件，首先可以用 `module show` 命令查看相应的模块文件，确认一下安装路径。如果是删除 `GCC` 或 `MPI` 等路径下的软件，通常可以一次性删除整个目录，因为它们的目录中可能会包含依赖于 `GCC` 或 `MPI` 的所有软件。
 
-如果删除了 `module show` 命令显示的安装路径还有剩余的文件，可以通过 `find` 命令搜索关键字。例如，若要删除 `GCC/6.4.0`，可以尝试搜索 `GCC-6.4.0`。
+如果删除了 `module show` 命令显示的安装路径还有剩余的文件，可以通过 `find` 等命令搜索关键字。例如，若要删除 `GCC/6.4.0`，可以尝试搜索 `GCC-6.4.0`。
 
 当所有文件都确认删除后，再次使用 `module show` 命令，根据命令返回的结果删除 modulefile。
 
-## EasyBuild和Spack的对比
+### EasyBuild 相关数据的路径
+
+类似于 Spack，EasyBuild 也有自己的路径用于存放各种数据。除了前面提到的 Lmod 和软件安装路径，还有配置文件、源代码的路径等。下面对 EasyBuild 相关数据所在位置做个简单总结，以便于维护现有安装。
+
+- `/apps/ebfiles_repo`：已安装软件的 Easyconfigs 文件，相当于配置的备份，可通过参数 `-r` 传给 `eb` 搜索该路径
+- `/apps/sources`：EasyBuild 的文件下载路径（`/apps/sources/spack`除外）
+- `/apps/software`：EasyBuild 的安装路径（`/apps/software/spack`除外）
+- `/apps/modulefiles`：EasyBuild 的 Lmod 模块文件路径
+
+## EasyBuild 和 Spack 的对比
 
 EasyBuild 和 Spack 的一个比较明显的区别是 EasyBuild 把软件包的具体配置放在了纯文本中。
 Spack 的一个配置文件（`.py`）相当于 EasyBuild 的一个 Easyblock（`.py`）加上所有与它相关的 Easyconfig（`.eb`，纯文本）。
@@ -143,4 +154,3 @@ Spack 的一个配置文件（`.py`）相当于 EasyBuild 的一个 Easyblock（
 | **依赖项解析**   | 由 Easyblock 解析 Easyconfig 后生成软件包依赖项的具体版本信息，可以用命令 `eb --dry-run <package>` 看到； | 由*concretize*算法完成，可由软件包的配置文件控制。依赖图可以用命令 `spack spec -d <package>` 看到。 |
 | **加载速度**     | 自身只有安装功能，加载功能由 Lmod 实现，速度很快。           | 自身的加载功能速度很慢，但可以为 Lmod 生成 modulefiles。     |
 | **对Lmod的支持** | 与 Lmod 整合地很好，有许多相关选项可以调整 modulefile 的生成。 | 目前仅能简单地生成、删除、查询 modulefiles。                 |
-
