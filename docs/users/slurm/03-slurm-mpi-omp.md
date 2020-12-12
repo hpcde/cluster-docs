@@ -90,6 +90,8 @@ srun ./omptest
 
 ## 运行MPI程序
 
+目前，集群上安装了三种不同MPI实现：MPICH、OpenMPI和Intel MPI。使用MPICH时，既可以用`mpirun`也可以用`srun`来执行你的程序；使用Intel MPI时，暂时只能用`mpirun`或`mpiexec`。
+
 测试程序 *computePI* 使用简单的数值积分（求和）计算圆周率，每个MPI进程完成一部分计算，最终使用归约得到所求的值。
 
 首先我们要编译源代码，为了方便我们要使用MPI wrapper，也就是`mpicc`、`mpicxx`等可执行文件。编译的工作也可以提交到计算节点，因为计算节点和登录节点的软件环境是一样的。

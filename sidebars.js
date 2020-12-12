@@ -22,7 +22,6 @@ module.exports = {
       "使用计算资源": [
         "users/slurm/slurm",
         "users/slurm/mpi-omp",
-        "users/slurm/mpi-version-diff",
         "users/slurm/understand",
         "users/slurm/advanced"
       ],
