@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[42],{110:function(s){s.exports=JSON.parse('{"allTagsPath":"/cluster-docs/blog/tags","slug":"tmux","name":"tmux","count":1,"permalink":"/cluster-docs/blog/tags/tmux"}')}}]);
