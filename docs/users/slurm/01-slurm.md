@@ -30,6 +30,7 @@ Slurm 可以管理 CPU、GPU、内存、带宽等多种资源，让用户能方�
 | `sinfo`    | 查看集群节点、节点分区等信息                      |
 | `squeue`   | 查看作业队列、作业状态等信息                      |
 | `sacct`    | 查看作业的计费信息，包括时长、资源使用量等        |
+| `sattach`  | 查看作业的标准输入输出                            |
 | `scancel`  | 取消作业                                          |
 | `salloc`   | 申请计算资源                                      |
 | `srun`     | 提交一个作业步，在当前 shell 等待输出             |
@@ -37,6 +38,10 @@ Slurm 可以管理 CPU、GPU、内存、带宽等多种资源，让用户能方�
 | `scontrol` | 查看和修改各种 Slurm 对象，包括作业、节点、分区等 |
 
 ## 快速入门
+
+参考：
+
+- [Quick Start User Guide](https://slurm.schedmd.com/quickstart.html)
 
 ### 查看集群状态
 
@@ -51,7 +56,7 @@ $ squeue
 $ sacct
 ```
 
-### 运行自己的程序 (foreground)
+### 运行自己的程序 (srun)
 
 ```bash
 # 使用srun提交一个作业，等待标准输出
@@ -59,33 +64,37 @@ $ sacct
 # "-n"指定总任务数为"4"，相当于说总共4个进程，每节点2个进程
 # "-p"指定节点分区名称为"all"
 # hostname是可执行文件，在这里我们仅仅让节点打印主机名
-$ srun -N 2 -n 4 -p all hostname
+$ srun -p all -N 2 -n 4 hostname
 ```
 
-### 运行自己的程序 (background)
+### 运行自己的程序 (sbatch)
 
 ```bash
 # 写一个脚本文件，用"#SBATCH"向Slurm传递参数
-# "-o names.out"指定日志文件的路径
-$ cat > hostname.slurm << END
+# "-o slurm-log.txt"指定日志文件的路径
+$ cat > ping.slurm << END
 #!/bin/sh
 #SBATCH -p all
 #SBATCH -N 2
-#SBATCH -o names.out
-srun hostname
+#SBATCH -o slurm-log.out
+srun ping -c 60 nodedata
 END
 
 # 提交作业，立即返回不等待标准输出
-$ sbatch hostname.slurm
+$ sbatch ping.slurm
 
 # 查看作业是否结束，状态为"PD"表示挂起，为"R"表示运行中，为"CG"表示正在结束
 $ squeue
 
-# 查看输出的日志文件
-$ cat names.log
+# 把当前标准I/O绑到运行中的作业步上，以便实时查看输出
+#（假设作业号为31001，第一个作业步为31001.0）
+$ sattach 31001.0
+
+# 作业结束后，查看输出的日志文件
+$ cat slurm-log.txt
 ```
 
-### 仅申请资源
+### 仅申请资源 (salloc)
 
 ```bash
 ## 申请计算资源，申请成功后会进入Slurm打开的shell
@@ -115,32 +124,34 @@ $ exit
 
 ## 查看分区和节点信息 - sinfo | snodes
 
-### sinfo
+### `sinfo`
 
-该命令用于查看当前集群的所有分区信息，包括分区和节点的状态。
+该命令用于查看当前集群的节点信息，包括分区和节点的数量、状态等。
 
 ```bash
 $ sinfo
 PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
-Balerion     up   1:00:00     4	down* node[17-20]
-Balerion     up   1:00:00     3	 idle node[21-23]
-Vhagar*      up   3:00:00     2	alloc node[05-06]
-Vhagar*      up   3:00:00     6	  mix node[07-12]
+all          up  infinite     4 down* node[17-20]
+all          up  infinite     2 alloc node[05-06]
+all          up  infinite     6   mix node[07-12]
+all          up  infinite     3	 idle node[21-23]
+Balerion     up  infinite     4	down* node[17-20]
+Balerion     up  infinite     3	 idle node[21-23]
+Vhagar*      up  infinite     2	alloc node[05-06]
+Vhagar*      up  infinite     6	  mix node[07-12]
 ```
 
-- `PARTITION` : 节点的分区。每个任务都只能提交到分区中，不能跨分区。默认分区的名称后有 `*` 号；
+命令默认输出以下字段：
 
-- `AVAIL` : 分区的状态。`UP` 表示分区可用；
+- `PARTITION`：节点的分区。每个任务都只能提交到分区中，不能跨分区。默认分区的名称后有 `*` 号；
+- `AVAIL`：分区的状态。`UP` 表示分区可用；
+- `TIMELIMIT`：分区对作业的时间限制。所有提交到该分区的作业都不能超过时间上限；
+- `NODES`：分区中的节点数量。这是该分区所有可以分配给用户的计算节点；
+- `STATE`：节点的状态。`down` 表示不可用，`idle` 表示空闲节点，`alloc` 表示已完全分配给用户使用，`mix` 表示已分配给用户，但仍有剩余的计算资源可用。同一分区可能会占据多个条目，这是因为分区中节点的状态不同；
+- `NODELIST`：节点的名称。同一节点可以编入多个分区。
 
-- `TIMELIMIT` : 分区对作业的时间限制。所有提交到该分区的作业都不能超过时间上限；
+我们可以给 `sinfo` 命令加上选项查看更详细的信息
 
-- `NODES` : 分区中的节点数量。这是该分区所有可以分配给用户的计算节点；
-
-- `STATE` : 节点的状态。常见状态：`down` 表示不可用，`idle` 表示空闲节点，`alloc` 表示已完全分配给用户使用，`mix` 表示已分配给用户，但仍有剩余的计算资源可用。同一分区可能会占据多个条目，这是因为分区中节点的状态不同；
-
-- `NODELIST` : 节点的名称。
-
-给 `sinfo` 命令加上选项，可以查看更详细的信息
 ```bash
 $ sinfo -lN
 NODELIST   NODES PARTITION       STATE CPUS    S:C:T MEMORY TMP_DISK WEIGHT AVAIL_FE REASON              
@@ -149,24 +160,26 @@ node06         1   Vhagar*   allocated   24    2:6:2  64156    10240      1   (n
 node23         1  Balerion    drained*   32    2:8:2  64155    10240      1   (null) Power saving
 ```
 
-- `CPUS` : 节点的总CPU数量；
+- `CPUS`：节点的总CPU数量；
+- `S:C:T`：节点的 Sockets(S)、Cores(C)、Threads(T) 数量；
+- `MEMORY`：节点的可用内存；
+- `TMP_DISK`：节点的可用临时存储空间；
+- `WEIGHT`：节点被调度的优先级（权重）。
 
-- `S:C:T` : 节点的 Sockets(S)、Cores(C)、Threads(T) 数量。更详细的解释参考[关于Slurm的额外知识](../slurm\05-slurm-understand.md)；
+### `snodes`
 
-- `MEMORY` : 节点的可用内存；
+如果用户不记得 `sinfo` 的那些选项，可以使用 `snodes` 命令。
 
-- `TMP_DISK` : 节点的可用临时存储空间；
+这个命令可以按节点、分区或状态来查看信息，包括分区名、节点名、状态、处理器数量、内存大小。它也能显示节点上的 CPU 资源的分配情况，见 `CPUS(A/I/O/T)` 一栏。
 
-- `WEIGHT` : 节点被调度的优先级（权重）。
+:::info 输出格式
+Slurm 的查询命令通常都接受用户自定义格式。`snodes` 其实就是个调用 `sinfo` 的脚本，它自己定义了一种输出格式。
 
-### snodes
-
-如果用户不记得 `sinfo` 的那些选项，`snodes` 命令更方便。
-
-这个命令可以按节点、分区或状态来查看信息，包括分区名、节点名、状态、处理器数量、内存大小。它也能显示节点上的 CPU 占用情况，见 `CPUS(A/I/O/T)` 一栏。
-
-> 注：用 `sinfo` 也可以完成差不多的功能，具体参考其手册 `man sinfo`。
-
+可以打开这个脚本观察它是如何使用 `sinfo` 的
+```bash
+$ vi $(which snodes)
+```
+:::
 
 ## 查看作业队列 - squeue | showq
 
@@ -190,9 +203,9 @@ $ squeue -S -M      # 按作业已执行时间降序排列
 
 该命令调整了输出信息的格式，便于用户使用。要注意的是，它显示的时间有两个：
 
-- `REMAINING` : 作业剩余的时间。每个作业提交时都有时限，这一栏显示了分配给作业的时间还剩余多少，而无剩余时间的作业会被强制结束；
+- `REMAINING`：作业剩余的时间。每个作业提交时都有时限，这一栏显示了分配给作业的时间还剩余多少，而无剩余时间的作业会被强制结束；
 
-- `STARTTIME` : 作业的起始时间。
+- `STARTTIME`：作业的起始时间。
 
 ## 查看历史作业 - sacct
 
