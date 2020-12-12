@@ -282,63 +282,61 @@ $ scontrol show job 103
 
 ## 如何提交作业
 
-回顾一下，提交作业的命令主要是：
+参考：
 
-- `salloc`，申请计算资源，随后可以登陆并使用计算资源；
-- `srun`，申请计算资源并实时运行程序，会阻塞终端；
-- `sbatch`，申请计算资源并随后运行程序，不会阻塞终端。
+- [Quick Start User Guide](https://slurm.schedmd.com/quickstart.html)
+- `$ man salloc`
+- `$ man srun`
+- `$ man sbatch`
 
-这三个命令的命令行选项基本一样，具体的选项参考手册：
+提交作业的命令有三个，它们分别适用于不同情况，用户可根据需要选择：
 
-```
-$ man salloc
-$ man srun
-$ man sbatch
-```
+- `salloc`：申请计算资源，随后可以登陆并使用计算资源；
+- `srun`：申请计算资源并实时运行程序，会阻塞终端；
+- `sbatch`：申请计算资源并随后运行程序，不会阻塞终端。
 
-接下来我们对一些常用的选项作一点注释，方便大家理解。如果有不明白的地方，请：
+这三个命令的命令行选项大多相同，我们在此列举一些常用的选项并作一点注释，方便大家理解。
+各命令的使用在后续小节以例子的形式给出。
 
-- 参考系统上的手册或[官网](https://slurm.schedmd.com/)的说明，官网上的使用说明非常全面（推荐）；
-- 搜索其他集群的手册。
-
+:::note
 列表中的尖括号内是用户给的参数。
+:::
 
-| 参数                                          | 含义                                                         |
-| --------------------------------------------- | ------------------------------------------------------------ |
-| **-p**, **--partition**=<*partition_names*>   | 指定分区。                                                   |
-| **-N**, **--nodes**=<*minnodes*[-*maxnodes*]> | 请求特定的节点数量。<br />给两个参数就是请求一定范围内的节点。 |
-| **-n**, **--ntasks**=<*number*>               | 指定要执行的任务（进程）数量，请求分配相应的资源。<br />默认是一个节点执行一个任务。 |
-| **--ntasks-per-node**=<*ntasks*>              | 请求在每个节点上执行*ntasks*个任务。**[1]**                  |
-| **-c**, **--cpus-per-task**=<*ncpus*>         | 请求给每个任务分配*ncpus*个CPU。**[2]**<br />不加这个选项，控制器会试着为每个任务分配一个CPU。 |
-| **-o**, **--output**=<*filename pattern*>     | 指明将stdout重定向到某个文件，即打印标准输出。<br />如果不指定**--error**，则错误信息也输出到这个文件里。 |
-| **-e**, **--error**=<*filename pattern*>      | 指明将stderr重定向到某个文件，即打印错误信息。               |
-| **-t**, **--time**=<*time*>                   | 为作业指定时间限制。格式为<br />"minutes", "minutes:seconds", <br />"hours:minutes:seconds", "days-hours", <br />"days-hours:minutes", "days-hours:minutes:seconds" |
-| **-J**, **--job-name**=<*jobname*>            | 指定作业的名称。可选项，便于用户识别自己提交的作业。                                             |
-| **-w**, **--nodelist**=<*hosts*>              | 指定运行程序的节点，语法见手册。                             |
-| **-F**, **--nodefile**=<*node file*>          | 指定运行程序的节点                                           |
-| **-x**, **--exclude**=<*hosts*>               | 排除一些节点，语法见手册。                                   |
-| **-D**, **--chdir**=<*path*>                  | 执行进程前，先切换到另一个路径*path*。<br />默认路径为用户执行Slurm命令的当前路径。<br />可以使用绝对路径或者相对于当前路径的路径。 |
-| **--mincpus**=<*n*>                           | 要求每节点至少有这么多个逻辑CPU。                            |
-| **--comment**=<*string*>                      | 给作业加个注释。<br />注释中有空格或特殊字符时，要加引号。   |
-| **--deadline**=<*OPT*>                        | 给作业设定期限，到期还未结束就移除这个作业。格式为<br />HH:MM[:SS] [AM\|PM]<br />MMDD[YY] or MM/DD[/YY] or MM.DD[.YY]<br />MM/DD[/YY]-HH:MM[:SS]<br />YYYY-MM-DD[THH:MM[:SS]]] |
+| 参数                                | 含义                                                         |
+| ----------------------------------- | ------------------------------------------------------------ |
+| `-p, --partition=<names>`           | 指定分区名称。                                               |
+| `-N, --nodes=<minnodes[-maxnodes]>` | 请求特定的节点数量，给两个参数就是请求一定范围内的节点。     |
+| `-n, --ntasks=<number>`             | 指定要执行的任务（进程）数量，请求分配相应的资源。默认是一个节点执行一个任务。 |
+| `--ntasks-per-node=<ntasks>`        | 请求在每个节点上执行 `ntasks` 个任务。[1]                    |
+| `-c, --cpus-per-task=<ncpus>`       | 请求给每个任务分配 `ncpus` 个 CPU。[2]<br />不加这个选项，控制器会试着为每个任务分配一个 CPU。 |
+| `-o, --output=<filename pattern>`   | 指明将 stdout 重定向到某个文件，即打印标准输出。<br />如果不指定 `--error`，则错误信息也输出到这个文件里。 |
+| `-e, --error=<filename pattern>`    | 指明将 stderr 重定向到某个文件，即打印错误信息。             |
+| `-t, --time=<time>`                 | 为作业指定时间限制。格式为<br />"minutes", "minutes:seconds", <br />"hours:minutes:seconds", "days-hours", <br />"days-hours:minutes", "days-hours:minutes:seconds" |
+| `-J, --job-name=<jobname>`          | 指定作业的名称，便于用户识别自己提交的作业。                 |
+| `-w, --nodelist=<hosts>`            | 指定运行程序的节点，语法见手册。                             |
+| `-F, --nodefile=<node file>`        | 提供一个文件来指定运行程序的节点。                           |
+| `-x, --exclude=<hosts>`             | 排除一些节点，语法见手册。                                   |
+| `-D, --chdir=<path>`                | 执行进程前，先切换到另一个路径。默认路径为用户执行 Slurm 命令的当前路径。<br />可以使用绝对路径或者相对于当前路径的路径。 |
+| `--mincpus=<n>`                     | 要求每节点至少有 `n` 个逻辑CPU。                             |
+| `--comment=<string>`                | 给作业加个注释。<br />注释中有空格或特殊字符时，要加引号。   |
+| `--deadline=<OPT>`                  | 给作业设定期限，到期还未结束就移除这个作业。格式为<br />HH:MM[:SS] [AM\|PM]<br />MMDD[YY] or MM/DD[/YY] or MM.DD[.YY]<br />MM/DD[/YY]-HH:MM[:SS]<br />YYYY-MM-DD[THH:MM[:SS]]] |
 
-> **[1]**：`--ntasks`优先于`--ntasks-per-node`，如果两个一起用，则`--ntasks-per-node`会被当成单节点任务数量的上限。
->
-> **[2]**：`-c`一般与`-n`配合使用，否则，Slurm会尽量把进程塞满节点。假设节点有8个CPU，`-N 4 -c 3`意味着请求4个节点，每个节点1个进程（默认），每个进程3个CPU。但Slurm可能只分配2个节点，每个节点2个进程，每个进程3个CPU。
->
-> 更多实例请见本文档的后续章节。
+:::note 脚注
+[1] `--ntasks` 优先于 `--ntasks-per-node`，如果两个一起用，则`--ntasks-per-node`会被当成单节点任务数量的上限。
 
-## 申请计算资源 - salloc
+[2] `-c` 一般与 `-n` 配合使用，否则，Slurm 会尽量把进程塞满节点。假设节点有8个 CPU，`-N 4 -c 3` 意味着请求4个节点，每个节点1个进程（默认），每个进程3个 CPU。但 Slurm 可能只分配2个节点，每个节点2个进程，每个进程3个 CPU。
+
+## 申请计算资源 - `salloc`
 
 用户可以先申请计算资源，再使用 SSH 登陆到分配给自己的节点上完成操作。这种模式便于用户调试程序，但要注意资源使用的时限，超过时限会自动断开连接。
 
-目前，绝大多数能在 *node01* 上完成的工作都能在远程节点上完成。因此，如果你想编译程序、调试程序，我们推荐你使用 `salloc` 申请一个或多个节点，再 SSH 到这些节点上完成工作。
+目前，绝大多数能在 *node01* 上完成的工作都能在远程节点上完成。因此，如果用户想编译程序、调试程序，可以使用 `salloc` 申请一个或多个节点，再 SSH 到这些节点上完成工作。
 
 ### 基本用法
 
 当用户申请了节点并使用 SSH 登陆到节点上时，Slurm 会给用户分配一个 shell，因此，当用户退出时，需要使用两次`exit`。下面我们在`Balerion`分区申请1个节点，并登陆到这个节点上。
 
-```
+```bash
 $ salloc -N 1 -c 12 -t 30:00 -p Balerion
 salloc: Granted job allocation 95
 salloc: Waiting for resource configuration
@@ -349,18 +347,21 @@ salloc: Nodes node21 are ready for job
 
 随后，使用 SSH 登陆到节点`node01`并执行操作。
 
-```
+```bash
 $ ssh node21
 ```
 
-> 注：目前全节点共享的存储空间只有`/home`和`/data`。用户在登陆到计算节点后，若发现`/home`的空间已经不够用，请切换到`/data/user`目录下，`user`是你的用户名。若要使用计算节点的本地存储，可以用`/tmp`。
+:::info
+目前全节点共享的存储空间只有`/home`和`/data`。用户在登陆到计算节点后，若发现`/home`的空间已经不够用，请切换到`/data/user`目录下，`user`是你的用户名。若要使用计算节点的本地存储，可以用`/tmp`。
 
 完成操作后，如果不再使用这个节点的计算资源，则退出。
-
 ```
+
+​```bash
 $ exit
 logout
 Connection to node21 closed.
+
 $ exit
 exit
 salloc: Relinquishing job allocation 95
@@ -376,20 +377,9 @@ $ salloc -N1 --exclusive -t 30:00 -p Balerion
 
 ### 与`screen`或`tmux`配合使用
 
-使用`screen`或`tmux`可以创建在后台运行的会话，类似于 `&`。最常见的是在登陆节点上使用它们来保持自己的SSH、SFTP连接，以便下次连接到登陆节点时能恢复。
-下面是使用`screen`的例子。
+使用 `screen` 或 `tmux` 可以创建在后台运行的会话。最常见的是在登陆节点上使用它们来保持自己的SSH、SFTP 连接，以便下次连接到登陆节点时能恢复。
 
-```bash
-$ screen -S mysession       # 创建一个会话
-$ screen -ls                # 查看所有会话
-$ screen -r                 # 恢复会话
-```
-
-> 注：`-r` 选项不带任何参数时，会恢复仅有的会话。如果会话数量不止一个，则需要以会话名作为参数。
-
-`screen` 工具的具体用法可参考其手册。
-
-这个工具同样可以保存 `salloc` 申请资源后由 Slurm 分配的 SHELL。我们只要在一个创建好的会话里面申请资源即可。
+这些工具同样可以用于保存 `salloc` 申请资源后由 Slurm 分配的 shell。我们只要在一个创建好的会话里面申请资源即可。
 
 ```bash
 $ screen -S myalloc                     # 创建会话
@@ -401,6 +391,10 @@ $ salloc -N1 --exclusive -p Vhagar      # 申请资源
 ```bash
 $ screen -r myalloc
 ```
+
+:::info Terminal multiplexers
+像 `screen` 和 `tmux` 这样能创建多个"伪"终端的软件被称为 *Terminal multiplexers*，具体用法可参考官方网站或浏览集群文档中的博客。
+:::
 
 ## 同时申请资源和执行程序 - srun | sbatch
 
