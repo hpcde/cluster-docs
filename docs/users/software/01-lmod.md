@@ -71,18 +71,18 @@ $ ml -GCC/8.2.0                 # module unload GCC/8.2.0
 $ ml -GCC/8.2.0 GCC/7.3.0       # module swap
 ```
 
-Lmod有两个查询命令：`module avail`和`module spider`，Tcl版本只有`module avail`。区别如下：
+Lmod有两个查询命令：`module avail` 和 `module spider`，Tcl版本只有 `module avail`。区别如下：
 
 - `module avail` (Lmod)：查询**当前**可加载的软件包。如果一个软件包需要一些依赖项，在依赖项被加载之前它可能不会显示在列表里。
 - `module spider` (Lmod)：查询**所有**可加载的软件包。
 - `module avail` (Tcl)：查询**所有**可加载的软件包。
 
-:::tip TIP: Shell的配置
-目前默认的配置是bash，如果需要使用其他shell加载模块，可以在Lmod目录下找相应的配置脚本，或联系管理员解决。
+:::tip Shell的配置
+目前默认的配置是 bash，如果需要使用其他 shell 加载模块，可以在 Lmod 目录下找相应的配置脚本，或联系管理员解决。
 :::
 
-:::tip TIP: 依赖项的切换
-多数情况下使用Lmod切换模块都不需要卸载之前的模块，例如，
+:::tip 依赖项的切换
+多数情况下使用 Lmod 切换模块都不需要卸载之前的模块，例如，
 
 ```bash
 $ ml GCC/7.3.0
@@ -160,7 +160,7 @@ OpenMPI: OpenMPI/3.1.3
 /apps/lmod/lmod/modulefiles/Core
 ```
 
-为了避免手动加载依赖项，用户可以为当前加载的模块创建 *savelist* ，或者使用核心模块中的*toolchain*（工具链）。关于工具链的说明见后续小节。
+为了避免手动加载依赖项，用户可以为当前加载的模块创建 *savelist* ，或者使用核心模块中的工具链。关于工具链的说明见后续小节。
 
 
 :::note 模块名称及版本
@@ -199,9 +199,9 @@ The following have been reloaded with a version change:
 
 最后一条命令输出了三类信息：
 
-- ***Inactive Modules***：模块不再生效。这是由于`OpenMPI/4.0.0`这些软件包并没有针对`GCC/9.1.0`安装的版本。当我们把原本的`GCC/8.2.0`切换为`GCC/9.1.0`后，Lmod 找不到这个版本的编译器对应的 `OpenMPI/4.0.0`。解决办法：查看并加载`GCC/9.1.0`对应的OpenMPI版本。
+- ***Inactive Modules***：模块不再生效。这是由于 `OpenMPI/4.0.0` 这些软件包并没有针对 `GCC/9.1.0` 安装的版本。当我们把原本的 `GCC/8.2.0` 切换为 `GCC/9.1.0` 后，Lmod 找不到这个版本的编译器对应的 `OpenMPI/4.0.0`。解决办法：查看并加载 `GCC/9.1.0` 对应的 OpenMPI 版本。
 
-- ***...have been reloaded***：模块被重新加载。这是由于`libpciaccess/0.14`这些软件包在两个GCC版本下都存在，但安装路径不同。
+- ***...have been reloaded***：模块被重新加载。这是由于 `libpciaccess/0.14` 这些软件包在两个GCC版本下都存在，但安装路径不同。
 
 - ***...reloaded with a version change***：模块被重新加载为不同版本。这是由于这些模块在两个GCC版本下都存在，但版本和路径都不同。
 
@@ -229,7 +229,7 @@ $ ml GCC/8.2.0-2.31.1
 $ ml GCC
 ```
 
-默认模块可以由*模块名*目录下的配置文件`.modulerc.lua`或`.modulerc`指定。例如，以下命令可以指定GCC的默认版本为8.3.0：
+默认模块可以由*模块名*目录下的配置文件 `.modulerc.lua` 或 `.modulerc` 指定。例如，以下命令可以指定 GCC 的默认版本为 8.3.0：
 
 ```bash
 $ MY_GCC_DIR="/apps/modulefiles/Core/GCC"
@@ -241,14 +241,14 @@ $ echo 'module_version("2.31.1","default")' > $MY_GCC_DIR/.modulerc.lua
 ## 工具链
 
 在科学计算中，多个编译工具、数学库往往会组合在一起使用。
-实验室集群使用 EasyBuild 来生成 Lmod 模块文件，除了单个软件包的模块，还提供了**工具链（toolchains）**，每个工具链都是一组模块，这些软件模块相互之间有依赖关系。
+实验室集群使用 EasyBuild 来生成 Lmod 模块文件，除了单个软件包的模块，还提供了*工具链 (toolchains)*，每个工具链都是一组模块，这些软件模块相互之间有依赖关系。
 
 ### 加载工具链
 加载一个工具链时，相当于同时加载了一系列模块。
 使用工具链可以很方便地编译绝大多数的 C/C++/Fortran 程序。
 加载工具链和卸载工具链可以帮助用户快速切换所需的编译器，而不用手动加载依赖项。
 
-例如，`gmpich` 就是一些与MPICH相关的编译工具，它包括`gcc`、`mpicc`； `gompi`则是一些与OpenMPI相关的编译工具。 下面两条命令分别加载了这两个工具链的默认版本。
+例如，`gmpich` 就是一些与 MPICH 相关的编译工具，它包括 `gcc`、`mpicc`； `gompi` 则是一些与 OpenMPI 相关的编译工具。 下面两条命令分别加载了这两个工具链的默认版本。
 
 ```bash
 ## 加载工具链gmpich
@@ -261,7 +261,7 @@ $ module purge
 $ module load gompi
 ```
 
-每个工具链都依赖于一些编译器和库。例如，在实验室集群上，`gompi/2019a`工具链主要依赖于 `GCC/8.2.0-2.31-1` 和 `OpenMPI/3.1.3`，其中的`GCC`和`OpenMPI`又有各自的依赖项。
+每个工具链都依赖于一些编译器和库。例如，在实验室集群上，`gompi/2019a` 工具链主要依赖于 `GCC/8.2.0-2.31-1` 和 `OpenMPI/3.1.3`，其中的 `GCC` 和 `OpenMPI` 又有各自的依赖项。
 
 如果想确认一个工具链里具体包含哪些模块，我们可以先加载工具链，再用命令查看所有加载进来的模块：
 
@@ -278,7 +278,7 @@ Currently loaded Modules:
   3) GCC/8.2.0-2.31-1   6) XZ/5.2.4         9) hwloc/1.11.11
 ```
 
-或者检查 modulefile 中的`depends_on`语句：
+或者检查 modulefile 中的 `depends_on` 语句：
 
 ```bash
 $ ml show gompi/2019a |& grep depends_on
@@ -362,7 +362,7 @@ $ ml disable devtools
 - 安装软件到自己的家目录（`$HOME`）；
 - 为安装的软件写一个 modulefile，放在自己的 modulefiles 目录下。
 
-假设用户安装了GCC 10.2.0，并且写了一个名为 `gcc-10.2.0.lua` 的 modulefile 放在 `$HOME/modulefiles/` 目录下。为了让 Lmod 能搜索到这个模块，执行命令
+假设用户安装了 `GCC/10.2.0`，并且写了一个名为 `gcc-10.2.0.lua` 的 modulefile 放在 `$HOME/modulefiles/` 目录下。为了让 Lmod 能搜索到这个模块，执行命令
 
 ```bash
 $ module use $HOME/modulefiles
@@ -399,9 +399,9 @@ $ module use $HOME/modulefiles
 
 一个modulefile中最主要的就是各种环境变量，例如 `PATH` 和 `LIBRARY_PATH`。
 用户使用 `module load` 加载这个modulefile时，实际上就是在当前shell设置这些环境变量。
-因此，用户在安装完软件后，通常需要把 `bin`、`include`、`lib` 等目录的绝对路径写在modulefile 中。
+因此，用户在安装完软件后，通常需要把 `bin`、`include`、`lib` 等目录的绝对路径写在 modulefile 中。
 
-自定义模块文件时，可以用命令查看集群上已有模块的配置文件供参考，例如，查看GCC-8.2.0的模块文件：
+自定义模块文件时，可以用命令查看集群上已有模块的配置文件供参考，例如，查看 `GCC/8.2.0` 的模块文件：
 
 ```bash
 $ module show GCC/8.2.0-2.31.1
@@ -422,5 +422,5 @@ $ ml showlegacy
 旧模块提供的软件安装在 `/opt` 下，新模块提供的软件安装在 `/apps` 下。
 
 :::note 冲突的模块
-为防止模块冲突，在`/opt`中安装编译工具、科学计算软件Tcl模块时尽量不要与Lmod模块同名（如 GCC, OpenMPI, MPICH, PETSc）等。除此之外，其他手动安装的软件都可随意使用。
+为防止模块冲突，在 `/opt` 中安装编译工具、科学计算软件Tcl模块时尽量不要与 Lmod 模块同名（如 GCC、OpenMPI、MPICH、PETSc等）。除此之外，其他手动安装的软件都可随意使用。
 :::
