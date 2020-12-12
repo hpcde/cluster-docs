@@ -20,7 +20,7 @@ module.exports = {
         "users/software/tools"
       ],
       "使用计算资源": [
-        "users/slurm/introduction",
+        "users/slurm/slurm",
         "users/slurm/mpi-omp",
         "users/slurm/mpi-version-diff",
         "users/slurm/understand",
