@@ -1,18 +1,286 @@
 ---
-id: submit-jobs
-title: 申请计算资源并运行程序
+id: slurm
+title: Slurm - 使用计算资源
 ---
 
-用户使用集群时，主要会涉及以下操作：
+Slurm 是一个开源的集群资源管理及作业调度系统，在现今的超算上被广泛使用。
+Slurm 可以管理 CPU、GPU、内存、带宽等多种资源，让用户能方便地运行各种并行程序。
 
-- 查看信息（分区信息、节点信息、作业信息）
+用户使用集群时，通常会涉及以下操作：
+
+- 查看集群信息
 - 提交作业
 - 取消作业
 - 挂起/恢复作业
 - 调整作业的属性
 - 传输文件
 
-本节会逐个介绍这些操作。
+## 常用命令
+
+参考：
+
+- [Slurm Workload Manager](https://slurm.schedmd.com/)
+- [Command/option Summary](https://slurm.schedmd.com/pdfs/summary.pdf)
+- [Man Pages](https://slurm.schedmd.com/man_index.html)
+
+为满足用户查询、提交、管理作业等需求，Slurm 提供了相当丰富的命令行工具，其中最为常用的如下：
+
+| 命令       | 说明                                              |
+| ---------- | ------------------------------------------------- |
+| `sinfo`    | 查看集群节点、节点分区等信息                      |
+| `squeue`   | 查看作业队列、作业状态等信息                      |
+| `sacct`    | 查看作业的计费信息，包括时长、资源使用量等        |
+| `scancel`  | 取消作业                                          |
+| `salloc`   | 申请计算资源                                      |
+| `srun`     | 提交一个作业步，在当前 shell 等待输出             |
+| `sbatch`   | 提交一个作业脚本，执行完成后结果输出到日志文件    |
+| `scontrol` | 查看和修改各种 Slurm 对象，包括作业、节点、分区等 |
+
+## 快速入门
+
+### 查看集群状态
+
+```bash
+# 检查当前是否有足够的空闲节点：
+$ sinfo -t idle
+
+# 查看当前的作业队列，看是否有很多作业在排列中
+$ squeue
+
+# 查看历史作业的计费信息，看自己的作业是不是成功结束了
+$ sacct
+```
+
+### 运行自己的程序 (foreground)
+
+```bash
+# 使用srun提交一个作业，等待标准输出
+# "-N"指定节点数为"2"
+# "-n"指定总任务数为"4"，相当于说总共4个进程，每节点2个进程
+# "-p"指定节点分区名称为"all"
+# hostname是可执行文件，在这里我们仅仅让节点打印主机名
+$ srun -N 2 -n 4 -p all hostname
+```
+
+### 运行自己的程序 (background)
+
+```bash
+# 写一个脚本文件，用"#SBATCH"向Slurm传递参数
+# "-o names.out"指定日志文件的路径
+$ cat > hostname.slurm << END
+#!/bin/sh
+#SBATCH -p all
+#SBATCH -N 2
+#SBATCH -o names.out
+srun hostname
+END
+
+# 提交作业，立即返回不等待标准输出
+$ sbatch hostname.slurm
+
+# 查看作业是否结束，状态为"PD"表示挂起，为"R"表示运行中，为"CG"表示正在结束
+$ squeue
+
+# 查看输出的日志文件
+$ cat names.log
+```
+
+### 仅申请资源
+
+```bash
+## 申请计算资源，申请成功后会进入Slurm打开的shell
+## "-J test"指名作业名称，便于在squeue命令中分辨自己的作业
+$ salloc -p all -N 2 -J test
+
+## 在Slurm分配的shell中执行srun，仅能使用刚刚申请的2个节点
+$ srun hostname
+
+## 跳转到其中一个节点（假设为node08）
+$ ssh node08
+
+$ hostname
+
+## 退出node08
+$ exit
+
+## 释放申请的资源，退出Slurm分配的shell
+$ exit
+```
+
+:::caution
+需要使用大量计算资源的工作，如编译、执行并行程序等，都应该提交到计算节点，不要在登录节点执行。
+
+计算所需的数据应该放在专门的目录中，如`$HOME/data`。
+:::
+
+## 查看分区和节点信息 - sinfo | snodes
+
+### sinfo
+
+该命令用于查看当前集群的所有分区信息，包括分区和节点的状态。
+
+```bash
+$ sinfo
+PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
+Balerion     up   1:00:00     4	down* node[17-20]
+Balerion     up   1:00:00     3	 idle node[21-23]
+Vhagar*      up   3:00:00     2	alloc node[05-06]
+Vhagar*      up   3:00:00     6	  mix node[07-12]
+```
+
+- `PARTITION` : 节点的分区。每个任务都只能提交到分区中，不能跨分区。默认分区的名称后有 `*` 号；
+
+- `AVAIL` : 分区的状态。`UP` 表示分区可用；
+
+- `TIMELIMIT` : 分区对作业的时间限制。所有提交到该分区的作业都不能超过时间上限；
+
+- `NODES` : 分区中的节点数量。这是该分区所有可以分配给用户的计算节点；
+
+- `STATE` : 节点的状态。常见状态：`down` 表示不可用，`idle` 表示空闲节点，`alloc` 表示已完全分配给用户使用，`mix` 表示已分配给用户，但仍有剩余的计算资源可用。同一分区可能会占据多个条目，这是因为分区中节点的状态不同；
+
+- `NODELIST` : 节点的名称。
+
+给 `sinfo` 命令加上选项，可以查看更详细的信息
+```bash
+$ sinfo -lN
+NODELIST   NODES PARTITION       STATE CPUS    S:C:T MEMORY TMP_DISK WEIGHT AVAIL_FE REASON              
+node05         1   Vhagar*   allocated   24    2:6:2  64156    10240      1   (null) none
+node06         1   Vhagar*   allocated   24    2:6:2  64156    10240      1   (null) none
+node23         1  Balerion    drained*   32    2:8:2  64155    10240      1   (null) Power saving
+```
+
+- `CPUS` : 节点的总CPU数量；
+
+- `S:C:T` : 节点的 Sockets(S)、Cores(C)、Threads(T) 数量。更详细的解释参考[关于Slurm的额外知识](../slurm\05-slurm-understand.md)；
+
+- `MEMORY` : 节点的可用内存；
+
+- `TMP_DISK` : 节点的可用临时存储空间；
+
+- `WEIGHT` : 节点被调度的优先级（权重）。
+
+### snodes
+
+如果用户不记得 `sinfo` 的那些选项，`snodes` 命令更方便。
+
+这个命令可以按节点、分区或状态来查看信息，包括分区名、节点名、状态、处理器数量、内存大小。它也能显示节点上的 CPU 占用情况，见 `CPUS(A/I/O/T)` 一栏。
+
+> 注：用 `sinfo` 也可以完成差不多的功能，具体参考其手册 `man sinfo`。
+
+
+## 查看作业队列 - squeue | showq
+
+### squeue
+
+该命令用于查看当前在队列中的作业。默认情况下它会显示作业已经运行的时间。
+
+用法示例如下：
+
+```bash
+$ squeue            # 以默认配置显示队列中的作业
+$ squeue -u slurm   # 只显示slurm这个用户的作业
+$ squeue -l         # 以长格式显示，包括作业的时限
+$ squeue -S +i      # 按作业号升序排列
+$ squeue -S -M      # 按作业已执行时间降序排列
+```
+
+> 注：还有很多选项和相应参数可以用于筛选作业，具体见手册 `man squeue`。
+
+### showq
+
+该命令调整了输出信息的格式，便于用户使用。要注意的是，它显示的时间有两个：
+
+- `REMAINING` : 作业剩余的时间。每个作业提交时都有时限，这一栏显示了分配给作业的时间还剩余多少，而无剩余时间的作业会被强制结束；
+
+- `STARTTIME` : 作业的起始时间。
+
+## 查看历史作业 - sacct
+
+直接运行该命令，可以查看当前用户的历史作业。
+
+通过相应的选项，我们可以指定要显示的历史作业的起止时间。
+
+```bash
+$ sacct             # 以默认配置显示历史记录
+$ sacct -S 0301     # 从3月1日起所有的记录
+$ sacct -E 0312     # 在3月12日之前的记录
+$ sacct -S 0301 -s FAILED   # 3月1日以来失败的作业
+```
+
+通过使用 `-o` 或 `--format` 选项，可以显示特定的字段。不带任何参数时，`sacct` 会显示 7 个字段。以下两条命令可显示相同的字段：
+
+```bash
+$ sacct
+
+$ sacct -o "JobID,JobName,Partition,Account,AllocCPUS,State,ExitCode"
+```
+
+有时我们想知道历史作业执行了多长时间，可以使用 `-o Elapsed` 或 `-o ElapsedRaw`。
+
+所有可显示的字段可以通过以下命令查看：
+
+```bash
+$ sacct -e
+```
+
+## 查看详细信息 - scontrol show
+
+该命令可以查看很多信息，比如分区、节点的详细信息。示例如下。
+
+查看所有分区信息/查看某个分区的信息：
+
+```bash
+$ scontrol show partition
+$ scontrol show Vhagar
+```
+
+查看所有节点信息/查看某个节点的信息：
+
+```bash
+$ scontrol show node
+$ scontrol show node node05
+```
+
+查看所有作业信息/查看某个作业的信息：
+
+```bash
+$ scontrol show job
+$ scontrol show job 103
+```
+
+## 分区的限制
+
+最新信息请使用命令在集群上查看。
+
+每个分区的时间限制、资源限制可能不同。目前来说，两个分区的限制如下：
+
+**Vhagar** 分区
+
+- 作业的默认时限：2天
+
+- 作业的最长时限：无限制
+
+- 每个CPU默认分配的内存：2670 MB
+
+- 默认的资源使用方式：非独占
+
+**Balerion** 分区
+
+- 作业的默认时限：2天
+
+- 作业的最长时限：无限制
+
+- 每个CPU默认分配的内存：2000 MiB
+
+- 默认的资源使用方式：非独占
+
+:::info
+作业的默认时限指的是一个作业在未给定时间限制时可以运行的时间上限，超时的作业会被杀掉。提交作业时可以用 `-t` 来指定时间限制。
+
+非独占的资源使用方式指的是多个作业可以共享同一节点。节点以 CPU 为单位分配，除非用户加上参数 `--exclusive` 来占据整个节点。
+
+例如，用户 A 申请了一个节点中的 12 个 CPU。如果这是非独占的，剩下的 12 个 CPU 仍然可以被用户 B 申请；如果是独占的，剩下的 12 个 CPU 无法被其他任何用户申请。
+:::
 
 ## 如何提交作业
 
@@ -51,14 +319,14 @@ $ man sbatch
 | **-w**, **--nodelist**=<*hosts*>              | 指定运行程序的节点，语法见手册。                             |
 | **-F**, **--nodefile**=<*node file*>          | 指定运行程序的节点                                           |
 | **-x**, **--exclude**=<*hosts*>               | 排除一些节点，语法见手册。                                   |
-| **-D**, **--chdir**=<*path*>                  | 执行进程前，先切换到另一个路径*path*。<br />默认路径为用户执行SLURM命令的当前路径。<br />可以使用绝对路径或者相对于当前路径的路径。 |
+| **-D**, **--chdir**=<*path*>                  | 执行进程前，先切换到另一个路径*path*。<br />默认路径为用户执行Slurm命令的当前路径。<br />可以使用绝对路径或者相对于当前路径的路径。 |
 | **--mincpus**=<*n*>                           | 要求每节点至少有这么多个逻辑CPU。                            |
 | **--comment**=<*string*>                      | 给作业加个注释。<br />注释中有空格或特殊字符时，要加引号。   |
 | **--deadline**=<*OPT*>                        | 给作业设定期限，到期还未结束就移除这个作业。格式为<br />HH:MM[:SS] [AM\|PM]<br />MMDD[YY] or MM/DD[/YY] or MM.DD[.YY]<br />MM/DD[/YY]-HH:MM[:SS]<br />YYYY-MM-DD[THH:MM[:SS]]] |
 
 > **[1]**：`--ntasks`优先于`--ntasks-per-node`，如果两个一起用，则`--ntasks-per-node`会被当成单节点任务数量的上限。
 >
-> **[2]**：`-c`一般与`-n`配合使用，否则，SLURM会尽量把进程塞满节点。假设节点有8个CPU，`-N 4 -c 3`意味着请求4个节点，每个节点1个进程（默认），每个进程3个CPU。但SLURM可能只分配2个节点，每个节点2个进程，每个进程3个CPU。
+> **[2]**：`-c`一般与`-n`配合使用，否则，Slurm会尽量把进程塞满节点。假设节点有8个CPU，`-N 4 -c 3`意味着请求4个节点，每个节点1个进程（默认），每个进程3个CPU。但Slurm可能只分配2个节点，每个节点2个进程，每个进程3个CPU。
 >
 > 更多实例请见本文档的后续章节。
 
@@ -70,7 +338,7 @@ $ man sbatch
 
 ### 基本用法
 
-当用户申请了节点并使用 SSH 登陆到节点上时，SLURM 会给用户分配一个 shell，因此，当用户退出时，需要使用两次`exit`。下面我们在`Balerion`分区申请1个节点，并登陆到这个节点上。
+当用户申请了节点并使用 SSH 登陆到节点上时，Slurm 会给用户分配一个 shell，因此，当用户退出时，需要使用两次`exit`。下面我们在`Balerion`分区申请1个节点，并登陆到这个节点上。
 
 ```
 $ salloc -N 1 -c 12 -t 30:00 -p Balerion
@@ -79,7 +347,7 @@ salloc: Waiting for resource configuration
 salloc: Nodes node21 are ready for job
 ```
 
-上述命令指定了分区`-p Balerion`，节点数量`-N 1`，CPU数量`-c 12`，资源使用的时限`-t 30:00`。申请成功后，用户会进入由 SLURM 创建的 shell。
+上述命令指定了分区`-p Balerion`，节点数量`-N 1`，CPU数量`-c 12`，资源使用的时限`-t 30:00`。申请成功后，用户会进入由 Slurm 创建的 shell。
 
 随后，使用 SSH 登陆到节点`node01`并执行操作。
 
@@ -123,7 +391,7 @@ $ screen -r                 # 恢复会话
 
 `screen` 工具的具体用法可参考其手册。
 
-这个工具同样可以保存 `salloc` 申请资源后由 SLURM 分配的 SHELL。我们只要在一个创建好的会话里面申请资源即可。
+这个工具同样可以保存 `salloc` 申请资源后由 Slurm 分配的 SHELL。我们只要在一个创建好的会话里面申请资源即可。
 
 ```bash
 $ screen -S myalloc                     # 创建会话
@@ -178,7 +446,7 @@ node06
 sbatch [options] script [args]
 ```
 
-使用 `sbatch` 时，要指明申请的资源数量，如节点数、任务数、CPU数等；还要指明待执行的脚本名称。随后，SLURM 会分配相应的资源（或挂起作业），并将用户的脚本拷贝到计算节点上执行。其中，脚本名必须提供给 sbatch。
+使用 `sbatch` 时，要指明申请的资源数量，如节点数、任务数、CPU数等；还要指明待执行的脚本名称。随后，Slurm 会分配相应的资源（或挂起作业），并将用户的脚本拷贝到计算节点上执行。其中，脚本名必须提供给 sbatch。
 
 例如，我们想跑一个程序（记为 `myprog`）。我们会希望在跑之前先编译，跑完后输出结果并且清理一下编译过程中产生的文件。这个工作可以全部写在脚本中提交。假设脚本为 `mybatch`。
 
