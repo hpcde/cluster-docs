@@ -122,6 +122,10 @@ $ sinfo -lNe
 - 申请资源时，把资源的数量给到最大，比如 CPU 指定为 24 或 32；
 - 申请资源时，资源数量任意，但加上参数 `--exclusive` 指明申请的资源要被独占。
 
+:::info OpenMPI 的超额申请
+OpenMPI 有一个 `--oversubscribe` 选项，该选项的作用和 Slurm 中的 oversubscribe 是类似的，都是在较少的硬件资源上执行较多的进程。MPICH 之类的实现则没有直接提供这个选项，而是默认开启 oversubscribe。
+:::
+
 ## Slurm 实体的术语
 
 参考：
@@ -180,7 +184,7 @@ Slurm 中有许多 *entities（实体）*，它们通常都是对资源、任务
 
 前面所说的作业，表示的只是资源的使用权或者资源的分配（allocation），用户不一定会立刻运行并行程序。当用户使用 `srun` 或 `mpirun` 等命令执行并行程序时，Slurm 会认为这是一个作业步。
 
-作业和作业步也可以通过编号来区分：作业步的编号形如 `jobid.jobsetp`，比如 `31001.0` 就是作业 `31001` 的第一个作业步。
+作业和作业步也可以通过编号来区分：作业步的编号形如 `jobid.jobstep`，比如 `31001.0` 就是作业 `31001` 的第一个作业步。
 
 :::info PMI
 MPI 的安装通常要加上 Slurm 支持的进程管理接口（Process-Management Interface, PMI），否则 `mpirun` 可能无法正常使用。
