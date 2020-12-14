@@ -578,7 +578,9 @@ scontrol update job=JobID [Attr1=Value1] [Att2=Value2] ...
 $ scontrol update job=103 TimeLimit=7-00
 ```
 
-> 注：`job=103` 可以写成 `job 103`。属性名称`TimeLimit` 不区分大小写，可以写成 `timelimit`。
+:::note
+`job=103` 可以写成 `job 103`。属性名称`TimeLimit` 不区分大小写，可以写成 `timelimit`。
+:::
 
 属性的名字可以通过以下命令查看：
 ```bash
