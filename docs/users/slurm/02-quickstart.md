@@ -314,16 +314,16 @@ $ scontrol show job 103
 | `-F, --nodefile=<node file>`        | 提供一个文件来指定运行程序的节点。                           |
 | `-x, --exclude=<hosts>`             | 排除一些节点，语法见手册。                                   |
 | `-D, --chdir=<path>`                | 执行进程前，先切换到另一个路径。默认路径为用户执行 Slurm 命令的当前路径。<br />可以使用绝对路径或者相对于当前路径的路径。 |
-| `--mincpus=<n>`                     | 要求每节点至少有 `n` 个逻辑CPU。                             |
+| `--mincpus=<n>`                     | 要求每节点至少有 `n` 个 CPU。                             |
 | `--comment=<string>`                | 给作业加个注释。<br />注释中有空格或特殊字符时，要加引号。   |
 | `--deadline=<OPT>`                  | 给作业设定期限，到期还未结束就移除这个作业。格式为<br />HH:MM[:SS] [AM\|PM]<br />MMDD[YY] or MM/DD[/YY] or MM.DD[.YY]<br />MM/DD[/YY]-HH:MM[:SS]<br />YYYY-MM-DD[THH:MM[:SS]]] |
 
 :::note 脚注
 **[1]** `--ntasks` 优先于 `--ntasks-per-node`，如果两个一起用，则`--ntasks-per-node`会被当成单节点任务数量的上限。
 
-**[2]** `-c` 一般与 `-n` 配合使用，否则，Slurm 会尽量把进程塞满节点。
-假设节点有8个 CPU，`-N 4 -c 3` 意味着请求4个节点，每个节点1个进程（默认），每个进程3个 CPU。
-但 Slurm 可能只分配2个节点，每个节点2个进程，每个进程3个 CPU。
+**[2]** `-c` 一般与 `-n` 配合使用，否则，Slurm 会尽量把进程塞满节点。考虑如下例子。
+假设节点有8个 CPU，`-N 4 -c 3` 意味着请求4个节点，每个节点1个进程（默认），每进程3个 CPU。
+但 Slurm 可能只分配2个节点，每节点2个进程，每进程3个 CPU。
 :::
 
 ## `salloc` - 申请计算资源
@@ -334,7 +334,7 @@ $ scontrol show job 103
 
 ### 基本用法
 
-当用户申请了节点并使用 SSH 登陆到节点上时，Slurm 会给用户分配一个 shell，因此，当用户退出时，需要使用两次`exit`。下面我们在`Balerion`分区申请1个节点，并登陆到这个节点上。
+当用户申请了节点并使用 SSH 登陆到节点上时，Slurm 会给用户分配一个 shell，因此，当用户退出时，需要使用两次 `exit`。下面我们在 `Balerion` 分区申请1个节点，并登陆到这个节点上。
 
 ```bash
 $ salloc -N 1 -c 12 -t 30:00 -p Balerion
@@ -343,21 +343,21 @@ salloc: Waiting for resource configuration
 salloc: Nodes node21 are ready for job
 ```
 
-上述命令指定了分区`-p Balerion`，节点数量`-N 1`，CPU数量`-c 12`，资源使用的时限`-t 30:00`。申请成功后，用户会进入由 Slurm 创建的 shell。
+上述命令指定了分区 `-p Balerion`，节点数量 `-N 1`，CPU 数量 `-c 12`，资源使用的时限 `-t 30:00`。申请成功后，用户会进入由 Slurm 创建的 shell。
 
-随后，使用 SSH 登陆到节点`node01`并执行操作。
+随后，使用 SSH 登陆到节点 `node01` 并执行操作。
 
 ```bash
 $ ssh node21
 ```
 
 :::info
-目前全节点共享的存储空间只有`/home`和`/data`。用户在登陆到计算节点后，若发现`/home`的空间已经不够用，请切换到`/data/user`目录下，`user`是你的用户名。若要使用计算节点的本地存储，可以用`/tmp`。
-
-完成操作后，如果不再使用这个节点的计算资源，则退出。
+目前全节点共享的存储空间只有 `$HOME/` 和 `$HOME/data/`。`$HOME/` 的空间较小，请尽量使用 `$HOME/data/`。若要使用计算节点的本地存储，可以用`/tmp`。
 :::
 
-​```bash
+完成操作后，如果不再使用这个节点的计算资源，则退出。
+
+```bash
 $ exit
 logout
 Connection to node21 closed.
@@ -367,7 +367,7 @@ exit
 salloc: Relinquishing job allocation 95
 ```
 
-此时，节点`node21`已经可以重新分配给其他作业了。
+此时，节点 `node21` 已经可以重新分配给其他作业了。
 
 使用 `--exclusive` 参数，可以独占节点而不用指定任务数量、CPU 数量。
 
