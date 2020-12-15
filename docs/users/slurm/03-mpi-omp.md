@@ -1,6 +1,6 @@
 ---
 id: mpi-omp
-title: 提交 OpenMP/MPI/MPI+OpenMP 作业
+title: 提交 OpenMP/MPI 作业
 ---
 
 这一小节，我们用几个实例来演示如何提交 OpenMP、MPI 以及 MPI+OpenMP 作业，以及如何设置简单的绑定/亲和性。要注意的是，计算资源的单位（CPU、核、内存）是与机器和 Slurm 配置相关的，下面例子中的方式不一定适用于其他集群，应该具体问题具体分析。
@@ -10,7 +10,7 @@ title: 提交 OpenMP/MPI/MPI+OpenMP 作业
 :::tip 进程映射和绑定
 
 我们有时会需要调整进程与硬件之间的映射和绑定/亲和性。
-映射就是将进程对应到相应级别、数量的计算资源；绑定就是不让操作系统把进程调度到其他硬件上。
+*映射（mapping）*就是将进程对应到相应级别、数量的计算资源；*绑定（binding）*就是不让操作系统把进程调度到其他硬件上。
 控制映射和绑定最简单的方法是使用 `mpirun` 或者 `srun` 提供的参数。例如：
 
 - `mpirun --map-by core` 指明每个进程都应该映射到一个核心，不多不少；
@@ -31,7 +31,27 @@ OpenMP 并行程序执行时需要知道线程数量。对于 Slurm 命令来说
 
 除了 `OMP_NUM_THREADS`，OpenMP 还有许多其他的环境变量，它们会随 OpenMP 版本变化。其中比较常用的是控制线程亲和性（Thread Affinity）的环境变量，例如 `OMP_PROC_BIND` 和 `OMP_PLACES`。详细用法可以参考 OpenMP 手册。
 
-在后续的示例中，测试程序 `omptest.c` 会申请数 GB 内存空间、初始化变量并对变量求和，求和的过程使用 OpenMP 完成。
+测试程序 `compute_pi_omp` 使用简单的数值积分（求和）计算圆周率，每个 OpenMP 线程完成一部分计算，最终使用归约得到所求的值。
+
+### 编译
+
+编译的工作也可以提交到计算节点，因为计算节点和登录节点的软件环境是一样的。
+
+```bash
+#!/bin/sh
+#SBATCH -J compile
+#SBATCH -p Vhagar
+#SBATCH -n 1
+
+## 用Spack加载编译器
+spack load gompi
+
+## 或用module加载编译器
+#module load gompi
+
+## 编译源代码
+gcc -fopenmp compute_pi_omp.c -o compute_pi_omp
+```
 
 ### 使用单节点的所有逻辑核心
 
@@ -46,18 +66,18 @@ OpenMP 并行程序执行时需要知道线程数量。对于 Slurm 命令来说
 
 ```bash
 #!/bin/sh
-#SBATCH -J omptest1
+#SBATCH -J omp-N1t24
 #SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH -c 24
 
-srun ./omptest
+srun ./compute_pi_omp
 
 # 如果线程绑定有问题，可以尝试手动指定OpenMP线程数
 # 或者手动指定--cpu-bind
 # export OMP_NUM_THREADS=24
-# srun --cpu-bind=none ./omptest
+# srun --cpu-bind=none ./compute_pi_omp
 ```
 
 ### 使用单节点的所有物理核心
@@ -74,7 +94,7 @@ srun ./omptest
 
 ```bash
 #!/bin/sh
-#SBATCH -J omptest2
+#SBATCH -J omp-N1t12
 #SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 1
@@ -83,7 +103,7 @@ srun ./omptest
 # 设置OpenMP线程数为12
 export OMP_NUM_THREADS=12
 
-srun ./omptest
+srun ./compute_pi_omp
 ```
 
 :::note
@@ -103,13 +123,13 @@ srun ./omptest
 
 ```bash
 #!/bin/sh
-#SBATCH -J omptest3
+#SBATCH -J omp-N1p2t12
 #SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 2
 #SBATCH -c 12
 
-srun ./omptest
+srun ./compute_pi_omp
 ```
 
 ## 运行 MPI 程序
@@ -125,11 +145,11 @@ MPI 并行程序执行时至少需要知道进程数量，这通常会由 Slurm 
 用户可以用多种 MPI 版本（性能可能有区别）、多种提交命令来提交作业。本节中，示例均由 OpenMPI 完成。
 :::
 
-测试程序 `computePI` 使用简单的数值积分（求和）计算圆周率，每个 MPI 进程完成一部分计算，最终使用归约得到所求的值。
+测试程序 `compute_pi_mpi` 使用简单的数值积分（求和）计算圆周率，每个 MPI 进程完成一部分计算，最终使用归约得到所求的值。
 
 ### 编译
 
-首先我们要编译源代码，为了方便我们使用 MPI wrapper，也就是 `mpicc`、`mpicxx` 等可执行文件。编译的工作也可以提交到计算节点，因为计算节点和登录节点的软件环境是一样的。
+为了方便我们使用 MPI wrapper，也就是 `mpicc`、`mpicxx` 等可执行文件。
 
 ```bash
 #!/bin/sh
@@ -144,7 +164,7 @@ spack load gompi
 #module load gompi
 
 ## 编译源代码
-mpicc -fopenmp computePI.c -o computePI
+mpicc compute_pi_mpi.c -o compute_pi_mpi
 ```
 
 ### 使用单节点的所有逻辑核心
@@ -158,7 +178,7 @@ mpicc -fopenmp computePI.c -o computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -J cpi-N1n24
+#SBATCH -J mpi-N1p24
 #SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 24
@@ -168,13 +188,13 @@ spack load gompi
 #module load gompi
 
 ## 不给定-n参数，交给Slurm管理
-mpirun ./computePI
+mpirun ./compute_pi_mpi
 
 ## 或者指定进程映射
-#mpirun --map-by hwthread ./computePI
+#mpirun --map-by hwthread ./compute_pi_mpi
 
 ## 或者使用srun，不指定参数
-#srun ./computePI
+#srun ./compute_pi_mpi
 ```
 
 ### 使用单节点的所有逻辑核心
@@ -190,7 +210,7 @@ mpirun ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -J cpi-N1n12c2
+#SBATCH -J mpi-N1p12
 #SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 12
@@ -201,10 +221,10 @@ spack load gompi
 #module load gompi
 
 ## 进程映射到物理核心
-mpirun --map-by core ./computePI
+mpirun --map-by core ./compute_pi_mpi
 
 ## 或者使用srun，绑定进程到核心
-#srun --cpu-bind=cores ./computePI
+#srun --cpu-bind=cores ./compute_pi_mpi
 ```
 
 ### 使用多节点
@@ -220,7 +240,7 @@ mpirun --map-by core ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -J cpi-N4n4
+#SBATCH -J mpi-N4p4
 #SBATCH -p Vhagar
 #SBATCH -N 4
 #SBATCH -n 4
@@ -230,7 +250,7 @@ mpirun --map-by core ./computePI
 spack load gompi
 #module load gompi
 
-mpirun ./computePI
+mpirun ./compute_pi_mpi
 ```
 
 :::caution
@@ -241,9 +261,27 @@ mpirun ./computePI
 
 ## 运行 MPI+OpenMP 混合程序
 
-测试程序 `computePI-hybrid` 在 `computePI` 的基础上增加了 OpenMP 指导语句，让核心的循环被多个线程同时执行，最后归约得到该进程的值，再归约得到最终结果。
+测试程序 `compute_pi_hybrid` 在 `compute_pi_mpi` 的基础上增加了 OpenMP 指导语句，让核心的循环被多个线程同时执行，最后归约得到该进程的值，再归约得到最终结果。
 
 在提交 MPI+OpenMP 混合程序时，进程绑定通常可以设置为 `none`，否则容易把一堆线程都绑到一起。
+
+### 编译
+
+```bash
+#!/bin/sh
+#SBATCH -J compile
+#SBATCH -p Vhagar
+#SBATCH -n 1
+
+## 用Spack加载编译器
+spack load gompi
+
+## 或用module加载编译器
+#module load gompi
+
+## 编译源代码
+mpicc -fopenmp compute_pi_hybrid.c -o compute_pi_hybrid
+```
 
 ### 使用单节点
 
@@ -259,7 +297,7 @@ mpirun ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -J cpi-hybrid-N1n2c12
+#SBATCH -J hybrid-N1p2t12
 #SBATCH -p Vhagar
 #SBATCH -N 1
 #SBATCH -n 2
@@ -273,7 +311,7 @@ spack load gompi
 export OMP_NUM_THREADS=12
 
 ## --map-by socket通常是默认值
-mpirun --map-by socket --bind-to none ./computePI
+mpirun --map-by socket --bind-to none ./compute_pi_hybrid
 ```
 
 ### 使用多节点
@@ -289,7 +327,7 @@ mpirun --map-by socket --bind-to none ./computePI
 
 ```bash
 #!/bin/sh
-#SBATCH -J cpi-hybrid-N4n4c24
+#SBATCH -J hybrid-N4p4t24
 #SBATCH -p Vhagar
 #SBATCH -N 4
 #SBATCH -n 4
@@ -300,7 +338,7 @@ spack load gompi
 #module load gompi
 
 ## --map-by node可以省略，交给Slurm处理
-mpirun --map-by node --bind-to none ./computePI
+mpirun --map-by node --bind-to none ./compute_pi_hybrid
 ```
 
 :::caution
