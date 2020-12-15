@@ -1,18 +1,11 @@
 ---
 id: mpi-omp
-title: 提交OpenMP/MPI作业
+title: 提交 OpenMP/MPI 作业
 ---
 
-OpenMP并行程序执行时需要知道线程数量，提交作业时我们可以设置环境变量 `OMP_NUM_THREADS`。通常可以利用 Slurm 参数或者 shell 的环境变量来完成：
+这一小节，我们用几个实例来演示如何提交 OpenMP、MPI 以及 MPI+OpenMP 作业，以及如何设置简单的绑定/亲和性。要注意的是，计算资源的单位（CPU、核、内存）是与机器和 Slurm 配置相关的，下面例子中的方式不一定适用于其他集群，应该具体问题具体分析。
 
-- Slurm命令的 `--export` 参数；
-- shell的 `export` 命令。
-
-:::tip OpenMP 的环境变量
-除了 `OMP_NUM_THREADS`，OpenMP 还有许多其他的环境变量，它们会随OpenMP版本变化。
-
-其中比较常用的是控制线程亲和性（Thread Affinity）的环境变量，例如 `OMP_PROC_BIND` 和 `OMP_PLACES`。详细用法可以参考 OpenMP 手册。
-:::
+为了方便，我们统一使用 `sbatch`，例子中只给出脚本文件和相应的解释。所有实例都在分区 *Vhagar* 上完成。*Vhagar* 分区的节点拥有2个6核处理器，每个核支持超线程执行，共计 24 CPUs。
 
 MPI 并行程序执行时至少需要知道进程数量，这通常会由 Slurm 自动加上，不需要我们添加额外的参数。指定进程数量的方式通常是：
 
@@ -31,21 +24,34 @@ MPI 并行程序执行时至少需要知道进程数量，这通常会由 Slurm 
 具体如何使用映射和绑定，要根据具体情况来分析，参数的取值和意义请参考 `mpirun` 和 `srun` 的手册。
 :::
 
-这一小节，我们用几个实例来演示如何提交 OpenMP、MPI 以及 MPI+OpenMP 作业，以及如何设置简单的绑定/亲和性。要注意的是，计算资源的单位（CPU、核、内存）是与机器和 Slurm 配置相关的，下面例子中的方式不一定适用于其他集群，应该具体问题具体分析。
-
-为了方便，我们统一使用 `sbatch`，例子中只给出脚本文件。以下的所有实例都在分区 *Vhagar* 上完成。*Vhagar* 分区的节点拥有2个6核处理器，每个核支持超线程执行，共计 24 CPUs。
-
 :::note
 用户可以用多种 MPI 版本（性能可能有区别）、多种提交命令来提交作业。本节中，示例均由 OpenMPI 完成。
 :::
 
 ## 运行 OpenMP 程序
 
-测试程序 `omptest.c` 会申请数 GB 内存空间，初始化变量并对变量求和，求和的过程使用 OpenMP 完成。以下是示例。
+OpenMP 并行程序执行时需要知道线程数量。对于 Slurm 命令来说，默认亲和性为 `--cpu-bind=none`，此时 OpenMP 通常能正确使用 24 CPUs。
+若 OpenMP 无法得到正确的线程数量，或者线程绑定有问题，我们就要手动设置环境变量。
 
-**申请1个节点，1个进程，24个逻辑CPU**
+提交作业时我们通过 Slurm 参数或者 shell 命令来设置环境变量 `OMP_NUM_THREADS`的值：
 
-在默认亲和性为 `--cpu-bind=none` 的情况下，OpenMP 通常能正确使用 24 CPUs。否则，我们就需要设置环境变量。在下面的例子中，关键是要保证申请到节点中的所有 CPU，我们用 `-c 24` 来完成，除此之外也可以用其他方式来独占计算资源。
+- Slurm命令的 `--export` 参数；
+- shell的 `export` 命令。
+
+除了 `OMP_NUM_THREADS`，OpenMP 还有许多其他的环境变量，它们会随 OpenMP 版本变化。其中比较常用的是控制线程亲和性（Thread Affinity）的环境变量，例如 `OMP_PROC_BIND` 和 `OMP_PLACES`。详细用法可以参考 OpenMP 手册。
+
+在后续的示例中，测试程序 `omptest.c` 会申请数 GB 内存空间、初始化变量并对变量求和，求和的过程使用 OpenMP 完成。
+
+### 使用单节点的所有线程
+
+在下面的例子中，关键是要保证申请到节点中的所有 CPU，我们用 `-c 24` 来完成，除此之外也可以用其他方式来独占计算资源。
+
+参数说明：
+
+- `-N 1`：需要的节点数为 1；
+- `-n 1`：需要的任务（进程）总数为 1；
+- `-c 24`：需要每任务（进程）可用 CPU 数为 24；
+- `--cpu-bind=none`：取消进程绑定。
 
 ```bash
 #!/bin/sh
@@ -57,16 +63,23 @@ MPI 并行程序执行时至少需要知道进程数量，这通常会由 Slurm 
 
 srun ./omptest
 
-## 如果线程绑定有问题，可以尝试手动指定OpenMP线程数
-## 或者手动指定--cpu-bind
+# 如果线程绑定有问题，可以尝试手动指定OpenMP线程数
+# 或者手动指定--cpu-bind
 # export OMP_NUM_THREADS=24
 # srun --cpu-bind=none ./omptest
 ```
 
-**申请1个节点，1个进程，24个逻辑CPU，但只起12个线程**
+### 使用单节点的所有物理核心
 
 和上面的例子不同，在这里我们希望每个线程都独占物理核心，而不是逻辑核心。这可以通过设置 OpenMP 环境变量来完成。
 如果实际运行时发现线程并没有很好地绑定到物理核心，可以使用其他环境变量，例如 `OMP_PLACES=cores`。
+
+参数说明：
+
+- `-N 1`：需要的节点数为 1；
+- `-n 1`：需要的任务（进程）总数为 1；
+- `-c 24`：需要每任务（进程）可用 CPU 数为 24；
+- `OMP_NUM_THREADS=12`：指定 OpenMP 可用的线程数为 12。
 
 ```bash
 #!/bin/sh
@@ -76,13 +89,26 @@ srun ./omptest
 #SBATCH -n 1
 #SBATCH -c 24
 
+# 设置OpenMP线程数为12
 export OMP_NUM_THREADS=12
+
 srun ./omptest
 ```
 
-**申请1个节点，2个进程，每进程12个逻辑CPU**
+:::note
+在具体问题中，用超线程和不用超线程取决于程序是怎么写的，使用超线程不一定会缩短计算时间。用户请根据具体程序的需求来申请资源。
+:::
 
-这通常是**错误的**，因为该程序没有涉及任何进程间的同步。让 Slurm 使用过多的资源来执行没有多进程并行的程序，只会简单地把该程序同时执行多次而已。
+### 常见问题：使用了多节点
+
+下面的例子使用多个节点运行 OpenMP 程序，这通常是**错误的**。
+因为该程序没有涉及任何进程间的同步，让 Slurm 使用过多的资源只会简单地把该程序同时执行多次而已。
+
+参数说明：
+
+- `-N 1`：需要的节点数为 1；
+- `-n 2`：需要的任务（进程）总数为 2；
+- `-c 12`：需要每任务（进程）可用 CPU 数为 12。
 
 ```bash
 #!/bin/sh
@@ -95,10 +121,6 @@ srun ./omptest
 srun ./omptest
 ```
 
-:::note
-在具体问题中，用超线程和不用超线程取决于程序是怎么写的，使用超线程不一定会缩短计算时间。用户请根据具体程序的需求来申请资源。
-:::
-
 ## 运行 MPI 程序
 
 目前，集群上安装了三种不同 MPI 实现：MPICH、OpenMPI 和 Intel MPI。使用 MPICH 时，既可以用 `mpirun` 也可以用 `srun` 来执行你的程序；使用 Intel MPI 时，暂时只能用 `mpirun`或 `mpiexec`。
@@ -108,14 +130,17 @@ srun ./omptest
 首先我们要编译源代码，为了方便我们要使用 MPI wrapper，也就是 `mpicc`、`mpicxx` 等可执行文件。编译的工作也可以提交到计算节点，因为计算节点和登录节点的软件环境是一样的。
 
 ```bash
-## 加载编译器
-ml gompi/2019a
+## 用Spack加载编译器
+spack load gompi
+
+## 或用module加载编译器
+#module load gompi
 
 ## 编译源代码
 mpicc -fopenmp computePI.c -o computePI
 ```
 
-**在单节点上运行**
+### 在单节点上运行
 
 申请1个节点，24个进程，进程映射到硬件线程。这是最简单的情况，所有 CPU 都被占用，Slurm 通常会处理好进程映射和绑定，不需要我们指定任何额外的参数。
 
@@ -126,7 +151,9 @@ mpicc -fopenmp computePI.c -o computePI
 #SBATCH -N 1
 #SBATCH -n 24
 
-ml gompi/2019a
+## 加载编译器
+spack load gompi
+#module load gompi
 
 ## 不给定-n参数，交给Slurm管理
 mpirun ./computePI
@@ -148,7 +175,9 @@ mpirun ./computePI
 #SBATCH -n 12
 #SBATCH -c 2
 
-ml gompi/2019a
+## 加载编译器
+spack load gompi
+#module load gompi
 
 ## 进程映射到物理核心
 mpirun --map-by core ./computePI
@@ -157,7 +186,7 @@ mpirun --map-by core ./computePI
 #srun --cpu-bind=cores ./computePI
 ```
 
-**在多节点上运行**
+### 在多节点上运行
 
 集群上的 MPI 不需要每个人自己安装和配置，也不需要设置复杂的参数就可以使用。因此，多节点和单节点的作业提交没有太大区别，只是参数的取值不同。
 
@@ -177,7 +206,10 @@ mpirun --map-by core ./computePI
 #SBATCH -n 4
 ## --ntasks-per-node=1可以替换-n 4
 
-ml gompi/2019a
+## 加载编译器
+spack load gompi
+#module load gompi
+
 mpirun ./computePI
 ```
 
@@ -187,7 +219,7 @@ mpirun ./computePI
 
 在提交 MPI+OpenMP 混合程序时，进程绑定通常可以设置为 `none`，否则容易把一堆线程都绑到一起。
 
-**在单节点上运行**
+### 在单节点上运行
 
 申请1个节点，2个进程/任务，每进程12 CPUs，进程映射到 socket，让OpenMP 在每个 socket 上起12个线程。
 
@@ -199,7 +231,9 @@ mpirun ./computePI
 #SBATCH -n 2
 #SBATCH -c 12
 
-ml gompi/2019a
+## 加载编译器
+spack load gompi
+#module load gompi
 
 ## 也可以将该环境变量作为参数-x OMP_NUM_THREADS=12传给mpirun
 export OMP_NUM_THREADS=12
@@ -208,7 +242,7 @@ export OMP_NUM_THREADS=12
 mpirun --map-by socket --bind-to none ./computePI
 ```
 
-**在多节点上运行**
+### 在多节点上运行
 
 申请4个节点，每节点1个进程，每进程24个逻辑 CPU，每个 CPU 都起一个线程。
 
@@ -220,7 +254,9 @@ mpirun --map-by socket --bind-to none ./computePI
 #SBATCH -n 4
 #SBATCH -c 24
 
-ml gompi/2019a
+## 加载编译器
+spack load gompi
+#module load gompi
 
 ## --map-by node可以省略，交给Slurm处理
 mpirun --map-by node --bind-to none ./computePI
