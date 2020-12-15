@@ -1,6 +1,6 @@
 ---
 id: advanced
-title: 高级用法
+title: Slurm 高级用法
 ---
 
 向SLURM提交作业时，可使用的参数非常多。使用`sbatch`提交脚本时，脚本本身也是用shell语言写的（如bash），我们可以多利用shell语言的语法来完成自己的目标。

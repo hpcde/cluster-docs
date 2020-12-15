@@ -1,6 +1,6 @@
 ---
 id: quickstart
-title: 使用计算资源
+title: Slurm 基本用法
 ---
 
 用户使用集群时，通常会涉及以下操作：
