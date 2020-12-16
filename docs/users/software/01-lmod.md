@@ -3,8 +3,8 @@ id: lmod
 title: Lmod - 使用集群上的软件
 ---
 
-[Lmod](https://github.com/TACC/Lmod) 是一个环境变量管理软件，是基于 Lua 的 Environment Module System 实现。
-在其他超算系统上，使用的通常是另一个[基于 Tcl 的 Environment Module System](https://github.com/cea-hpc/modules)。
+[Lmod](https://github.com/TACC/Lmod) 是一个环境变量管理软件，是基于 Lua 的*模块系统（Module System，或 Environment Module System）* 实现。
+在其他超算系统上，使用的通常是另一个基于 Tcl 的实现：[Environment Modules](https://github.com/cea-hpc/modules)。
 
 通过 Lmod，用户可以:
 - 切换不同软件，如 Anaconda 和 Python；
@@ -13,8 +13,12 @@ title: Lmod - 使用集群上的软件
 当用户想要使用软件时，只要运行相应命令来加载软件的环境变量即可。Lmod 提供了 `module`和`ml`命令供用户选择，让用户能够用命令来加载、卸载、查找已安装的软件。
 
 :::caution
-目前，实验室的集群已经用 Lmod 代替了以前的基于 Tcl 的 Environment Module System。
-使用旧的 Module System 的用户请参考[Tcl旧模块的处理](#Tcl旧模块的处理)。
+目前，实验室的集群已经用 Lmod 代替了以前的 Environment Modules。
+使用旧模块系统的用户请参考 [Tcl 旧模块的处理](#Tcl旧模块的处理)。
+:::
+
+:::note
+为了方便叙述，在本节中我们把 Lmod 和 Environment Modules 两种实现统称为模块系统，并将 Environment Modules 简称为 Modules。
 :::
 
 ## 常用命令
@@ -41,7 +45,7 @@ $ ml -GCC               # 卸载软件的环境变量
 ```
 
 :::info 初始环境变量
-如果不加载软件，用户使用的就是系统自带的软件，例如， GCC 可能使用的就是 /usr/bin 下面的 GCC 4.8.5，Python 可能使用的是 /usr/bin 下面的 Python 2.7.5。
+如果不加载软件，用户使用的就是系统自带的软件，例如， GCC 可能使用的就是 `/usr/bin` 下面的 GCC 4.8.5，Python 可能使用的是 `/usr/bin` 下面的 Python 2.7.5。
 :::
 
 ## 快速入门
@@ -71,11 +75,11 @@ $ ml -GCC/8.2.0                 # module unload GCC/8.2.0
 $ ml -GCC/8.2.0 GCC/7.3.0       # module swap
 ```
 
-Lmod有两个查询命令：`module avail` 和 `module spider`，Tcl版本只有 `module avail`。区别如下：
+Lmod 有两个查询命令：`module avail` 和 `module spider`，Environment Modules 只有 `module avail`。区别如下：
 
 - `module avail` (Lmod)：查询**当前**可加载的软件包。如果一个软件包需要一些依赖项，在依赖项被加载之前它可能不会显示在列表里。
 - `module spider` (Lmod)：查询**所有**可加载的软件包。
-- `module avail` (Tcl)：查询**所有**可加载的软件包。
+- `module avail` (Modules)：查询**所有**可加载的软件包。
 
 :::tip Shell的配置
 目前默认的配置是 bash，如果需要使用其他 shell 加载模块，可以在 Lmod 目录下找相应的配置脚本，或联系管理员解决。
@@ -206,7 +210,7 @@ The following have been reloaded with a version change:
 - ***...reloaded with a version change***：模块被重新加载为不同版本。这是由于这些模块在两个GCC版本下都存在，但版本和路径都不同。
 
 :::tip ml 和 module swap
-基于Tcl的模块系统只能用 `module swap` 或 `module switch` 切换软件包的版本，但 Lmod 还可以使用 `ml` 命令完成切换。
+`ml` 存在于 Lmod 和 Modules v4.5 中，在 Modules v4.5 以前只能用 `module swap` 或 `module switch` 切换软件包的版本。
 :::
 
 ## 默认模块
@@ -406,8 +410,8 @@ $ module use $HOME/modulefiles
 
 ### 编写模块文件
 
-一个modulefile中最主要的就是各种环境变量，例如 `PATH` 和 `LIBRARY_PATH`。
-用户使用 `module load` 加载这个modulefile时，实际上就是在当前shell设置这些环境变量。
+一个 modulefile 中最主要的就是各种环境变量，例如 `PATH` 和 `LIBRARY_PATH`。
+用户使用 `module load` 加载这个 modulefile 时，实际上就是在当前 shell 设置这些环境变量。
 因此，用户在安装完软件后，通常需要把 `bin`、`include`、`lib` 等目录的绝对路径写在 modulefile 中。
 
 自定义模块文件时，可以用命令查看集群上已有模块的配置文件供参考，例如，查看 `GCC/8.2.0` 的模块文件：
@@ -419,10 +423,10 @@ $ module show GCC/8.2.0-2.31.1
 
 ## Tcl 旧模块的处理
 
-Environment Module System 的迁移（指从 Tcl 模块系统迁移到 Lua 的模块系统）并不影响 Tcl 旧的软件模块的使用，
-因为 lmod 同样兼容 Tcl 模块文件。
+模块系统的迁移（指从 Environment Modules 迁移到 Lmod）并不影响 Tcl 旧的软件模块的使用，
+因为 Lmod 同样兼容 Tcl 模块文件。
 
-目前，实验室集群上 Tcl 旧的模块都转移到另一个路径了，因此无法直接用 `module avail` 命令看到。如果要使用旧的模块，请执行：
+目前，实验室集群上的 Tcl 模块都转移到另一个路径了，因此无法直接用 `module avail` 命令看到。如果要使用旧的模块，请执行：
 
 ```bash
 $ ml showlegacy
@@ -431,5 +435,5 @@ $ ml showlegacy
 旧模块提供的软件安装在 `/opt` 下，新模块提供的软件安装在 `/apps` 下。
 
 :::note 冲突的模块
-为防止模块冲突，在 `/opt` 中安装编译工具、科学计算软件Tcl模块时尽量不要与 Lmod 模块同名（如 GCC、OpenMPI、MPICH、PETSc等）。除此之外，其他手动安装的软件都可随意使用。
+为防止模块冲突，在 `/opt` 中安装编译工具、科学计算软件 Tcl 模块时尽量不要与 Lua 模块同名（如 GCC、OpenMPI、MPICH、PETSc 等）。除此之外，其他手动安装的软件都可随意使用。
 :::
