@@ -602,8 +602,9 @@ $ spack load --only dependencies petsc
 
 相关命令：
 
-- `spack config`
-- `spack install`
+- `spack config`：操作配置文件
+- `spack install`：安装软件包
+- `spack external find`：搜索可用的外部软件包
 
 Spack：
 
@@ -645,6 +646,15 @@ $ spack load boost@1.70.0-system
 
 - `prefix`：给定搜索路径，也就是前面的例子演示的；
 - `modules`：给定加载的模块，当系统上有模块系统时可以直接利用已有模块。
+
+### 搜索外部软件包
+
+当我们不清楚软件包的具体位置时，可以用命令来搜索外部软件包，不过这种方式需要软件包的配置文件提供可供搜索的内容（Spack v0.16.0 只支持搜索可执行文件）。
+
+```bash
+# 搜索系统已有的openmpi软件包
+$ spack external find openmpi
+```
 
 ### 外部软件包的依赖
 
