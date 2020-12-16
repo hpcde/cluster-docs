@@ -32,8 +32,6 @@ tags: [tutorial, spack]
 | 操作系统         | CentOS 7                                                     |
 | 模块系统         | Environment Modules                                          |
 | 作业调度系统     | Slurm                                                        |
-| 公共模块路径     | `/opt/modulefiles`                                           |
-| 公共软件安装路径 | `/opt/software`                                              |
 | 已有模块         | `compiler/gcc/10.2.0`<br />`mpi/hpcx/2.5`<br />`tools/cmake/3.19.3` |
 
 ## 拷贝必要数据
@@ -423,7 +421,6 @@ class Hpcx(BundlePackage):
 
     provides('mpi')
     provides('mpi@:3.0', when='@2.0.0:')
-    depends_on('gcc')
     depends_on('openmpi')
     
     def setup_run_environment(self, env):
@@ -498,6 +495,7 @@ class Hpcx(BundlePackage):
 
 在这个配置文件中，我们增加了一些语句让 `hpcx` 能像 `openmpi` 一样被使用。其中：
 
+- `executables` 用于提供可执行文件让 Spack 能够识别；
 - `provides` 用于提供 virtual package 给其他软件包使用；
 - `env` 是表示用户环境的对象，可以操作环境变量；
 - `setup_run_environment` 是设置 runtime 环境的方法，在加载、卸载 `hpcx` 时会被执行；
