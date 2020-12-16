@@ -15,6 +15,7 @@ tags: [tutorial, spack]
 - 添加编译器和外部软件包
 - 自定义软件包，安装软件包
 - 导出模块文件
+- 使用新安装的软件包
 
 本文涉及的所有内容基本都包含在实验室集群文档和 Spack 官方文档中，因此不再专门给出链接。
 
@@ -27,8 +28,6 @@ tags: [tutorial, spack]
 | 参数名           | 值                                                           |
 | ---------------- | ------------------------------------------------------------ |
 | 名称             | S                                                            |
-| 域名             | s@example.cn                                                 |
-| 用户名           | one                                                          |
 | 架构             | x86_64                                                       |
 | 操作系统         | CentOS 7                                                     |
 | 模块系统         | Environment Modules                                          |
@@ -45,7 +44,7 @@ tags: [tutorial, spack]
 - `~/public/repos/spack`：Spack repo，存放我们自定义的软件包配置文件（`package.py`）
 - `~/public/sources/spack`：Spack mirror，存放所有软件包的源代码
 - `~/public/software/spack`：Spack 软件安装路径，最初为空目录
-- `~/.spack`：Spack 配置文件、缓存路径，最初为空目录
+- `~/.spack`：Spack 配置文件、缓存路径，由 Spack 自动创建
 
 ## 配置 Spack 的环境
 
@@ -108,13 +107,13 @@ repos:
 $ module load compiler/gcc/10.2.0
 
 # 查找编译器并添加到配置文件
-$ spack -C ~/.spack compiler find
+$ spack compiler find
 
 # 清空环境，防止干扰后续操作
 $ module purge
 ```
 
-执行完成后，应该会有至少一个编译器被添加到 `~/.spack/compilers.yaml` 文件中，我们可以去掉系统自带的低版本编译器，只保留刚刚加载的那个。
+执行完成后，应该会有至少一个编译器被添加到 `compilers.yaml` 文件中，我们可以去掉系统自带的低版本编译器，只保留刚刚加载的那个。
 
 超算 S 上的编译器可能需要一些额外的环境变量、flags 之类，我们有必要检查一下原本的模块文件。
 
@@ -122,7 +121,7 @@ $ module purge
 $ module show compiler/gcc/10.2.0
 ```
 
-若的确存在环境变量、flags，我们要把它们添加到 `~/.spack/compilers.yaml` 的`environment` 和 `flags` 这两个字典中。
+若的确存在环境变量、flags，我们要把它们添加到 `compilers.yaml` 的`environment` 和 `flags` 这两个字典中。
 
 ```bash
 # 编辑配置文件
