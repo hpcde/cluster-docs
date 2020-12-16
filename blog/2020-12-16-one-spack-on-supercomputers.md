@@ -81,22 +81,22 @@ $ source ./setup-spack.sh
 # 修改软件安装路径，整个配置文件包含3行
 $ spack config edit config
 
-  1 config:
-  2   install_tree:
-  3     root: ~/public/software/spack
+config:
+  install_tree:
+    root: ~/public/software/spack
 
 # 修改 mirror 路径，整个配置文件包含2行（针对不能联网的机器）
 $ spack config edit mirrors
 
-  1 mirrors:
-  2   cluster-public: file://~/public/sources/spack
+mirrors:
+  cluster-public: file://~/public/sources/spack
 
 # 修改 repo 路径，整个配置文件包含3行
 $ spack config edit repos
 
-  1 repos:
-  2   - ~/public/repos/spack
-  3   - $spack/var/spack/repos/builtin
+repos:
+  - ~/public/repos/spack
+  - $spack/var/spack/repos/builtin
 ```
 
 ## 添加编译器
@@ -147,73 +147,73 @@ $ spack config edit compilers
 ```bash
 $ spack config edit packages
 
-  1 packages:
-  2   gcc:
-  3     buildable: false
-  4     externals:
-  5     - spec: gcc@10.2.0
-  6       modules:
-  7       - compiler/gcc/10.2.0
-  8   mpi:
-  9     buildable: false
- 10   hpcx:
- 11     buildable: false
- 12     externals:
- 13     - spec: hpcx@2.5%gcc@10.2.0
- 14       modules:
- 15       - compiler/gcc/10.2.0
- 16       - mpi/hpcx/2.5
- 17   cmake:
- 18     buildable: false
- 19     externals:
- 20     - spec: cmake@3.19.3%gcc@10.2.0
- 21       modules:
- 22       - tools/cmake/3.19.3
- 23   gettext:
- 24     buildable: false
- 25     externals:
- 26     - spec: gettext@system
- 27       prefix: /usr
- 28   curl:
- 29     buildable: false
- 30     externals:
- 31     - spec: curl@system
- 32       prefix: /usr
- 33   numactl:
- 34     buildable: false
- 35     externals:
- 36     - spec: numactl@system
- 37       prefix: /usr
- 38   autoconf:
- 39     buildable: false
- 40     externals:
- 41     - spec: autoconf@system
- 42       prefix: /usr
- 43   automake:
- 44     buildable: false
- 45     externals:
- 46     - spec: automake@system
- 47       prefix: /usr
- 48   libtool:
- 49     buildable: false
- 50     externals:
- 51     - spec: libtool@system
- 52       prefix: /usr
- 53   perl:
- 54     buildable: false
- 55     externals:
- 56     - spec: perl@system
- 57       prefix: /usr
- 58   openssl:
- 59     buildable: false
- 60     externals:
- 61     - spec: openssl@system
- 62       prefix: /usr
- 63   binutils:
- 64     buildable: false
- 65     externals:
- 66     - spec: binutils@system+ld+libiberty~nls
- 67       prefix: /usr
+packages:
+  gcc:
+    buildable: false
+    externals:
+    - spec: gcc@10.2.0
+      modules:
+      - compiler/gcc/10.2.0
+  mpi:
+    buildable: false
+  hpcx:
+    buildable: false
+    externals:
+    - spec: hpcx@2.5%gcc@10.2.0
+      modules:
+      - compiler/gcc/10.2.0
+      - mpi/hpcx/2.5
+  cmake:
+    buildable: false
+    externals:
+    - spec: cmake@3.19.3%gcc@10.2.0
+      modules:
+      - tools/cmake/3.19.3
+  gettext:
+    buildable: false
+    externals:
+    - spec: gettext@system
+      prefix: /usr
+  curl:
+    buildable: false
+    externals:
+    - spec: curl@system
+      prefix: /usr
+  numactl:
+    buildable: false
+    externals:
+    - spec: numactl@system
+      prefix: /usr
+  autoconf:
+    buildable: false
+    externals:
+    - spec: autoconf@system
+      prefix: /usr
+  automake:
+    buildable: false
+    externals:
+    - spec: automake@system
+      prefix: /usr
+  libtool:
+    buildable: false
+    externals:
+    - spec: libtool@system
+      prefix: /usr
+  perl:
+    buildable: false
+    externals:
+    - spec: perl@system
+      prefix: /usr
+  openssl:
+    buildable: false
+    externals:
+    - spec: openssl@system
+      prefix: /usr
+  binutils:
+    buildable: false
+    externals:
+    - spec: binutils@system+ld+libiberty~nls
+      prefix: /usr
 ```
 
 从这个配置中我们可以看到，有一些是我们用 `modules` 配置的，其他都是我们从 `/usr` 路径里找的。在 `/usr` 路径里的这些都是一些我们没有必要自己安装，或者自己安装容易出错的软件，例如：
@@ -308,30 +308,30 @@ $ spack gc
 ```bash
 $ spack config edit modules
 
-  1 modules:
-  2   tcl:
-  3     hash_length: 0
-  4     verbose: True
-  5     blacklist:
-  6       - autoconf
-  7       - automake
-  8       - curl
-  9       - gettext
- 10       - libtool
- 11       - numactl
- 12       - openssl
- 13       - perl
- 14     all:
- 15       conflict:
- 16         - '{name}'
- 17       environment:
- 18         set:
- 19           '{name}_ROOT': '{prefix}'
- 20     projections:
- 21       all:      '{name}/{version}-{compiler.name}-{compiler.version}'
- 22       hdf5:     '{name}/{version}-{compiler.name}-{compiler.version}-{variants.mpi}'
- 25     ^python:
- 26       autoload: direct
+modules:
+  tcl:
+    hash_length: 0
+    verbose: True
+    blacklist:
+      - autoconf
+      - automake
+      - curl
+      - gettext
+      - libtool
+      - numactl
+      - openssl
+      - perl
+    all:
+      conflict:
+        - '{name}'
+      environment:
+        set:
+          '{name}_ROOT': '{prefix}'
+    projections:
+      all:      '{name}/{version}-{compiler.name}-{compiler.version}'
+      hdf5:     '{name}/{version}-{compiler.name}-{compiler.version}-{variants.mpi}'
+    ^python:
+      autoload: direct
 ```
 
 该配置文件中各对象的含义如下：
