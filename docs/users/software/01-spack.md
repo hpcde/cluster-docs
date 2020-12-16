@@ -368,6 +368,7 @@ $ spack env activate python3
 
 参考：
 
+- [Module file tutorial](https://spack-tutorial.readthedocs.io/en/latest/tutorial_modules.html)
 - [Modules](https://spack.readthedocs.io/en/latest/module_file_support.html)
 
 Spack 加载软件包的速度比 Lmod 要慢，好在它提供了两种简单的方式让我们能快速加载想要的环境，分别为: 
@@ -378,7 +379,7 @@ Spack 中用于生成 modulefiles 的相关命令为：
 
 - `spack module`
 
-Spack 能够为 `lmod` 和 `tcl` 两种类型环境系统创建 modulefiles，在实验室集群上，两种均可以使用。我们以 `lmod` 为例。
+Spack 能够为 `lmod` 和 `tcl` 两种类型模块系统创建 modulefiles，在实验室集群上，两种均可以使用。我们以 `lmod` 为例。
 
 ```bash
 # 为某些软件包创建modulefiles
@@ -398,6 +399,15 @@ $ spack module lmod loads boost
 
 module load boost/1.70.0-d42gtzk
 ```
+
+默认情况下，Spack 生成的模块文件名称中包含 hash 值，但我们可能需要意义更加明确的模块名称。Spack 提供了配置文件 `modules.yaml` 来控制模块文件的生成过程，它大致包含以下几个部分：
+
+- 命名规则：统一调整软件包的命名规则，或者筛选一部分软件包调整它们的命名规则；
+- 黑名单/白名单：控制哪些模块可以生成、哪些不能生成；
+- 环境变量：指明加载某些模块时应该同时设置哪些环境变量；
+- 其他与模块文件相关的特性：对应于 `lmod` 和 `tcl` 模块文件语法的一些设置，比如 `conflicts`。
+
+配置文件的具体编写方法可参考 Spack 官方文档。
 
 ## 配置用户级 Spack
 
@@ -526,29 +536,6 @@ $ spack find
 - 解决方法二：在安装软件包时额外指定依赖的版本，例如 `^cmake@3.19.1` 。
 - 解决方法三：在配置文件 [packages.yaml](https://spack.readthedocs.io/en/latest/build_settings.html#build-settings) 中设置某个版本为优先。
 :::
-
-### 在超算上使用 Spack
-
-当用户在超算上做开发时，可能需要安装有较多依赖的软件。手动管理这些依赖是非常麻烦的，此时我们可以在超算上配置 Spack，这不仅可以让我们快速批量安装软件，同时能利用实验室集群上已有的配置文件、软件包源码达到节省时间的目的。
-Spack 安装的软件默认使用 RPATH（可关闭），实验室集群上的公共软件包不能直接拷贝到超算，需要重新编译。如果要交叉编译后直接拷贝到超算，注意取消 RPATH。
-
-为了在超算上用 Spack 安装软件包，用户需要准备以下数据：
-
-- Spack 的 git 仓库，从官网下载或直接从实验室集群上拷贝均可；
-- 实验室集群的 Spack mirror，位于 `/apps/sources/spack`；
-- 实验室集群的 Spack repo，位于 `/apps/spack_repo`。
-
-拷贝数据到超算后，参考实验室集群文档中关于 Spack 的说明、公共 Spack 的配置（`config.yaml`、`packages.yaml` 等配置文件）来配置用户级 Spack，然后使用 Spack 安装软件即可。如果需要安装的软件在集群的 Spack mirror 中没有源代码，用户可以自行下载。
-
-实验室集群的公共 Spack 配置文件可以在加载公共 Spack 环境后用命令查看：
-
-```bash
-# 打印config.yaml文件中的配置
-$ spack config --scope site get config
-
-# 查看config.yaml文件
-$ spack config --scope site edit config
-```
 
 ## 安装/删除软件包
 
@@ -699,6 +686,11 @@ $ spack load boost@1.70.0-system
 
 `externals`中可以同时定义多个 specs，唯一限制就是 specs 不能完全相同。
 
+对于一个外部软件包，我们可以通过两种方式为它指明路径：
+
+- `prefix`：给定搜索路径，也就是前面的例子演示的；
+- `modules`：给定加载的模块，当系统上有模块系统时可以直接利用已有模块。
+
 ### 外部软件包的依赖
 
 外部软件包可能是由其他包管理软件安装的，也可能是由用户手动编译安装的，它们也有自己的依赖。
@@ -780,3 +772,40 @@ $ make
 要注意的是，修改依赖较多的软件包的 `package.py` 文件时，记得时常用 `spack spec` 检查配置的正确性。
 `spack spec`实际上会调用 concretize 算法，在某些错误配置下并不会直接报错，而是会进入死循环。
 :::
+
+## 在超算上使用 Spack
+
+当用户在超算上做开发时，可能需要安装有较多依赖的软件。手动管理这些依赖是非常麻烦的，此时我们可以在超算上配置 Spack，这不仅可以让我们快速批量安装软件，同时能利用实验室集群上已有的配置文件、软件包源码达到节省时间的目的。
+
+Spack 安装的软件默认使用 RPATH（可关闭），实验室集群上的公共软件包不能直接拷贝到超算，需要重新编译。如果要交叉编译后直接拷贝到超算，注意取消 RPATH。
+
+### 基本配置
+
+我们使用的超算可能没有办法联网下载文件。为了在超算上用 Spack 安装软件包，需要我们事先准备以下数据：
+
+- Spack 的 git 仓库，从官网下载或直接从实验室集群上拷贝均可；
+- 实验室集群的 Spack mirror，位于 `/apps/sources/spack`；
+- 实验室集群的 Spack repo，位于 `/apps/spack_repo`。
+
+拷贝数据到超算后，参考实验室集群文档中关于 Spack 的说明、公共 Spack 的配置（`config.yaml`、`packages.yaml` 等配置文件）来配置用户级 Spack，然后使用 Spack 安装软件即可。如果需要安装的软件在集群的 Spack mirror 中没有源代码，用户可以自行下载。
+
+实验室集群的公共 Spack 配置文件可以在加载公共 Spack 环境后用命令查看：
+
+```bash
+# 打印config.yaml文件中的配置
+$ spack config --scope site get config
+
+# 查看config.yaml文件
+$ spack config --scope site edit config
+```
+
+### `externals`
+
+超算上有一些软件是我们很难自己安装的，比如编译器、MPI 等。它们通常都有特定的 flags 或者运行时环境变量。因此，我们要把超算上已有的开发工具都指定为外部软件包，让 Spack 根据它们安装其他软件。按照外部软件包的设置方法，超算上的已有软件也分为两种：
+
+- 系统自带的，比如 `/usr` 路径下的 `ld`、`ar` 等工具（属于 `binutils`），它们可能是超算默认的 `binutils`。这种情况下我们只能在 `packages.yaml` 文件中用 `prefix` 来指定路径；
+- 以模块加载的，比如 `gcc/8.3.0`，这类软件是由超算管理员安装，且可能设置了特定的 flags。此时我们可以在 `packages.yaml` 文件中用 `modules` 来指定外部软件包位置，同时要注意在 `compilers.yaml` 中设置相应的 `cflags`、`cxxflags`、`fflags` 等参数。
+
+### 模块文件生成
+
+在实验室集群上我们可以仅使用 Spack，但在超算上不同，我们无法完全避免使用 `module` 命令来加载已有软件。混用 `spack load` 和 `module load` 可能会引发不易察觉的问题，因此我们可以事先让 Spack 为它安装的软件生成模块文件，随后仅使用 `module` 来加载所需的软件包。
