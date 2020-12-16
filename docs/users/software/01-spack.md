@@ -364,51 +364,6 @@ $ spack env activate python3
 如果需要定制 Spack 环境，请配置用户级 Spack。
 :::
 
-## 生成 modulefiles
-
-参考：
-
-- [Module file tutorial](https://spack-tutorial.readthedocs.io/en/latest/tutorial_modules.html)
-- [Modules](https://spack.readthedocs.io/en/latest/module_file_support.html)
-
-Spack 加载软件包的速度比 Lmod 要慢，好在它提供了两种简单的方式让我们能快速加载想要的环境，分别为: 
-- `spack view`：建立文件系统视图，前面已经介绍过
-- `spack module`：为软件包创建 modulefiles，之后便可通过`module`加载
-
-Spack 中用于生成 modulefiles 的相关命令为：
-
-- `spack module`
-
-Spack 能够为 `lmod` 和 `tcl` 两种类型模块系统创建 modulefiles，在实验室集群上，两种均可以使用。我们以 `lmod` 为例。
-
-```bash
-# 为某些软件包创建modulefiles
-$ spack module lmod refresh autoconf automake boost
-
-# 创建完成后，可以通过module查看这些modulefiles
-# module avail
-
-# 也可以直接用Spack查看
-$ spack module lmod find boost
-
-boost/1.70.0-d42gtzk
-
-# 还可以用Spack生成加载软件包用的module命令
-# 通常可以为一批软件包生成module load命令，存放在自己的脚本里批量加载
-$ spack module lmod loads boost
-
-module load boost/1.70.0-d42gtzk
-```
-
-默认情况下，Spack 生成的模块文件名称中包含 hash 值，但我们可能需要意义更加明确的模块名称。Spack 提供了配置文件 `modules.yaml` 来控制模块文件的生成过程，它大致包含以下几个部分：
-
-- 命名规则：统一调整软件包的命名规则，或者筛选一部分软件包调整它们的命名规则；
-- 黑名单/白名单：控制哪些模块可以生成、哪些不能生成；
-- 环境变量：指明加载某些模块时应该同时设置哪些环境变量；
-- 其他与模块文件相关的特性：对应于 `lmod` 和 `tcl` 模块文件语法的一些设置，比如 `conflicts`。
-
-配置文件的具体编写方法可参考 Spack 官方文档。
-
 ## 配置用户级 Spack
 
 参考：
@@ -720,6 +675,81 @@ $ spack config --scope site get packages
 - `/apps/spack/opt/spack`：位于软件安装节点，存放的是由公共 Spack 安装的软件；
 
 :::
+
+## 模块文件
+
+参考：
+
+- [Module file tutorial](https://spack-tutorial.readthedocs.io/en/latest/tutorial_modules.html)
+- [Modules](https://spack.readthedocs.io/en/latest/module_file_support.html)
+
+Spack 中用于操作模块文件的相关命令为：
+
+- `spack module`
+
+Spack：
+
+- 用户级
+
+Spack 加载软件包的速度比 Lmod 要慢，好在它提供了两种简单的方式让我们能快速加载想要的环境，分别为: 
+- `spack view`：建立文件系统视图，前面已经介绍过
+- `spack module`：为软件包创建 modulefiles，之后便可通过`module`加载
+
+### 生成 modulefiles
+
+Spack 能够为 `lmod` 和 `tcl` 两种类型模块系统创建 modulefiles，在实验室集群上，两种均可以使用。我们以 `lmod` 为例。
+
+```bash
+# 为某些软件包创建modulefiles
+$ spack module lmod refresh autoconf automake boost
+
+# 创建完成后，可以通过module查看这些modulefiles
+# module avail
+
+# 也可以直接用Spack查看
+$ spack module lmod find boost
+
+boost/1.70.0-d42gtzk
+```
+
+### 加载模块
+
+截至 Spack v0.16.0，对模块系统的支持仍然有许多问题，比如模块的依赖关系。Spack 虽然自己能很好地处理软件包依赖关系，但无法很好地反映到它生成的模块文件中，尤其是 Tcl 模块文件中。
+
+为了避免使用模块时遇到缺少依赖项的情况，我们要尽量使用 Spack 的工具来生成模块加载命令，它可以导出所有依赖。
+
+```bash
+# 用Spack命令为软件包批量生成module load命令
+# 该命令会打印出一堆module load，我们可以放在脚本中使用
+$ spack module lmod loads boost
+
+module load boost/1.70.0-d42gtzk
+
+# 使用时最好加上参数，为依赖项也生成module load命令
+$ spack module lmod loads -r boost
+
+module load bzip2/1.0.8-t3oih6b
+module load zlib/1.2.11-apt6zkj
+module load boost/1.74.0-n5fwgzn
+
+# 也可以仅生成模块列表，用户自行将它作为module load的输入
+$ spack module lmod loads -r --input-only boost
+
+bzip2/1.0.8-t3oih6b
+zlib/1.2.11-apt6zkj
+boost/1.74.0-n5fwgzn
+```
+
+### `modules.yaml`
+
+默认情况下，Spack 生成的模块文件名称中包含 hash 值，但我们可能需要意义更加明确的模块名称。Spack 提供了配置文件 `modules.yaml` 来控制模块文件的生成过程，它大致包含以下几个部分：
+
+- 命名规则：统一调整软件包的命名规则，或者筛选一部分软件包调整它们的命名规则；
+- 黑名单/白名单：控制哪些模块可以生成、哪些不能生成；
+- 环境变量：指明加载某些模块时应该同时设置哪些环境变量；
+- 其他与模块文件相关的特性：对应于 `lmod` 和 `tcl` 模块文件语法的一些设置，比如 `conflicts`。
+
+配置文件的具体编写方法可参考 Spack 官方文档。
 
 ## 自定义软件包
 
