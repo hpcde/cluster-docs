@@ -428,22 +428,22 @@ class Hpcx(BundlePackage):
 
         # Set user environment manually.
         hpcx_home       = os.path.dirname(self.prefix)
-        hpcx_mpi_dir    = join_path(self.prefix)
-        hpcx_oshmem_dir = join_path(self.prefix)
+        hpcx_mpi_dir    = self.prefix
+        hpcx_oshmem_dir = self.prefix
         hpcx_hcoll_dir  = join_path(hpcx_home, 'hcoll')
         hpcx_sharp_dir  = join_path(hpcx_home, 'sharp')
         hpcx_ucx_dir    = join_path(hpcx_home, 'ucx')
 
-        for d in [hpcx_ucx_dir, hpcx_sharp_dir, hpcx_hcoll_dir]:
+        for d in [hpcx_hcoll_dir, hpcx_sharp_dir, hpcx_ucx_dir]:
             env.prepend_path('PATH',            join_path(d, 'bin'))
             env.prepend_path('CPATH',           join_path(d, 'include'))
             env.prepend_path('LIBRARY_PATH',    join_path(d, 'lib'))
             env.prepend_path('LD_LIBRARY_PATH', join_path(d, 'lib'))
             
         # Dependency directories
-        env.set('HPCX_UCX_DIR',   hpcx_ucx_dir)
-        env.set('HPCX_SHARP_DIR', hpcx_sharp_dir)
         env.set('HPCX_HCOLL_DIR', hpcx_hcoll_dir)
+        env.set('HPCX_SHARP_DIR', hpcx_sharp_dir)
+        env.set('HPCX_UCX_DIR',   hpcx_ucx_dir)
 
         # Home directories
         homes = ['HPCX_DIR', 'HPCX_HOME']
