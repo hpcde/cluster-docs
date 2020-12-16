@@ -16,6 +16,8 @@ tags: [tutorial, spack]
 - 自定义软件包，安装软件包
 - 导出模块文件
 
+本文涉及的所有内容基本都包含在实验室集群文档和 Spack 官方文档中，因此不再专门给出链接。
+
 <!--truncate-->
 
 ## 超算环境说明
@@ -234,6 +236,7 @@ $ spack config edit packages
 - `netcdf-cxx4@4.3.1`
 - `petsc@3.14.1`
 - `python@3.7.9`
+- `py-numpy@1.19.4`
 - `scorep@6.0`
 
 在安装它们的过程中，还会相应地安装许多依赖。在下面的脚本中，我们把各类不同的软件包都区分出来，分别安装。
@@ -264,6 +267,7 @@ devtools=(
     netcdf-cxx4@4.3.1
     petsc@3.14.1
     python@3.7.9
+    py-numpy@1.19.4
     scorep@6.0
 )
 
@@ -358,3 +362,147 @@ $ module use $SPACK_ROOT/share/spack/modules
 # 如果该路径底下还有以架构命名的目录，为了避免模块文件名过长，我们可以用以下命令
 # module use $SPACK_ROOT/share/spack/modules/linux-centos7-x86_64
 ```
+
+模块文件的配置都完成后，我们就可以像加载超算 S 上已有的模块一样加载新安装的模块了。
+
+## 加载模块
+
+我们可以直接用 `module load` 加载模块，但这种方式可能会让加载的模块缺少一些依赖。Spack v0.16.0 还不能很好地处理模块的依赖关系，我们要么修改 Spack 的模块文件 `templates`，要么就让 Spack 为我们生成加载模块用的命令。这里我们选择后者。
+
+```bash
+# 生成一个脚本，其中会包含很多module load命令
+$ echo '#!/bin/bash' > env.sh
+$ spack module tcl loads -r petsc py-numpy >> env.sh
+$ chmod u+x env.sh
+
+# 加载petsc和py-numpy
+$ source ./env.sh
+```
+
+## 附：自定义软件包
+
+在添加外部软件包或者安装新软件包时，我们可能会遇到 Spack 不能识别的名称，比如 `hpcx`。遇到这种情况大致有以下几种处理方式：
+
+- 它可能叫不同名字，我们可以使用 `spack list` 按通配符搜索；
+- 在 Spack 文档、GitHub 或其他网站上搜索该软件包的配置文件，找到了可以直接用；
+- 自己定义该软件包。
+
+下面以 `hpcx` 为例演示如何自定义软件包并设置运行时的环境变量。假设超算 S 上安装的 `hpcx` 有如下目录结构：
+
+```
+hpcx/
+|- gcc-10.2.0/
+|- hcoll/
+|- sharp/
+`- ucx/
+```
+
+简单起见，我们把 `hpcx` 当作基于 `openmpi` 的另一种 `mpi`，并且不考虑它的诸如 `ucx`、`hcoll` 之类的依赖项。考虑到我们只想要一个外部软件包，不会直接 build 它，我们要做的事情变得很简单：
+
+- 创建一个名为 `hpcx` 的 bundle package；
+- 在 `package.py` 中，让 `hpcx` 依赖于 `openmpi`，并且提供 `mpi`；
+- 在 `package.py` 中，设置 build、run 等各阶段所用的环境。
+
+首先是创建，在创建时要指明 repo 的位置以便于统一管理：
+
+```bash
+$ spack create -r ~/public/repos/spack/ -t bundle -n hpcx
+```
+
+接着修改 `package.py`：
+
+```python
+from spack import *
+
+class Hpcx(BundlePackage):
+    """Mellanox HPC-X ScalableHPC Software Toolkit"""
+    homepage = "https://www.mellanox.com/products/hpc-x-toolkit"
+    
+    executables = ['^ompi_info$']
+    
+    version('2.4.1')
+
+    provides('mpi')
+    provides('mpi@:3.0', when='@2.0.0:')
+    depends_on('gcc')
+    depends_on('openmpi')
+    
+    def setup_run_environment(self, env):
+        import os
+
+        # Set user environment manually.
+        hpcx_home       = os.path.dirname(self.prefix)
+        hpcx_mpi_dir    = join_path(self.prefix)
+        hpcx_oshmem_dir = join_path(self.prefix)
+        hpcx_hcoll_dir  = join_path(hpcx_home, 'hcoll')
+        hpcx_sharp_dir  = join_path(hpcx_home, 'sharp')
+        hpcx_ucx_dir    = join_path(hpcx_home, 'ucx')
+
+        for d in [hpcx_ucx_dir, hpcx_sharp_dir, hpcx_hcoll_dir]:
+            env.prepend_path('PATH',            join_path(d, 'bin'))
+            env.prepend_path('CPATH',           join_path(d, 'include'))
+            env.prepend_path('LIBRARY_PATH',    join_path(d, 'lib'))
+            env.prepend_path('LD_LIBRARY_PATH', join_path(d, 'lib'))
+            
+        # Dependency directories
+        env.set('HPCX_UCX_DIR',   hpcx_ucx_dir)
+        env.set('HPCX_SHARP_DIR', hpcx_sharp_dir)
+        env.set('HPCX_HCOLL_DIR', hpcx_hcoll_dir)
+
+        # Home directories
+        homes = ['HPCX_DIR', 'HPCX_HOME']
+        for home in homes:
+            env.set(home, hpcx_home)
+
+        mpi_homes = ['HPCX_MPI_DIR', 'HPCX_MPI_DIR', 'OMPI_HOME', 'MPI_HOME']
+        for mpi_home in mpi_homes:
+            env.set(mpi_home, hpcx_mpi_dir)
+
+        oshmem_homes = ['HPCX_OSHMEM_DIR', 'OSHMEM_HOME', 'SHMEM_HOME']
+        for oshmem_home in oshmem_homes:
+            env.set(oshmem_home, hpcx_oshmem_dir)
+
+        # Because MPI is both a runtime and a compiler, we have to setup the
+        # compiler components as part of the run environment.
+        env.set('MPICC',  join_path(self.prefix.bin, 'mpicc'))
+        env.set('MPICXX', join_path(self.prefix.bin, 'mpic++'))
+        env.set('MPIF77', join_path(self.prefix.bin, 'mpif77'))
+        env.set('MPIF90', join_path(self.prefix.bin, 'mpif90'))
+
+    def setup_dependent_build_environment(self, env, dependent_spec):
+        self.setup_run_environment(env)
+
+        # Use the spack compiler wrappers under MPI
+        env.set('OMPI_CC',  spack_cc)
+        env.set('OMPI_CXX', spack_cxx)
+        env.set('OMPI_FC',  spack_fc)
+        env.set('OMPI_F77', spack_f77)
+
+        # See https://www.open-mpi.org/faq/?category=building#installdirs
+        for suffix in ['PREFIX', 'EXEC_PREFIX', 'BINDIR', 'SBINDIR',
+                       'LIBEXECDIR', 'DATAROOTDIR', 'DATADIR', 'SYSCONFDIR',
+                       'SHAREDSTATEDIR', 'LOCALSTATEDIR', 'LIBDIR',
+                       'INCLUDEDIR', 'INFODIR', 'MANDIR', 'PKGDATADIR',
+                       'PKGLIBDIR', 'PKGINCLUDEDIR']:
+            env.unset('OPAL_%s' % suffix)
+
+    def setup_dependent_package(self, module, dependent_spec):
+        self.spec.mpicc  = join_path(self.prefix.bin, 'mpicc')
+        self.spec.mpicxx = join_path(self.prefix.bin, 'mpic++')
+        self.spec.mpifc  = join_path(self.prefix.bin, 'mpif90')
+        self.spec.mpif77 = join_path(self.prefix.bin, 'mpif77')
+        self.spec.mpicxx_shared_libs = [
+            join_path(self.prefix.lib, 'libmpi_cxx.{0}'.format(dso_suffix)),
+            join_path(self.prefix.lib, 'libmpi.{0}'.format(dso_suffix))
+        ]
+```
+
+在这个配置文件中，我们增加了一些语句让 `hpcx` 能像 `openmpi` 一样被使用。其中：
+
+- `provides` 用于提供 virtual package 给其他软件包使用；
+- `env` 是表示用户环境的对象，可以操作环境变量；
+- `setup_run_environment` 是设置 runtime 环境的方法，在加载、卸载 `hpcx` 时会被执行；
+- `setup_dependent_build_environment` 是设置 build-time 环境的方法，会影响依赖于 `hpcx` 的软件包；
+- `setup_dependent_package` 也是设置 build-time 环境的方法，影响依赖于 `hpcx` 的软件包。
+
+在 `setup_run_environment` 中我们设置了很多环境变量，如果还有其他与超算 S 网络相关的环境需要设置，也可以添加在该方法中。
