@@ -28,7 +28,7 @@ $ gdb -p pid
 
 第二种方式应用很广。例如，我们可以在 C++ 代码中植入一段：
 
-```c++
+```cpp
 {
     volatile int f = 0;
     while (f == 0)
@@ -65,7 +65,7 @@ $ gdb
 
 改进后的代码看上去如下：
 
-```c++
+```cpp
 #include <unistd.h>
 
 ...
@@ -92,7 +92,7 @@ $ gdb
 
 以下是第一种改进的示例代码：
 
-```c++
+```cpp
 #include <unistd.h>
 
 ...
@@ -115,7 +115,7 @@ static void wait_for_debugger()
 
 以下是第二种改进的示例代码：
 
-```c++
+```cpp
 #include <unistd.h>
 
 ...
