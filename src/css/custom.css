@@ -20,8 +20,8 @@
   --ifm-admonition-note-code-color: rgba(192, 52, 29, 0.72);
 }
 html[data-theme=dark] {
-  --ifm-admonition-note-code-background: rgba(80, 86, 107, 1);
-  --ifm-admonition-note-code-color: rgb(255, 221, 128);
+  --ifm-admonition-note-code-background: var(--ifm-code-background);
+  --ifm-admonition-note-code-color: var(--ifm-code-color);
 }
 
 .docusaurus-highlight-code-line {
