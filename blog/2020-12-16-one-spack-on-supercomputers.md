@@ -325,6 +325,7 @@ modules:
       - libtool
       - numactl
       - openssl
+      - openssh
       - perl
     all:
       conflict:
@@ -333,8 +334,8 @@ modules:
         set:
           '{name}_ROOT': '{prefix}'
     projections:
-      all:      '{name}/{version}-{compiler.name}-{compiler.version}'
-      hdf5:     '{name}/{version}-{compiler.name}-{compiler.version}-{variants.mpi}'
+      all:      '{name}/{version}/{compiler.name}-{compiler.version}'
+      ^mpi:     '{name}/{version}/{^mpi.name}-{^mpi.version}-{compiler.name}-{compiler.version}'
     ^python:
       autoload: direct
 ```
