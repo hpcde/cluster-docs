@@ -124,7 +124,6 @@ static void wait_for_debugger()
 {
     int rank, a_rank;
     char *env_rank;
-    int a_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     env_rank = getenv("MPI_DEBUG_RANK");
     a_rank = (env_rank == nullptr)? 0 : atoi(env_rank);
