@@ -39,7 +39,7 @@ tags: [tutorial, spack]
 按照实验室集群文档中的说明，我们在超算 S 上建立如下几个目录并拷贝相应数据：
 
 - `~/public/spack`：存放 Spack 仓库
-- `~/public/repos/spack`：Spack repo，存放我们自定义的软件包配置文件（`package.py`）
+- `~/public/repos/spack`：Spack repos，可能有多个子目录，存放我们自定义的软件包配置文件（`package.py`）
 - `~/public/sources/spack`：Spack mirror，存放所有软件包的源代码
 - `~/public/software/spack`：Spack 软件安装路径，最初为空目录
 - `~/.spack`：Spack 配置文件、缓存路径，由 Spack 自动创建
@@ -70,30 +70,34 @@ $ ssh n0001
 $ source ./setup-spack.sh
 ```
 
+:::note
+使用 Spack 之前，最好确保系统上有 Python 3.x。
+:::
+
 ## 修改配置文件中的路径
 
 首先，我们要修改软件安装路径、mirror 路径和 repo 路径。
 
 ```bash
-# 修改软件安装路径，整个配置文件包含3行
+# 修改软件安装路径
 $ spack config edit config
 
 config:
   install_tree:
     root: ~/public/software/spack
 
-# 修改 mirror 路径，整个配置文件包含2行（针对不能联网的机器）
+# 增加优先搜索的 mirror 路径（针对不能联网的机器）
 $ spack config edit mirrors
 
 mirrors:
   cluster-public: file://~/public/sources/spack
 
-# 修改 repo 路径，整个配置文件包含3行
+# 增加优先搜索的 repo 路径，如果拷贝自实验室集群，要增加 2 行
 $ spack config edit repos
 
 repos:
-  - ~/public/repos/spack
-  - $spack/var/spack/repos/builtin
+  - ~/public/repos/spack/hpcde
+  - ~/public/repos/spack/flipped
 ```
 
 ## 添加编译器
@@ -206,6 +210,11 @@ packages:
     externals:
     - spec: openssl@system
       prefix: /usr
+  openssh:
+    buildable: false
+    externals:
+    - spec: openssh@system
+      prefix: /usr
   binutils:
     buildable: false
     externals:
@@ -218,7 +227,7 @@ packages:
 - `curl`、`autoconf`、`automake`、`libtool`、`perl` 都是比较基本的开发工具，不需要很新的版本；
 - `gettext` 是用于本地化的软件，自己安装可能会有问题；
 - `openssl` 是系统的 SSL 软件，自己安装可能会有问题；
-- `binutils` 是基本的 GNU 开发工具，包括 `ld`、`ar` 等，自己安装可能会与超算上其他软件冲突。通常它需要一个版本号，在这里为了全球叙述我们直接给定为 `system`。
+- `binutils` 是基本的 GNU 开发工具，包括 `ld`、`ar` 等，自己安装可能会与超算上其他软件冲突。在这里为了便于叙述我们直接给定为 `system`，但通常我们应该给定版本号让其他软件包能正常安装。
 
 :::tip 缺失的软件包
 
@@ -317,6 +326,7 @@ modules:
       - libtool
       - numactl
       - openssl
+      - openssh
       - perl
     all:
       conflict:
@@ -325,8 +335,8 @@ modules:
         set:
           '{name}_ROOT': '{prefix}'
     projections:
-      all:      '{name}/{version}-{compiler.name}-{compiler.version}'
-      hdf5:     '{name}/{version}-{compiler.name}-{compiler.version}-{variants.mpi}'
+      all:      '{name}/{version}/{compiler.name}-{compiler.version}'
+      ^mpi:     '{name}/{version}/{^mpi.name}-{^mpi.version}-{compiler.name}-{compiler.version}'
     ^python:
       autoload: direct
 ```
@@ -466,7 +476,11 @@ class Hpcx(BundlePackage):
         env.set('MPIF90', join_path(self.prefix.bin, 'mpif90'))
 
     def setup_dependent_build_environment(self, env, dependent_spec):
-        self.setup_run_environment(env)
+        # Duplicate environment variables to avoid Spack warnings.
+        env.set('MPICC',  join_path(self.prefix.bin, 'mpicc'))
+        env.set('MPICXX', join_path(self.prefix.bin, 'mpic++'))
+        env.set('MPIF77', join_path(self.prefix.bin, 'mpif77'))
+        env.set('MPIF90', join_path(self.prefix.bin, 'mpif90'))
 
         # Use the spack compiler wrappers under MPI
         env.set('OMPI_CC',  spack_cc)
@@ -503,3 +517,7 @@ class Hpcx(BundlePackage):
 - `setup_dependent_package` 也是设置 build-time 环境的方法，影响依赖于 `hpcx` 的软件包。
 
 在 `setup_run_environment` 中我们设置了很多环境变量，如果还有其他与超算 S 网络相关的环境需要设置，也可以添加在该方法中。
+
+:::note
+这里配置的 `hpcx` 是给外部软件包使用的，所以里面没有给定其他依赖项。
+:::
