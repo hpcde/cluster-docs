@@ -454,15 +454,16 @@ packages.yaml
   2   all:
   3     target: [x86_64]
 
-# 添加集群的软件包 repo。编辑配置文件，修改为如下两行
+# 添加集群的软件包 repo。编辑配置文件，增加两项
 $ spack config edit repos
 
 repos.yaml
   1 repos:
-  2   - /apps/spack_repo
+  2   - /apps/repos/spack/hpcde
+  3   - /apps/repos/spack/flipped
 
 # 检查 repos
-$ spack config get repos
+$ spack repo list
 
 # 编辑配置文件，添加镜像位置
 $ spack config edit mirrors
@@ -831,7 +832,7 @@ Spack 安装的软件默认使用 RPATH（可关闭），实验室集群上的�
 
 - Spack 的 git 仓库，从官网下载或直接从实验室集群上拷贝均可；
 - 实验室集群的 Spack mirror，位于 `/apps/sources/spack`；
-- 实验室集群的 Spack repo，位于 `/apps/spack_repo`。
+- 实验室集群的 Spack repo，位于 `/apps/repos/spack`。
 
 拷贝数据到超算后，参考实验室集群文档中关于 Spack 的说明、公共 Spack 的配置（`config.yaml`、`packages.yaml` 等配置文件）来配置用户级 Spack，然后使用 Spack 安装软件即可。如果需要安装的软件在集群的 Spack mirror 中没有源代码，用户可以自行下载。
 
@@ -844,6 +845,12 @@ $ spack config --scope site get config
 # 查看config.yaml文件
 $ spack config --scope site edit config
 ```
+
+:::tip Spack repos
+实验室集群上可能有多个自定义 packages 的 Spack repos，它们属于不同的名字空间。其中，有一部分在 GitHub 上维护，其余仅在实验室集群上可见。
+
+`namespace hpcde`：https://github.com/hpcde/spack-repos
+:::
 
 ### `externals`
 
