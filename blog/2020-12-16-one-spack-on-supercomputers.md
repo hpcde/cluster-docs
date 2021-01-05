@@ -39,7 +39,7 @@ tags: [tutorial, spack]
 按照实验室集群文档中的说明，我们在超算 S 上建立如下几个目录并拷贝相应数据：
 
 - `~/public/spack`：存放 Spack 仓库
-- `~/public/repos/spack`：Spack repo，存放我们自定义的软件包配置文件（`package.py`）
+- `~/public/repos/spack`：Spack repos，可能有多个子目录，存放我们自定义的软件包配置文件（`package.py`）
 - `~/public/sources/spack`：Spack mirror，存放所有软件包的源代码
 - `~/public/software/spack`：Spack 软件安装路径，最初为空目录
 - `~/.spack`：Spack 配置文件、缓存路径，由 Spack 自动创建
@@ -92,11 +92,12 @@ $ spack config edit mirrors
 mirrors:
   cluster-public: file://~/public/sources/spack
 
-# 增加优先搜索的 repo 路径
+# 增加优先搜索的 repo 路径，如果拷贝自实验室集群，要增加 2 行
 $ spack config edit repos
 
 repos:
-  - ~/public/repos/spack
+  - ~/public/repos/spack/hpcde
+  - ~/public/repos/spack/flipped
 ```
 
 ## 添加编译器
