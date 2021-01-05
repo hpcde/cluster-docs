@@ -492,6 +492,12 @@ $ spack find
 - 解决方法三：在配置文件 [packages.yaml](https://spack.readthedocs.io/en/latest/build_settings.html#build-settings) 中设置某个版本为优先。
 :::
 
+:::tip Fortran 编译器
+有的软件包可能会强制要求 Fortran 编译器（与 Spack 版本有关），而 `llvm` 是没有 Fortran 编译器的。遇到这种情况时，暂时的解决办法如下：
+- 打开 `compilers.yaml`，找到 `clang` 对象；
+- 修改其中的 `f77` 和 `fc` 值为可用的 Fortran 编译器路径，例如 `gfortran` 路径。
+:::
+
 ## 安装/删除软件包
 
 参考：
