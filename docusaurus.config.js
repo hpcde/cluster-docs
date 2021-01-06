@@ -36,6 +36,19 @@ const algoliaConfig = process.env.USE_ALGOLIA_SEARCH? {
   searchParameters: {'facetFilters': ['type:content'] }
 }: null
 
+const localSearchConfig = process.env.USE_LOCAL_SEARCH? [
+  require.resolve("@easyops-cn/docusaurus-search-local"),
+  {
+    // ... Your options.
+    // `hashed` is recommended as long-term-cache of index file is possible.
+    hashed: true,
+    // For Docs using Chinese, The `language` is recommended to set to:
+    // ```
+    language: ["en", "zh"],
+    // ```
+    // When applying `zh` in language, please install `nodejieba` in your project.
+  },
+]: null
 
 const extraUrl = {
   git: 'https://git.hpcer.dev',
@@ -44,7 +57,7 @@ const extraUrl = {
   hpcde: 'https://hpcde.github.io',
 }
 
-module.exports = {
+const DocsConfig = {
   title: 'HPCer Clusters Document',
   tagline: '高性能计算与数据工程实验室集群系统用户手册',
   url: 'https://hpcdoc.pages.hpcer.dev/cluster',
@@ -181,3 +194,15 @@ module.exports = {
     ],
   ],
 };
+
+// apply local search plugin
+
+if (localSearchConfig !== null) {
+  if (!DocsConfig.plugins) {
+    DocsConfig.plugins = [localSearchConfig]
+  } else {
+    DocsConfig.plugins.push(localSearchConfig)
+  }
+}
+
+module.exports = DocsConfig

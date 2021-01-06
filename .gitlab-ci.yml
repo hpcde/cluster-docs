@@ -9,12 +9,14 @@ build:
   image: timbru31/node-alpine-git:12
   tags: [pages]
   stage: build
+  variables:
+    USE_LOCAL_SEARCH: "ON"
   before_script:
     - yarn install --ignore-scripts --registry https://registry.npm.taobao.org 
   script:
     - yarn build
   cache:
-    key: docusaurus-2.0.0-alpha.69 # caching by docusaurus version.
+    key: docusaurus-2.0.0-alpha.69-search # caching by docusaurus version.
     paths:
     - node_modules/
   artifacts:
