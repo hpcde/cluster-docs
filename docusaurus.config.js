@@ -32,7 +32,8 @@ const siteBaseUrl = process.env.NODE_ENV === 'production'? (process.env.DEPLOY_P
 const algoliaConfig = process.env.USE_ALGOLIA_SEARCH? {
   apiKey: '0aad5efb2b743c35baf62e3f733d4823',
   indexName: 'cluster',
-  contextualSearch: true
+  // contextualSearch: true
+  searchParameters: {'facetFilters': ['type:content'] }
 }: null
 
 
