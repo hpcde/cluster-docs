@@ -55,6 +55,22 @@ $ spack unload -a
 最简单的办法就是在 `source` 之前，用 `env` 检查一下自己的环境，从 `PATH` 里去掉 Spack 路径，并删除 Spack 定义的函数。
 :::
 
+### Rosetta Stone：从 `module` 到 `spack`
+
+|                | Module System                                                | Spack                                                        |
+| -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 查询可用软件   | `module avail`<br />`module avail CMake`<br />`module spider` | `spack find`<br />`spack find cmake`                         |
+| 列出已加载软件 | `module list`                                                | `spack find --loaded`                                        |
+| 加载软件       | `module load CMake/3.19`<br />`module add CMake/3.19`        | `spack load cmake@3.19`                                      |
+| 卸载软件       | `module unload CMake/3.19`<br />`module rm CMake/3.19`       | `spack unload cmake@3.19`                                    |
+| 清空已加载软件 | `module purge`                                               | `spack unload -a`                                            |
+| 仅加载依赖项   | 无                                                           | `spack load --only dependencies cmake@3.19`                  |
+| 切换版本       | `module swap CMake/3.19 CMake/3.18`                          | 无，先卸载再加载                                             |
+| 查看说明       | `module help CMake/3.19`                                     | `spack info cmake`                                           |
+| 查看配置文件   | `module show CMake/3.19`                                     | `spack edit cmake`                                           |
+| 查看安装路径   | `module show CMake/3.19`                                     | `spack location -i cmake@3.19`<br />`spack find --paths cmake@3.19` |
+| 查看依赖关系   | 逐个查看配置文件                                             | `spack find -d cmake@3.19`<br />`spack dependencies -i cmake@3.19`<br />`spack dependents -i cmake@3.19` |
+
 ## 基本概念
 在使用 Spack 之前，建议先熟悉 Spack 中的相关概念，如包的命名规则。
 
