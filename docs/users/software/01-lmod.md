@@ -118,7 +118,7 @@ $ module avail
 GCC/8.2.0-2.31.1
 
 ## 加载GCC后再次查看模块列表，OpenMPI已经可以加载
-$ module GCC/8.2.0-2.31.1
+$ module load GCC/8.2.0-2.31.1
 $ module avail
 
 GCC/8.2.0-2.31.1 (L)    OpenMPI/3.1.3
@@ -131,7 +131,7 @@ GCC/8.2.0-2.31.1 (L)    OpenMPI/3.1.3
 $ module purge
 
 ## 跳过GCC，直接加载OpenMPI
-$ module OpenMPI/3.1.3
+$ module load OpenMPI/3.1.3
 
 Lmod has detected the following error: These module(s) exist but cannot be loaded as requested:
 "OpenMPI/3.1.3"
@@ -172,18 +172,18 @@ OpenMPI: OpenMPI/3.1.3
 
 ```bash
 ## 使用OpenMPI之前必须加载GCC/8.2.0，否则报错
-## ml OpenMPI/3.1.3
-$ ml GCC/8.2.0-2.31.1 OpenMPI/3.1.3
+## module load OpenMPI/3.1.3
+$ module load GCC/8.2.0-2.31.1 OpenMPI/3.1.3
 
 ## 成功加载OpenMPI/3.1.3后，切换到OpenMPI/4.0.0
-$ ml OpenMPI/4.0.0
+$ module load OpenMPI/4.0.0
 
 The following have been reloaded with a version change:
   1) OpenMPI/3.1.3 => OpenMPI/4.0.0     2) hwloc/1.11.11 => hwloc/2.0.2
 
 ## 在加载了GCC/8.2.0和OpenMPI/3.1.3的情况下，切换到GCC/9.1.0
 ## 此时OpenMPI会进入inactive状态
-$ ml GCC/9.1.0-2.32
+$ module load GCC/9.1.0-2.32
 
 Inactive Modules:
   1) OpenMPI/4.0.0     2) hwloc/2.0.2     3) libxml2/2.9.8
@@ -218,9 +218,9 @@ $ module -d avail
 例如，在实验室集群上，以下两条命令的效果是相同的：
 
 ```bash
-$ ml GCC/8.2.0-2.31.1
+$ module load GCC/8.2.0-2.31.1
 
-$ ml GCC
+$ module load GCC
 ```
 
 默认模块可以由*模块名*目录下的配置文件 `.modulerc.lua` 或 `.modulerc` 指定。例如，以下命令可以指定 GCC 的默认版本为 8.3.0：
@@ -261,11 +261,11 @@ $ module load gompi
 
 ```bash
 ## 加载gompi
-$ ml purge
-$ ml gompi/2019a
+$ module purge
+$ module load gompi/2019a
 
 ## 查看当前加载的模块
-$ ml
+$ module list
 Currently loaded Modules:
   1) GCCcore/8.2.0      4) zlib/1.2.11      7) libxml2/2.9.8        10) OpenMPI/3.1.3
   2) binutils/2.31.1    5) numactl/2.0.12   8) libciaccess/0.14     11) gompi/2019a
@@ -275,7 +275,7 @@ Currently loaded Modules:
 或者检查 modulefile 中的 `depends_on` 语句：
 
 ```bash
-$ ml show gompi/2019a |& grep depends_on
+$ module show gompi/2019a |& grep depends_on
 
 depends_on("GCC/8.2.0-2.31.1")
 depends_on("OpenMPI/3.1.3")
@@ -290,9 +290,9 @@ depends_on("OpenMPI/3.1.3")
 
 ```bash
 ## 从当前shell卸载整个工具链
-$ ml -gompi/2019a
+$ module unload gompi/2019a
 
-$ ml
+$ module list
 No modules loaded
 ```
 
@@ -302,10 +302,10 @@ No modules loaded
 
 ```bash
 ## 加载gompi
-$ ml gompi/2019a
+$ module load gompi/2019a
 
 ## 切换到gmpich
-$ ml -gompi/2019a gmpich/2019a
+$ module swap gompi/2019a gmpich/2019a
 ```
 
 常用的工具链见集群文档的公共软件列表。
@@ -317,26 +317,26 @@ $ ml -gompi/2019a gmpich/2019a
 
 ```bash
 ## 加载一些模块
-$ ml CMake/3.19.1 GCC/8.2.0-2.31-1 OpenMPI/3.1.3
+$ module load CMake/3.19.1 GCC/8.2.0-2.31-1 OpenMPI/3.1.3
 
 ## 保存到名为devtools的列表
-$ ml save devtools
+$ module save devtools
 
 Saved current collection of modules to: "devtools"
 
 ## 查看所有已保存的配置
-$ ml savelist
+$ module savelist
 Named collection list:
   1) devtools
 
 ## 清空当前环境，加载之前保存的配置
-$ ml purge
-$ ml restore devtools
+$ module purge
+$ module restore devtools
 
 Restoring modules from user's devtools
 
 ## 弃用一个已保存的加载配置
-$ ml disable devtools
+$ module disable devtools
 ```
 
 ## 自定义软件和模块
