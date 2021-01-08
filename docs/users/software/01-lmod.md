@@ -7,8 +7,10 @@ title: Lmod - 使用集群上的软件
 在其他超算系统上，使用的通常是另一个基于 Tcl 的实现：[Environment Modules](https://github.com/cea-hpc/modules)。
 
 通过 Lmod，用户可以:
-- 切换不同软件，如 Anaconda 和 Python；
-- 切换同一软件的不同版本，如 GCC 7.3.0 和 GCC 8.2.0。
+
+- 加载/卸载软件；
+- 切换软件，如 Anaconda 和 Python；
+- 切换软件版本，如 GCC 7.3.0 和 GCC 8.2.0。
 
 当用户想要使用软件时，只要运行相应命令来加载软件的环境变量即可。Lmod 提供了 `module`和`ml`命令供用户选择，让用户能够用命令来加载、卸载、查找已安装的软件。
 
@@ -19,33 +21,6 @@ title: Lmod - 使用集群上的软件
 
 :::note
 为了方便叙述，在本节中我们把 Lmod 和 Environment Modules 两种实现统称为模块系统，并将 Environment Modules 简称为 Modules。
-:::
-
-## 常用命令
-
-常用的用于查询、加载等功能的命令如下：
-
-```bash
-$ module avail              # 查看当前可加载的软件
-$ module spider             # 查看/搜索集群上所有可加载的软件
-$ module load GCC           # 加载某个软件(如GCC)的环境变量
-$ module list               # 查看已加载的软件
-$ module unload GCC         # 卸载某个软件(如GCC)的环境变量
-$ module pruge              # 清除所有已经加载等环境变量
-```
-
-或者，使用简化的命令：
-
-```bash
-$ ml av                 # 查看当前可加载的软件
-$ ml spider             # 查看集群上所有可加载的软件
-$ ml GCC                # 加载软件的环境变量
-$ ml                    # 查看已加载的软件
-$ ml -GCC               # 卸载软件的环境变量
-```
-
-:::info 初始环境变量
-如果不加载软件，用户使用的就是系统自带的软件，例如， GCC 可能使用的就是 `/usr/bin` 下面的 GCC 4.8.5，Python 可能使用的是 `/usr/bin` 下面的 Python 2.7.5。
 :::
 
 ## 快速入门
@@ -67,19 +42,24 @@ $ module save mymods            # 保存已加载的模块到列表中
 $ module savelist               # 查看已保存的加载方案
 $ module restore mymods         # 恢复已保存的加载方案
 
+$ module purge                  # 卸载所有已加载的模块
+
 $ ml                            # module命令的前端，单独调用相当于 module list
-$ ml av                         # module avail
+$ ml avail                      # module avail
 $ ml spider                     # module spider
 $ ml GCC/8.2.0                  # module load GCC/8.2.0
 $ ml -GCC/8.2.0                 # module unload GCC/8.2.0
 $ ml -GCC/8.2.0 GCC/7.3.0       # module swap
 ```
 
-Lmod 有两个查询命令：`module avail` 和 `module spider`，Environment Modules 只有 `module avail`。区别如下：
+更多关于 Lmod 的用法，可参考官方文档：
 
-- `module avail` (Lmod)：查询**当前**可加载的软件包。如果一个软件包需要一些依赖项，在依赖项被加载之前它可能不会显示在列表里。
-- `module spider` (Lmod)：查询**所有**可加载的软件包。
-- `module avail` (Modules)：查询**所有**可加载的软件包。
+- [Lmod: A New Environment Module System](https://lmod.readthedocs.io/en/latest/index.html)
+- [User Guide for Lmod](https://lmod.readthedocs.io/en/latest/010_user.html)
+
+:::info 初始环境变量
+如果不加载软件，用户使用的就是系统自带的软件，例如， GCC 可能使用的就是 `/usr/bin` 下面的 GCC 4.8.5，Python 可能使用的是 `/usr/bin` 下面的 Python 2.7.5。
+:::
 
 :::tip Shell的配置
 目前默认的配置是 bash，如果需要使用其他 shell 加载模块，可以在 Lmod 目录下找相应的配置脚本，或联系管理员解决。
@@ -96,9 +76,13 @@ $ ml GCC/8.2.0
 执行第二条命令会自动切换相应的依赖项。
 :::
 
-更多关于 Lmod 的用法，可参考官方文档：
-- [Lmod: A New Environment Module System](https://lmod.readthedocs.io/en/latest/index.html)
-- [User Guide for Lmod](https://lmod.readthedocs.io/en/latest/010_user.html)
+### `module avail` 与 `module spider`
+
+Lmod 有两个查询命令：`module avail` 和 `module spider`，Environment Modules 只有 `module avail`。区别如下：
+
+- `module avail` (Lmod)：查询**当前**可加载的软件包。如果一个软件包需要一些依赖项，在依赖项被加载之前它可能不会显示在列表里。
+- `module spider` (Lmod)：查询**所有**可加载的软件包。
+- `module avail` (Modules)：查询**所有**可加载的软件包。
 
 ## 模块层次
 
