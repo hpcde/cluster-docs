@@ -69,7 +69,7 @@ $ spack unload -a
 | 查看说明       | `module help CMake/3.19`                                     | `spack info cmake`                                           |
 | 查看配置文件   | `module show CMake/3.19`                                     | `spack edit cmake`                                           |
 | 查看安装路径   | `module show CMake/3.19`                                     | `spack location -i cmake@3.19`<br />`spack find --paths cmake@3.19` |
-| 查看依赖关系   | 逐个查看配置文件                                             | `spack find -d cmake@3.19`<br />`spack dependencies -i cmake@3.19`<br />`spack dependents -i cmake@3.19` |
+| 查看依赖关系   | 查看手动加载的依赖<br />`module spider CMake/3.19`<br />查看可自动加载的依赖<br />`module show CMake/3.19` | `spack find -d cmake@3.19`<br />`spack dependencies -i cmake@3.19`<br />`spack dependents -i cmake@3.19` |
 
 ## 基本概念
 在使用 Spack 之前，建议先熟悉 Spack 中的相关概念，如包的命名规则。

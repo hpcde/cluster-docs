@@ -30,13 +30,15 @@ $ man module                    # manpage
 $ module help                   # help
 
 $ module avail                  # 查看当前可加载的模块（软件）
+$ module avail GCC				# 查看当前可加载的包含'GCC'的模块
 $ module spider                 # 查看所有可加载的模块（软件）
 $ module spider GCC             # 查看GCC有多少不同版本已安装在集群上
-$ module spider GCC/8.2.0       # 查看模块的依赖关系
+$ module spider GCC/8.2.0       # 查看必须手动加载的依赖
+$ module keyword GCC            # 在模块名称和描述中查找关键字
+
 $ module load GCC/8.2.0         # 加载模块，从而能使用GCC/8.2.0
 $ module list                   # 列出已加载的模块
 $ module unload GCC/8.2.0       # 卸载模块
-$ module key GCC                # 在模块名称和描述中查找关键字
 
 $ module save mymods            # 保存已加载的模块到列表中
 $ module savelist               # 查看已保存的加载方案
