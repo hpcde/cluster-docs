@@ -69,8 +69,8 @@ $ ml -GCC/8.2.0 GCC/7.3.0       # module swap
 多数情况下使用 Lmod 切换模块都不需要卸载之前的模块，例如，
 
 ```bash
-$ ml GCC/7.3.0
-$ ml GCC/8.2.0
+$ module load GCC/7.3.0
+$ module load GCC/8.2.0
 ```
 
 执行第二条命令会自动切换相应的依赖项。
@@ -83,6 +83,14 @@ Lmod 有两个查询命令：`module avail` 和 `module spider`，Environment Mo
 - `module avail` (Lmod)：查询**当前**可加载的软件包。如果一个软件包需要一些依赖项，在依赖项被加载之前它可能不会显示在列表里。
 - `module spider` (Lmod)：查询**所有**可加载的软件包。
 - `module avail` (Modules)：查询**所有**可加载的软件包。
+
+### `module` 与 `ml`
+
+`ml` 实际上是 Lmod 中的一个脚本，它像 `spack` 一样给用户提供便利的功能。Modules 从 4.5 开始也引入了 `ml`。
+
+Lmod：https://lmod.readthedocs.io/en/latest/010_user.html#ml-a-convenient-tool
+
+Modules：https://modules.readthedocs.io/en/latest/ml.html
 
 ## 模块层次
 
@@ -192,10 +200,6 @@ The following have been reloaded with a version change:
 - ***...have been reloaded***：模块被重新加载。这是由于 `libpciaccess/0.14` 这些软件包在两个GCC版本下都存在，但安装路径不同。
 
 - ***...reloaded with a version change***：模块被重新加载为不同版本。这是由于这些模块在两个GCC版本下都存在，但版本和路径都不同。
-
-:::tip ml 和 module swap
-`ml` 存在于 Lmod 和 Modules v4.5 中，在 Modules v4.5 以前只能用 `module swap` 或 `module switch` 切换软件包的版本。
-:::
 
 ## 默认模块
 
