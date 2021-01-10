@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>HPCer Clusters Document Blog</title>
+        <link>https://hpcdoc.pages.hpcer.dev/cluster/blog</link>
+        <description>HPCer Clusters Document Blog</description>
+        <lastBuildDate>Wed, 16 Dec 2020 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[如何在超算上配置Spack]]></title>
+            <link>https://hpcdoc.pages.hpcer.dev/cluster/cluster-docs/blog/2020/12/16/one-spack-on-supercomputers</link>
+            <guid>如何在超算上配置Spack</guid>
+            <pubDate>Wed, 16 Dec 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[实验室集群文档介绍了如何配置、使用 Spack。本文用具体的例子来演示如何在超算上配置 Spack，主要内容如下：]]></description>
+        </item>
+        <item>
+            <title><![CDATA[实用工具：Terminal Multiplexers]]></title>
+            <link>https://hpcdoc.pages.hpcer.dev/cluster/cluster-docs/blog/2020/12/12/one-terminal-multiplexers</link>
+            <guid>实用工具：Terminal Multiplexers</guid>
+            <pubDate>Sat, 12 Dec 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[使用实验室集群时，我们可能偶尔会遇到断开连接的情况，可能是主动断开SSH，也可能是网络不稳定。无论怎样，重新连接后不会自动恢复上一次的工作（所在的路径、环境变量、打开的文件等）。]]></description>
+        </item>
+        <item>
+            <title><![CDATA[使用集群上安装的BOUT++库]]></title>
+            <link>https://hpcdoc.pages.hpcer.dev/cluster/cluster-docs/blog/2020/12/11/one-bout-dev-usage</link>
+            <guid>使用集群上安装的BOUT++库</guid>
+            <pubDate>Fri, 11 Dec 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[本文演示了如何使用实验室集群上安装的BOUT++。]]></description>
+        </item>
+        <item>
+            <title><![CDATA[切换Spack环境变量]]></title>
+            <link>https://hpcdoc.pages.hpcer.dev/cluster/cluster-docs/blog/2020/12/11/one-reset-spack-env</link>
+            <guid>切换Spack环境变量</guid>
+            <pubDate>Fri, 11 Dec 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[Spack的环境变量、自动补全等都由Spack目录下的脚本设置。例如，为bash设置环境变量的命令为]]></description>
+        </item>
+        <item>
+            <title><![CDATA[一些有用的参考资料]]></title>
+            <link>https://hpcdoc.pages.hpcer.dev/cluster/cluster-docs/blog/2020/11/25/helpful-links</link>
+            <guid>一些有用的参考资料</guid>
+            <pubDate>Wed, 25 Nov 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[这里提供一些有用的参考资料, 主要是关于 Slurm 系统、Linux、DCU/GPU、编译调试相关的内容。]]></description>
+        </item>
+    </channel>
+</rss>

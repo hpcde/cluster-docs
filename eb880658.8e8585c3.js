@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[51],{122:function(s){s.exports=JSON.parse('{"allTagsPath":"/cluster-docs/blog/tags","slug":"spack","name":"spack","count":3,"permalink":"/cluster-docs/blog/tags/spack"}')}}]);

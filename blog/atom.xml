@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://hpcdoc.pages.hpcer.dev/cluster/blog</id>
+    <title>HPCer Clusters Document Blog</title>
+    <updated>2020-12-16T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://hpcdoc.pages.hpcer.dev/cluster/blog"/>
+    <subtitle>HPCer Clusters Document Blog</subtitle>
+    <icon>https://hpcdoc.pages.hpcer.dev/cluster/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[如何在超算上配置Spack]]></title>
+        <id>如何在超算上配置Spack</id>
+        <link href="https://hpcdoc.pages.hpcer.dev/cluster/cluster-docs/blog/2020/12/16/one-spack-on-supercomputers"/>
+        <updated>2020-12-16T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[实验室集群文档介绍了如何配置、使用 Spack。本文用具体的例子来演示如何在超算上配置 Spack，主要内容如下：]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[实用工具：Terminal Multiplexers]]></title>
+        <id>实用工具：Terminal Multiplexers</id>
+        <link href="https://hpcdoc.pages.hpcer.dev/cluster/cluster-docs/blog/2020/12/12/one-terminal-multiplexers"/>
+        <updated>2020-12-12T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[使用实验室集群时，我们可能偶尔会遇到断开连接的情况，可能是主动断开SSH，也可能是网络不稳定。无论怎样，重新连接后不会自动恢复上一次的工作（所在的路径、环境变量、打开的文件等）。]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[使用集群上安装的BOUT++库]]></title>
+        <id>使用集群上安装的BOUT++库</id>
+        <link href="https://hpcdoc.pages.hpcer.dev/cluster/cluster-docs/blog/2020/12/11/one-bout-dev-usage"/>
+        <updated>2020-12-11T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[本文演示了如何使用实验室集群上安装的BOUT++。]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[切换Spack环境变量]]></title>
+        <id>切换Spack环境变量</id>
+        <link href="https://hpcdoc.pages.hpcer.dev/cluster/cluster-docs/blog/2020/12/11/one-reset-spack-env"/>
+        <updated>2020-12-11T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Spack的环境变量、自动补全等都由Spack目录下的脚本设置。例如，为bash设置环境变量的命令为]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[一些有用的参考资料]]></title>
+        <id>一些有用的参考资料</id>
+        <link href="https://hpcdoc.pages.hpcer.dev/cluster/cluster-docs/blog/2020/11/25/helpful-links"/>
+        <updated>2020-11-25T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[这里提供一些有用的参考资料, 主要是关于 Slurm 系统、Linux、DCU/GPU、编译调试相关的内容。]]></summary>
+    </entry>
+</feed>
