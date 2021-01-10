@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{76:function(o){o.exports=JSON.parse('{"allTagsPath":"/cluster-docs/blog/tags","slug":"tool","name":"tool","count":1,"permalink":"/cluster-docs/blog/tags/tool"}')}}]);
