@@ -28,6 +28,28 @@ const docEditUrl = process.env.DOC_EDIT_URL? process.env.DOC_EDIT_URL : docGitRe
 // note: if set process.env.DEPLOY_PATH, it must start and end with '/'.
 const siteBaseUrl = process.env.NODE_ENV === 'production'? (process.env.DEPLOY_PATH? process.env.DEPLOY_PATH : '/clusters/') : '/'
 
+// config algolia search
+const algoliaConfig = process.env.USE_ALGOLIA_SEARCH? {
+  apiKey: '0aad5efb2b743c35baf62e3f733d4823',
+  indexName: 'cluster',
+  // contextualSearch: true
+  searchParameters: {'facetFilters': ['type:content'] }
+}: null
+
+const localSearchConfig = process.env.USE_LOCAL_SEARCH? [
+  require.resolve("@easyops-cn/docusaurus-search-local"),
+  {
+    // ... Your options.
+    // `hashed` is recommended as long-term-cache of index file is possible.
+    hashed: true,
+    // For Docs using Chinese, The `language` is recommended to set to:
+    // ```
+    language: ["en", "zh"],
+    // ```
+    // When applying `zh` in language, please install `nodejieba` in your project.
+  },
+]: null
+
 const extraUrl = {
   git: 'https://git.hpcer.dev',
   hub: 'https://hub.hpcer.dev',
@@ -35,7 +57,7 @@ const extraUrl = {
   hpcde: 'https://hpcde.github.io',
 }
 
-module.exports = {
+const DocsConfig = {
   title: 'HPCer Clusters Document',
   tagline: '高性能计算与数据工程实验室集群系统用户手册',
   url: 'https://hpcdoc.pages.hpcer.dev/cluster',
@@ -54,6 +76,7 @@ module.exports = {
       },
       items: [
         {to: 'docs/users/getting-started', label: 'User Manual', position: 'left'},
+        // {to: 'docs/admin/getting-started', label: 'Admin Docs', position: 'left'},
         {to: 'blog', label: 'Blog', position: 'left'},
         {
           href: docGitRepo,
@@ -66,6 +89,7 @@ module.exports = {
       theme: require('prism-react-renderer/themes/github'),
       darkTheme: require('prism-react-renderer/themes/dracula'),
     },
+    algolia: algoliaConfig,
     footer: {
       style: 'dark',
       links: [
@@ -129,6 +153,22 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} HPCDE lab. Built with Docusaurus.`,
     },
   },
+  // plugins: [
+  //   // ... Your other plugins.
+  //   [
+  //     require.resolve("@easyops-cn/docusaurus-search-local"),
+  //     {
+  //       // ... Your options.
+  //       // `hashed` is recommended as long-term-cache of index file is possible.
+  //       hashed: true,
+  //       // For Docs using Chinese, The `language` is recommended to set to:
+  //       // ```
+  //       language: ["en", "zh"],
+  //       // ```
+  //       // When applying `zh` in language, please install `nodejieba` in your project.
+  //     },
+  //   ],
+  // ],
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -154,3 +194,15 @@ module.exports = {
     ],
   ],
 };
+
+// apply local search plugin
+
+if (localSearchConfig !== null) {
+  if (!DocsConfig.plugins) {
+    DocsConfig.plugins = [localSearchConfig]
+  } else {
+    DocsConfig.plugins.push(localSearchConfig)
+  }
+}
+
+module.exports = DocsConfig
