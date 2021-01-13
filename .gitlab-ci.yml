@@ -6,7 +6,7 @@ stages:
 
 ## all branchs can build html
 build:
-  image: timbru31/node-alpine-git:14
+  image: timbru31/node-alpine-git:12
   tags: [pages]
   stage: build
   variables:
