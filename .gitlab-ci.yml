@@ -6,17 +6,17 @@ stages:
 
 ## all branchs can build html
 build:
-  image: timbru31/node-alpine-git:14
+  image: timbru31/node-alpine-git:12
   tags: [pages]
   stage: build
   variables:
     USE_LOCAL_SEARCH: "ON"
   before_script:
-    - yarn install --ignore-scripts --registry https://registry.npm.taobao.org 
+    - yarn install --registry https://registry.npm.taobao.org 
   script:
     - yarn build
   cache:
-    key: docusaurus-2.0.0-alpha.70 # caching by docusaurus version.
+    key: docusaurus-2.0.0-alpha.70-2 # caching by docusaurus version.
     paths:
     - node_modules/
   artifacts:
