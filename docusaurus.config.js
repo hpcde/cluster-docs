@@ -67,6 +67,13 @@ const DocsConfig = {
   organizationName: 'HPCDE lab', // Usually your GitHub org/user name.
   projectName: 'cluster-doc', // Usually your repo name.
   customFields: {extraUrl: extraUrl},
+  scripts: [
+    {
+      src: "https://buttons.github.io/buttons.js",
+      async: true,
+      defer: true,
+    }
+  ],
   themeConfig: {
     navbar: {
       title: 'HPCer Clusters Document',
