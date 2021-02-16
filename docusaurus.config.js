@@ -22,21 +22,21 @@ const admins = [
 ];
 
 const defaultGitRepo = 'https://git.hpcer.dev/HPCDoc/clusters'
-const docGitRepo = process.env.DOC_GIT_REPO? process.env.DOC_GIT_REPO : defaultGitRepo
+const docGitRepo = process.env.DOC_GIT_REPO ? process.env.DOC_GIT_REPO : defaultGitRepo
 // for document edit url, fallback is the same for github and gitlab.
-const docEditUrl = process.env.DOC_EDIT_URL? process.env.DOC_EDIT_URL : docGitRepo + '/blob/master/'
+const docEditUrl = process.env.DOC_EDIT_URL ? process.env.DOC_EDIT_URL : docGitRepo + '/blob/master/'
 // note: if set process.env.DEPLOY_PATH, it must start and end with '/'.
-const siteBaseUrl = process.env.NODE_ENV === 'production'? (process.env.DEPLOY_PATH? process.env.DEPLOY_PATH : '/clusters/') : '/'
+const siteBaseUrl = process.env.NODE_ENV === 'production' ? (process.env.DEPLOY_PATH ? process.env.DEPLOY_PATH : '/clusters/') : '/'
 
 // config algolia search
-const algoliaConfig = process.env.USE_ALGOLIA_SEARCH? {
+const algoliaConfig = process.env.USE_ALGOLIA_SEARCH ? {
   apiKey: '0aad5efb2b743c35baf62e3f733d4823',
   indexName: 'cluster',
   // contextualSearch: true
-  searchParameters: {'facetFilters': ['type:content'] }
-}: null
+  searchParameters: { 'facetFilters': ['type:content'] }
+} : null
 
-const localSearchConfig = process.env.USE_LOCAL_SEARCH? [
+const localSearchConfig = process.env.USE_LOCAL_SEARCH ? [
   require.resolve("@easyops-cn/docusaurus-search-local"),
   {
     // ... Your options.
@@ -48,7 +48,7 @@ const localSearchConfig = process.env.USE_LOCAL_SEARCH? [
     // ```
     // When applying `zh` in language, please install `nodejieba` in your project.
   },
-]: null
+] : null
 
 const extraUrl = {
   git: 'https://git.hpcer.dev',
@@ -66,7 +66,7 @@ const DocsConfig = {
   favicon: 'img/favicon.ico',
   organizationName: 'HPCDE lab', // Usually your GitHub org/user name.
   projectName: 'cluster-doc', // Usually your repo name.
-  customFields: {extraUrl: extraUrl},
+  customFields: { extraUrl: extraUrl },
   scripts: [
     {
       src: "https://buttons.github.io/buttons.js",
@@ -82,9 +82,9 @@ const DocsConfig = {
         src: 'img/logo.svg',
       },
       items: [
-        {to: 'docs/users/getting-started', label: 'User Manual', position: 'left'},
+        { to: 'docs/users/getting-started', label: 'User Manual', position: 'left' },
         // {to: 'docs/admin/getting-started', label: 'Admin Docs', position: 'left'},
-        {to: 'blog', label: 'Blog', position: 'left'},
+        { to: 'blog', label: 'Blog', position: 'left' },
         {
           href: docGitRepo,
           label: 'Source on Git',
