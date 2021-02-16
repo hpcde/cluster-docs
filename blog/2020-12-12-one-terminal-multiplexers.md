@@ -22,7 +22,7 @@ tags: [tool, screen, tmux]
 
 参考：
 
-- [Wikipedia - nohup](http://en.wikipedia.org/wiki/Nohup)
+- [Wikipedia - nohup](https://en.wikipedia.org/wiki/Nohup)
 
 Linux上常用的后台执行程序的命令是 `nohup`，它的功能是无视 hangup 信号，也就是在 shell 退出时不会自动被挂断。该命令默认会把原本到标准输出的东西重定向到一个文件。
 
@@ -56,7 +56,7 @@ $ nohup ping nodedata &
 
 参考：
 
-- [Wikipedia - Terminal multiplexer](http://en.wikipedia.org/wiki/Terminal_multiplexer)
+- [Wikipedia - Terminal multiplexer](https://en.wikipedia.org/wiki/Terminal_multiplexer)
 
 终端多路复用器（terminal multiplexers）就是一种创建多个伪终端（会话）的程序，达到类似于“多路复用”的状态。相比于 `nohup` 通常只用于跑单个程序，我们使用 multiplexer 可以很容易地在一个登录的终端中管理大量会话，每个会话都有自己的shell。
 

@@ -13,7 +13,7 @@ Score-P 是一个高可扩展且易于使用的工具集，可用于高性能程
 
 Score-P 支持流行的开源性能文件和事件追踪文件格式，能够与其他性能分析软件、事件追踪软件很好地协同起来。使用 Score-P 优化程序性能一般有以下流程：
 
-![performance optimization](http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/perf-opt-cycle.png)
+![performance optimization](https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-5.0/html/perf-opt-cycle.png)
 
 实验室集群上目前已安装 Score-P 5.0。经测试，可以分析 MPI 程序（包括 MPICH3 和 OpenMPI3）、OpenMP 程序，以及混合程序。在实验室集群上加载 Score-P 时，要先加载相应的编译器（有的库并不是动态链接的），目前支持的编译器（工具链）如下表：
 

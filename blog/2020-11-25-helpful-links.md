@@ -19,7 +19,7 @@ tags: [hello]
 
 ### Linux
 - [Linux命令大全](https://man.linuxde.net)
-- [鳥哥的 Linux 私房菜](http://linux.vbird.org)
+- [鳥哥的 Linux 私房菜](https://linux.vbird.org)
 
 ### 调试
 - [GDB to LLDB command map](https://lldb.llvm.org/use/map.html)

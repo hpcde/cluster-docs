@@ -20,10 +20,10 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 目前,该集群仅允许校内的网段登录,不对外网开放直接登录权限。
 - ssh登录工具  
   - [ssh命令] 使用OS X、Linux或者window 10 1803以上版本内置的ssh命令
-  - [Xshell](http://www.netsarang.com/products/)(windows 推荐);  
+  - [Xshell](https://www.netsarang.com/products/)(windows 推荐);  
   - [termius](https://www.termius.com/) (移动端推荐使用)
-  - [putty](http://www.putty.org/)工具;  
-  - web登录: [http://console.hpc.gensh.me](http://console.hpc.gensh.me),适用于在未安装ssh工具的系统上登录。  
+  - [putty](https://www.putty.org/)工具;  
+  - web登录: [https://console.hpc.gensh.me](https://console.hpc.gensh.me),适用于在未安装ssh工具的系统上登录。  
 
   **说明**:  
   1. Web登录方式可参考**集群外网VPN登录**章节的关于其登录方式的介绍；  
