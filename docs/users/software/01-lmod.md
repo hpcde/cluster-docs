@@ -3,45 +3,24 @@ id: lmod
 title: Lmod - 使用集群上的软件
 ---
 
-[Lmod](https://github.com/TACC/Lmod) 是一个环境变量管理软件，是基于 Lua 的 Environment Module System 实现。
-在其他超算系统上，使用的通常是另一个[基于 Tcl 的 Environment Module System](https://github.com/cea-hpc/modules)。
+[Lmod](https://github.com/TACC/Lmod) 是一个环境变量管理软件，是基于 Lua 的*模块系统（Module System，或 Environment Module System）* 实现。
+在其他超算系统上，使用的通常是另一个基于 Tcl 的实现：[Environment Modules](https://github.com/cea-hpc/modules)。
 
 通过 Lmod，用户可以:
-- 切换不同软件，如 Anaconda 和 Python；
-- 切换同一软件的不同版本，如 GCC 7.3.0 和 GCC 8.2.0。
+
+- 加载/卸载软件；
+- 切换软件，如 Anaconda 和 Python；
+- 切换软件版本，如 GCC 7.3.0 和 GCC 8.2.0。
 
 当用户想要使用软件时，只要运行相应命令来加载软件的环境变量即可。Lmod 提供了 `module`和`ml`命令供用户选择，让用户能够用命令来加载、卸载、查找已安装的软件。
 
 :::caution
-目前，实验室的集群已经用 Lmod 代替了以前的基于 Tcl 的 Environment Module System。
-使用旧的 Module System 的用户请参考[Tcl旧模块的处理](#Tcl旧模块的处理)。
+目前，实验室的集群已经用 Lmod 代替了以前的 Environment Modules。
+使用旧模块系统的用户请参考 [Tcl 旧模块的处理](#Tcl旧模块的处理)。
 :::
 
-## 常用命令
-
-常用的用于查询、加载等功能的命令如下：
-
-```bash
-$ module avail              # 查看当前可加载的软件
-$ module spider             # 查看/搜索集群上所有可加载的软件
-$ module load GCC           # 加载某个软件(如GCC)的环境变量
-$ module list               # 查看已加载的软件
-$ module unload GCC         # 卸载某个软件(如GCC)的环境变量
-$ module pruge              # 清除所有已经加载等环境变量
-```
-
-或者，使用简化的命令：
-
-```bash
-$ ml av                 # 查看当前可加载的软件
-$ ml spider             # 查看集群上所有可加载的软件
-$ ml GCC                # 加载软件的环境变量
-$ ml                    # 查看已加载的软件
-$ ml -GCC               # 卸载软件的环境变量
-```
-
-:::info 初始环境变量
-如果不加载软件，用户使用的就是系统自带的软件，例如， GCC 可能使用的就是 /usr/bin 下面的 GCC 4.8.5，Python 可能使用的是 /usr/bin 下面的 Python 2.7.5。
+:::note
+为了方便叙述，在本节中我们把 Lmod 和 Environment Modules 两种实现统称为模块系统，并将 Environment Modules 简称为 Modules。
 :::
 
 ## 快速入门
@@ -51,31 +30,38 @@ $ man module                    # manpage
 $ module help                   # help
 
 $ module avail                  # 查看当前可加载的模块（软件）
+$ module avail GCC				# 查看当前可加载的包含'GCC'的模块
 $ module spider                 # 查看所有可加载的模块（软件）
 $ module spider GCC             # 查看GCC有多少不同版本已安装在集群上
-$ module spider GCC/8.2.0       # 查看模块的依赖关系
+$ module spider GCC/8.2.0       # 查看必须手动加载的依赖
+$ module keyword GCC            # 在模块名称和描述中查找关键字
+
 $ module load GCC/8.2.0         # 加载模块，从而能使用GCC/8.2.0
 $ module list                   # 列出已加载的模块
 $ module unload GCC/8.2.0       # 卸载模块
-$ module key GCC                # 在模块名称和描述中查找关键字
 
 $ module save mymods            # 保存已加载的模块到列表中
 $ module savelist               # 查看已保存的加载方案
 $ module restore mymods         # 恢复已保存的加载方案
 
+$ module purge                  # 卸载所有已加载的模块
+
 $ ml                            # module命令的前端，单独调用相当于 module list
-$ ml av                         # module avail
+$ ml avail                      # module avail
 $ ml spider                     # module spider
 $ ml GCC/8.2.0                  # module load GCC/8.2.0
 $ ml -GCC/8.2.0                 # module unload GCC/8.2.0
 $ ml -GCC/8.2.0 GCC/7.3.0       # module swap
 ```
 
-Lmod有两个查询命令：`module avail` 和 `module spider`，Tcl版本只有 `module avail`。区别如下：
+更多关于 Lmod 的用法，可参考官方文档：
 
-- `module avail` (Lmod)：查询**当前**可加载的软件包。如果一个软件包需要一些依赖项，在依赖项被加载之前它可能不会显示在列表里。
-- `module spider` (Lmod)：查询**所有**可加载的软件包。
-- `module avail` (Tcl)：查询**所有**可加载的软件包。
+- [Lmod: A New Environment Module System](https://lmod.readthedocs.io/en/latest/index.html)
+- [User Guide for Lmod](https://lmod.readthedocs.io/en/latest/010_user.html)
+
+:::info 初始环境变量
+如果不加载软件，用户使用的就是系统自带的软件，例如， GCC 可能使用的就是 `/usr/bin` 下面的 GCC 4.8.5，Python 可能使用的是 `/usr/bin` 下面的 Python 2.7.5。
+:::
 
 :::tip Shell的配置
 目前默认的配置是 bash，如果需要使用其他 shell 加载模块，可以在 Lmod 目录下找相应的配置脚本，或联系管理员解决。
@@ -85,16 +71,28 @@ Lmod有两个查询命令：`module avail` 和 `module spider`，Tcl版本只有
 多数情况下使用 Lmod 切换模块都不需要卸载之前的模块，例如，
 
 ```bash
-$ ml GCC/7.3.0
-$ ml GCC/8.2.0
+$ module load GCC/7.3.0
+$ module load GCC/8.2.0
 ```
 
 执行第二条命令会自动切换相应的依赖项。
 :::
 
-更多关于 Lmod 的用法，可参考官方文档：
-- [Lmod: A New Environment Module System](https://lmod.readthedocs.io/en/latest/index.html)
-- [User Guide for Lmod](https://lmod.readthedocs.io/en/latest/010_user.html)
+### `module avail` 与 `module spider`
+
+Lmod 有两个查询命令：`module avail` 和 `module spider`，Environment Modules 只有 `module avail`。区别如下：
+
+- `module avail` (Lmod)：查询**当前**可加载的软件包。如果一个软件包需要一些依赖项，在依赖项被加载之前它可能不会显示在列表里。
+- `module spider` (Lmod)：查询**所有**可加载的软件包。
+- `module avail` (Modules)：查询**所有**可加载的软件包。
+
+### `module` 与 `ml`
+
+`ml` 实际上是 Lmod 中的一个脚本，它像 `spack` 一样给用户提供便利的功能。Modules 从 4.5 开始也引入了 `ml`。
+
+Lmod：https://lmod.readthedocs.io/en/latest/010_user.html#ml-a-convenient-tool
+
+Modules：https://modules.readthedocs.io/en/latest/ml.html
 
 ## 模块层次
 
@@ -120,7 +118,7 @@ $ module avail
 GCC/8.2.0-2.31.1
 
 ## 加载GCC后再次查看模块列表，OpenMPI已经可以加载
-$ module GCC/8.2.0-2.31.1
+$ module load GCC/8.2.0-2.31.1
 $ module avail
 
 GCC/8.2.0-2.31.1 (L)    OpenMPI/3.1.3
@@ -133,7 +131,7 @@ GCC/8.2.0-2.31.1 (L)    OpenMPI/3.1.3
 $ module purge
 
 ## 跳过GCC，直接加载OpenMPI
-$ module OpenMPI/3.1.3
+$ module load OpenMPI/3.1.3
 
 Lmod has detected the following error: These module(s) exist but cannot be loaded as requested:
 "OpenMPI/3.1.3"
@@ -174,18 +172,18 @@ OpenMPI: OpenMPI/3.1.3
 
 ```bash
 ## 使用OpenMPI之前必须加载GCC/8.2.0，否则报错
-## ml OpenMPI/3.1.3
-$ ml GCC/8.2.0-2.31.1 OpenMPI/3.1.3
+## module load OpenMPI/3.1.3
+$ module load GCC/8.2.0-2.31.1 OpenMPI/3.1.3
 
 ## 成功加载OpenMPI/3.1.3后，切换到OpenMPI/4.0.0
-$ ml OpenMPI/4.0.0
+$ module load OpenMPI/4.0.0
 
 The following have been reloaded with a version change:
   1) OpenMPI/3.1.3 => OpenMPI/4.0.0     2) hwloc/1.11.11 => hwloc/2.0.2
 
 ## 在加载了GCC/8.2.0和OpenMPI/3.1.3的情况下，切换到GCC/9.1.0
 ## 此时OpenMPI会进入inactive状态
-$ ml GCC/9.1.0-2.32
+$ module load GCC/9.1.0-2.32
 
 Inactive Modules:
   1) OpenMPI/4.0.0     2) hwloc/2.0.2     3) libxml2/2.9.8
@@ -205,10 +203,6 @@ The following have been reloaded with a version change:
 
 - ***...reloaded with a version change***：模块被重新加载为不同版本。这是由于这些模块在两个GCC版本下都存在，但版本和路径都不同。
 
-:::tip ml 和 module swap
-基于Tcl的模块系统只能用 `module swap` 或 `module switch` 切换软件包的版本，但 Lmod 还可以使用 `ml` 命令完成切换。
-:::
-
 ## 默认模块
 
 参考：
@@ -224,9 +218,9 @@ $ module -d avail
 例如，在实验室集群上，以下两条命令的效果是相同的：
 
 ```bash
-$ ml GCC/8.2.0-2.31.1
+$ module load GCC/8.2.0-2.31.1
 
-$ ml GCC
+$ module load GCC
 ```
 
 默认模块可以由*模块名*目录下的配置文件 `.modulerc.lua` 或 `.modulerc` 指定。例如，以下命令可以指定 GCC 的默认版本为 8.3.0：
@@ -267,11 +261,11 @@ $ module load gompi
 
 ```bash
 ## 加载gompi
-$ ml purge
-$ ml gompi/2019a
+$ module purge
+$ module load gompi/2019a
 
 ## 查看当前加载的模块
-$ ml
+$ module list
 Currently loaded Modules:
   1) GCCcore/8.2.0      4) zlib/1.2.11      7) libxml2/2.9.8        10) OpenMPI/3.1.3
   2) binutils/2.31.1    5) numactl/2.0.12   8) libciaccess/0.14     11) gompi/2019a
@@ -281,7 +275,7 @@ Currently loaded Modules:
 或者检查 modulefile 中的 `depends_on` 语句：
 
 ```bash
-$ ml show gompi/2019a |& grep depends_on
+$ module show gompi/2019a |& grep depends_on
 
 depends_on("GCC/8.2.0-2.31.1")
 depends_on("OpenMPI/3.1.3")
@@ -296,9 +290,9 @@ depends_on("OpenMPI/3.1.3")
 
 ```bash
 ## 从当前shell卸载整个工具链
-$ ml -gompi/2019a
+$ module unload gompi/2019a
 
-$ ml
+$ module list
 No modules loaded
 ```
 
@@ -308,10 +302,10 @@ No modules loaded
 
 ```bash
 ## 加载gompi
-$ ml gompi/2019a
+$ module load gompi/2019a
 
 ## 切换到gmpich
-$ ml -gompi/2019a gmpich/2019a
+$ module swap gompi/2019a gmpich/2019a
 ```
 
 常用的工具链见集群文档的公共软件列表。
@@ -323,26 +317,26 @@ $ ml -gompi/2019a gmpich/2019a
 
 ```bash
 ## 加载一些模块
-$ ml CMake/3.19.1 GCC/8.2.0-2.31-1 OpenMPI/3.1.3
+$ module load CMake/3.19.1 GCC/8.2.0-2.31-1 OpenMPI/3.1.3
 
 ## 保存到名为devtools的列表
-$ ml save devtools
+$ module save devtools
 
 Saved current collection of modules to: "devtools"
 
 ## 查看所有已保存的配置
-$ ml savelist
+$ module savelist
 Named collection list:
   1) devtools
 
 ## 清空当前环境，加载之前保存的配置
-$ ml purge
-$ ml restore devtools
+$ module purge
+$ module restore devtools
 
 Restoring modules from user's devtools
 
 ## 弃用一个已保存的加载配置
-$ ml disable devtools
+$ module disable devtools
 ```
 
 ## 自定义软件和模块
@@ -406,8 +400,8 @@ $ module use $HOME/modulefiles
 
 ### 编写模块文件
 
-一个modulefile中最主要的就是各种环境变量，例如 `PATH` 和 `LIBRARY_PATH`。
-用户使用 `module load` 加载这个modulefile时，实际上就是在当前shell设置这些环境变量。
+一个 modulefile 中最主要的就是各种环境变量，例如 `PATH` 和 `LIBRARY_PATH`。
+用户使用 `module load` 加载这个 modulefile 时，实际上就是在当前 shell 设置这些环境变量。
 因此，用户在安装完软件后，通常需要把 `bin`、`include`、`lib` 等目录的绝对路径写在 modulefile 中。
 
 自定义模块文件时，可以用命令查看集群上已有模块的配置文件供参考，例如，查看 `GCC/8.2.0` 的模块文件：
@@ -419,10 +413,10 @@ $ module show GCC/8.2.0-2.31.1
 
 ## Tcl 旧模块的处理
 
-Environment Module System 的迁移（指从 Tcl 模块系统迁移到 Lua 的模块系统）并不影响 Tcl 旧的软件模块的使用，
-因为 lmod 同样兼容 Tcl 模块文件。
+模块系统的迁移（指从 Environment Modules 迁移到 Lmod）并不影响 Tcl 旧的软件模块的使用，
+因为 Lmod 同样兼容 Tcl 模块文件。
 
-目前，实验室集群上 Tcl 旧的模块都转移到另一个路径了，因此无法直接用 `module avail` 命令看到。如果要使用旧的模块，请执行：
+目前，实验室集群上的 Tcl 模块都转移到另一个路径了，因此无法直接用 `module avail` 命令看到。如果要使用旧的模块，请执行：
 
 ```bash
 $ ml showlegacy
@@ -431,5 +425,5 @@ $ ml showlegacy
 旧模块提供的软件安装在 `/opt` 下，新模块提供的软件安装在 `/apps` 下。
 
 :::note 冲突的模块
-为防止模块冲突，在 `/opt` 中安装编译工具、科学计算软件Tcl模块时尽量不要与 Lmod 模块同名（如 GCC、OpenMPI、MPICH、PETSc等）。除此之外，其他手动安装的软件都可随意使用。
+为防止模块冲突，在 `/opt` 中安装编译工具、科学计算软件 Tcl 模块时尽量不要与 Lua 模块同名（如 GCC、OpenMPI、MPICH、PETSc 等）。除此之外，其他手动安装的软件都可随意使用。
 :::
