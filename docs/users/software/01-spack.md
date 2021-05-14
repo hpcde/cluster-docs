@@ -241,6 +241,21 @@ $ spack load gompi@2020b
 例如，使用 `openmpi%gcc@10.2.0` 时，不需要加载 `gcc@10.2.0` ，mpicc 会指向正确的 gcc 位置。
 :::
 
+:::info 环境变量的修改
+`spack load / unload` 默认会影响的环境变量在不同版本可能会不一样。例如，从 v0.16.1 的某个开发版起，默认只修改 `PATH`、`MANPATH`、`CPATH` 和 `LD_LIBRARY_PATH`，而不会修改 `LIBRARY_PATH`。依赖于 `LIBRARY_PATH` 的用户需要调整配置文件 `modules.yml` 中的 `prefix_inspections`：
+
+```
+modules:
+  prefix_inspections:
+    lib:
+      - LIBRARY_PATH
+    lib64:
+      - LIBRARY_PATH
+```
+
+参考：[Customize environment modifications](https://spack.readthedocs.io/en/latest/module_file_support.html#customize-env-modifications)
+:::
+
 ## 加载 Python 包
 
 参考：
