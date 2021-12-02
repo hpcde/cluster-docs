@@ -16,6 +16,7 @@ tags: [hello]
 
 ### Slurm
 - [SLURM调度器基础教程: 曙光先进计算](https://www.hpccube.com/wiki/index.php/SLURM使用基础教程)
+- [Research Computing University of Colorado Boulder](https://curc.readthedocs.io/en/latest/running-jobs/slurm-commands.html)
 
 ### Linux
 - [Linux命令大全](https://man.linuxde.net)
