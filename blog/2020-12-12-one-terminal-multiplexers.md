@@ -1,5 +1,5 @@
 ---
-id: one-terminal-multiplexers
+slug: one-terminal-multiplexers
 title: 实用工具：Terminal Multiplexers
 author: one
 author_title: PhD student at USTB

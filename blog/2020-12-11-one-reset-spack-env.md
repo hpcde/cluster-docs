@@ -1,5 +1,5 @@
 ---
-id: one-reset-spack-env
+slug: one-reset-spack-env
 title: 切换Spack环境变量
 author: one
 author_title: PhD student at USTB

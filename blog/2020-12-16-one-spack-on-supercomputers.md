@@ -1,5 +1,5 @@
 ---
-id: one-spack-on-supercomputers
+slug: one-spack-on-supercomputers
 title: 如何在超算上配置Spack
 author: one
 author_title: PhD student at USTB

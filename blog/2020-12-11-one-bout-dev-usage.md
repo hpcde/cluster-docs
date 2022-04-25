@@ -1,5 +1,5 @@
 ---
-id: one-bout-dev-usage
+slug: one-bout-dev-usage
 title: 使用集群上安装的BOUT++库
 author: one
 author_title: PhD student at USTB
