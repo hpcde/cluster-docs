@@ -33,6 +33,7 @@ const siteBaseUrl = process.env.NODE_ENV === 'production' ? (process.env.DEPLOY_
 
 // config algolia search
 const algoliaConfig = process.env.USE_ALGOLIA_SEARCH ? {
+  appId: "BH4D9OD16A",
   apiKey: '0aad5efb2b743c35baf62e3f733d4823',
   indexName: 'cluster',
   // contextualSearch: true
