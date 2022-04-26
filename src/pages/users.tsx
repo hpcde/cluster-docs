@@ -6,10 +6,14 @@
 import React from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
+interface SiteConfig {
+  users: [],
+  repoUrl: string,
+}
 
 function Users () {
   const context = useDocusaurusContext();
-  const {siteConfig = {}} = context;
+  const {siteConfig} = context;
 
   if ((siteConfig.users || []).length === 0) {
     return null;

@@ -1,5 +1,5 @@
 ---
-id: helpful-links
+slug: helpful-links
 title: 一些有用的参考资料
 author: genshen
 author_title: PhD student at USTB

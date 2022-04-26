@@ -1,6 +1,6 @@
 ---
 id: getting-started
-# slug: users/getting-started.html
+slug: getting-started
 title: 首页
 ---
 

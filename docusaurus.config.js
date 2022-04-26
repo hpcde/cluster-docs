@@ -3,6 +3,9 @@
  * 
  */
 
+// @ts-check
+// Note: type annotations allow type checking and IDEs autocompletion
+
 // See https://docusaurus.io/ for all the possible site configuration options.
 const admins = [
   {
@@ -30,6 +33,7 @@ const siteBaseUrl = process.env.NODE_ENV === 'production' ? (process.env.DEPLOY_
 
 // config algolia search
 const algoliaConfig = process.env.USE_ALGOLIA_SEARCH ? {
+  appId: "BH4D9OD16A",
   apiKey: '0aad5efb2b743c35baf62e3f733d4823',
   indexName: 'cluster',
   // contextualSearch: true
@@ -50,6 +54,9 @@ const localSearchConfig = process.env.USE_LOCAL_SEARCH ? [
   },
 ] : null
 
+const lightCodeTheme = require('prism-react-renderer/themes/github');
+const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+
 const extraUrl = {
   git: 'https://git.hpcer.dev',
   hub: 'https://hub.hpcer.dev',
@@ -57,12 +64,14 @@ const extraUrl = {
   hpcde: 'https://hpcde.github.io',
 }
 
-const DocsConfig = {
+/** @type {import('@docusaurus/types').Config} */
+const config = {
   title: 'HPCer Clusters Document',
   tagline: '高性能计算与数据工程实验室集群系统用户手册',
-  url: 'https://hpcdoc.pages.hpcer.dev/cluster',
+  url: 'https://hpcdoc.pages.hpcer.dev',
   baseUrl: siteBaseUrl,
-  onBrokenLinks: 'log',
+  onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'HPCDE lab', // Usually your GitHub org/user name.
   projectName: 'cluster-doc', // Usually your repo name.
@@ -74,130 +83,122 @@ const DocsConfig = {
       defer: true,
     }
   ],
-  themeConfig: {
-    navbar: {
-      title: 'HPCer Clusters Document',
-      logo: {
-        alt: 'HPCer Clusters Document Logo',
-        src: 'img/logo.svg',
+
+  themeConfig:
+    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    ({
+      navbar: {
+        title: 'HPCer Clusters Document',
+        logo: {
+          alt: 'HPCer Clusters Document Logo',
+          src: 'img/logo.svg',
+        },
+        items: [
+          {
+            type: 'doc',
+            docId: 'users/getting-started',
+            position: 'left',
+            label: 'User Manual',
+          },
+          // {to: 'docs/admin/getting-started', label: 'Admin Docs', position: 'left'},
+          { to: '/blog', label: 'Blog', position: 'left' },
+          {
+            href: docGitRepo,
+            label: 'Source on Git',
+            position: 'right',
+          },
+        ],
       },
-      items: [
-        { to: 'docs/users/getting-started', label: 'User Manual', position: 'left' },
-        // {to: 'docs/admin/getting-started', label: 'Admin Docs', position: 'left'},
-        { to: 'blog', label: 'Blog', position: 'left' },
-        {
-          href: docGitRepo,
-          label: 'Source on Git',
-          position: 'right',
+      algolia: algoliaConfig,
+      footer: {
+        style: 'dark',
+        links: [
+          {
+            title: 'Docs',
+            items: [
+              {
+                label: 'User Manual',
+                to: '/docs/users/getting-started',
+              },
+              // {
+              //   label: 'Admin Manual',
+              //   to: 'docs/doc2',
+              // },
+            ],
+          },
+          {
+            title: 'Community',
+            items: [
+              {
+                label: 'HPCer Git',
+                href: extraUrl.git,
+              },
+              {
+                label: 'HPCer Hub',
+                href: extraUrl.hub,
+              },
+              {
+                label: "Cluster Status",
+                href: extraUrl.status,
+              }
+            ],
+          },
+          {
+            title: 'More',
+            items: [
+              {
+                label: 'Blog',
+                to: '/blog',
+              },
+              {
+                label: 'Doc Source on Git',
+                href: docGitRepo,
+              },
+              {
+                label: 'HPCDE lab',
+                href: extraUrl.hpcde,
+              },
+              {
+                label: 'Help',
+                to: 'help',
+              },
+            ],
+          },
+        ],
+        logo: {
+          alt: 'HPCer cluster',
+          src: `img/oss_logo.svg`,
+          href: 'https://hpcde.github.io/',
         },
-      ],
-    },
-    prism: {
-      theme: require('prism-react-renderer/themes/github'),
-      darkTheme: require('prism-react-renderer/themes/dracula'),
-    },
-    algolia: algoliaConfig,
-    footer: {
-      style: 'dark',
-      links: [
-        {
-          title: 'Docs',
-          items: [
-            {
-              label: 'User Manual',
-              to: 'docs/users/getting-started',
-            },
-            // {
-            //   label: 'Admin Manual',
-            //   to: 'docs/doc2',
-            // },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
-            {
-              label: 'HPCer Git',
-              href: extraUrl.git,
-            },
-            {
-              label: 'HPCer Hub',
-              href: extraUrl.hub,
-            },
-            {
-              label: "Cluster Status",
-              href: extraUrl.status,
-            }
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: 'blog',
-            },
-            {
-              label: 'Doc Source on Git',
-              href: docGitRepo,
-            },
-            {
-              label: 'HPCDE lab',
-              href: extraUrl.hpcde,
-            },
-            {
-              label: 'Help',
-              to: 'help',
-            },
-          ],
-        },
-      ],
-      logo: {
-        alt: 'HPCer cluster',
-        src: `img/oss_logo.svg`,
-        href: 'https://hpcde.github.io/',
+        copyright: `Copyright © ${new Date().getFullYear()} HPCDE lab. Built with Docusaurus.`,
       },
-      copyright: `Copyright © ${new Date().getFullYear()} HPCDE lab. Built with Docusaurus.`,
-    },
-  },
-  // plugins: [
-  //   // ... Your other plugins.
-  //   [
-  //     require.resolve("@easyops-cn/docusaurus-search-local"),
-  //     {
-  //       // ... Your options.
-  //       // `hashed` is recommended as long-term-cache of index file is possible.
-  //       hashed: true,
-  //       // For Docs using Chinese, The `language` is recommended to set to:
-  //       // ```
-  //       language: ["en", "zh"],
-  //       // ```
-  //       // When applying `zh` in language, please install `nodejieba` in your project.
-  //     },
-  //   ],
-  // ],
+      prism: {
+        theme: lightCodeTheme,
+        darkTheme: darkCodeTheme,
+      },
+    }),
+
   presets: [
     [
-      '@docusaurus/preset-classic',
-      {
+      'classic',
+      /** @type {import('@docusaurus/preset-classic').Options} */
+      ({
         docs: {
-          // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: 'getting-started',
           sidebarPath: require.resolve('./sidebars.js'),
+          // Please change this to your repo.
           editUrl: docEditUrl,
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
         },
-        // blog: {
-        //   showReadingTime: true,
-        //   // Please change this to your repo.
-        //   editUrl:
-        //     'https://github.com/facebook/docusaurus/edit/master/website/blog/',
-        // },
+        blog: {
+          showReadingTime: true,
+          // Please change this to your repo.
+          editUrl: docEditUrl,
+        },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
-      },
+      }),
     ],
   ],
 };
@@ -205,11 +206,11 @@ const DocsConfig = {
 // apply local search plugin
 
 if (localSearchConfig !== null) {
-  if (!DocsConfig.plugins) {
-    DocsConfig.plugins = [localSearchConfig]
+  if (!config.plugins) {
+    config.plugins = [localSearchConfig]
   } else {
-    DocsConfig.plugins.push(localSearchConfig)
+    config.plugins.push(localSearchConfig)
   }
 }
 
-module.exports = DocsConfig
+module.exports = config;
