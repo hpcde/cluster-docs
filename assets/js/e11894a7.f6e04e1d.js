@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkhpcer_cluster_docs=self.webpackChunkhpcer_cluster_docs||[]).push([[5219],{806:function(s){s.exports=JSON.parse('{"allTagsPath":"/cluster-docs/blog/tags","name":"screen","count":1,"permalink":"/cluster-docs/blog/tags/screen"}')}}]);

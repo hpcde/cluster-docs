@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkhpcer_cluster_docs=self.webpackChunkhpcer_cluster_docs||[]).push([[6380],{9320:function(e){e.exports=JSON.parse('{"permalink":"/cluster-docs/blog/tags/screen","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);
