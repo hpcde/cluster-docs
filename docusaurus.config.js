@@ -120,10 +120,10 @@ const config = {
                 label: 'User Manual',
                 to: '/docs/users/getting-started',
               },
-              // {
-              //   label: 'Admin Manual',
-              //   to: 'docs/doc2',
-              // },
+              {
+                label: 'Admin Manual',
+                to: 'docs/admin/intro',
+              },
             ],
           },
           {

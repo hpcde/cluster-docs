@@ -47,7 +47,8 @@ const sidebars = {
     "Q&A": ["users/question_and_answer"]
   },
   admin: {
-    // "First Category": ["doc4", "doc5"]
+    "概览": ["admin/intro"],
+    "用户登录与认证": ["admin/two-factor-authentication"]
   },
 };
 
