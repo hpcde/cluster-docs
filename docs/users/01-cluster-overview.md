@@ -11,15 +11,12 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 ## 历史
 
-2005 至 2009 年，架设第一批 Linux 服务器集群，用于高性能计算、数据工程、编译系统等领域的研究工作。
-
-2013 至 2014 年，架设第一批 Windows Server 集群，配有相应存储节点、万兆交换机，用于社交网络、大数据等领域的研究工作。
-
-2016 至 2018 年，架设小型的高性能计算集群，包括 24 个 CPU 节点、1 个 GPU 节点、1 个 飞腾节点和 1 个存储阵列。该集群可用于并行计算、社交网络、机器学习、大数据等领域的研究工作。
+- 2005 至 2009 年，架设第一批 Linux 服务器集群，用于高性能计算、数据工程、编译系统等领域的研究工作。  
+- 2013 至 2014 年，架设第一批 Windows Server 集群，配有相应存储节点、万兆交换机，用于社交网络、大数据等领域的研究工作。  
+- 2016 至 2018 年，架设小型的高性能计算集群，包括 24 个 CPU 节点、1 个 GPU 节点、1 个 飞腾节点和 1 个存储阵列。该集群可用于并行计算、社交网络、机器学习、大数据等领域的研究工作。  
+- 2025-2026 年，新增包含2 块BW1000 DCU的 DCU 节点、新的存储节点（替换掉原先的存储节点）。
 
 目前，实验室集群仅供给实验室内的各位老师、研究生与本科生作学习、研究用途，不对外开放。
-
-本文档主要提供给 2016 至 2018 年搭建的高性能计算集群。
 
 ## 节点概况
 
@@ -37,11 +34,13 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 - *node[13-16]*：Hadoop 集群；
 - *node[17-23]*：计算节点；
 - *node24*：集群数据库、软件管理节点；
-- *nodegpu*：GPU 节点；
-- *nodeft*：飞腾节点；
+- *nodegpu*：GPU 节点（下线）；
+- *nodedcu*：BW1000 DCU 节点；
+- *nodeft*：飞腾节点（下线）；
 - *nodedata*：存储节点。
 
-每一个节点都有两个以太网卡(eth0与eth1)，一个连入以太网(eth0)，一个接入外部互联网络(eth1)。除登录节点、GPU 节点、Hadoop 节点等需要单独连接外部网络的节点会同时开启两张网卡，其他节点都只开启一张网卡。
+每一个 CPU 节点都有两个以太网卡(eth0与eth1)，一个连入以太网(eth0)，一个接入外部互联网络(eth1)。
+除登录节点、GPU 节点、DCU节点、Hadoop 节点等需要单独连接外部网络的节点会同时开启两张网卡，其他节点都只开启一张网卡。
 
 因此，计算节点本身并不直接连接外部网络，而是通过登录节点 *node01* 配置的NAT和IP转发来连接外部网络（例如使用 `yum`）。
 
@@ -51,17 +50,21 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 - 飞腾节点采用国产飞腾CPU —— FT-1500A (arm v8 指令集)。
 
+- DCU节点采用 2块海光 BW1000 DCU，安装有 DTK、OpenMPI、spack 环境，可满足HPC、AI计算等需求。
+
 集群配置图如下：
 
 <img alt="节点概况" src={useBaseUrl('users-assets/clusters_arch.svg')} />
 
 ## 操作系统
 
-*node[01-24]* 均为 CentOS，除 *node[03-04]* 外，其他节点的系统、内核版本都是一致的，并且会定期更新。
+*node[01-24]* 均为 CentOS 7，除 *node[03-04]* 外，其他节点的系统、内核版本都是一致的，并且会定期更新。
 
 *nodegpu* 为 CentOS 7.4.1810,x64。
 
 *nodeft* 为麒麟操作系统。
+
+*nodedcu* 为 Sugon OS 8.9。
 
 ## 集群资源
 
@@ -75,8 +78,9 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 | 登陆         | node[01-02]                  |  2   | 2 * E5-2620 v3, 2.40 GHz, 6 cores                            | ✓      | 24   | 64 GiB | 登陆节点    |
 | **Vhagar**   | node[05-12]                  |  8   | 2 * E5-2620 v3, 2.40 GHz, 6 cores                            | ✓      | 24   | 64 GiB | 2016年机器  |
 | **Balerion** | node[17-23]                  |  8   | 2 * E5-2620 v4, 2.10 GHz, 8 cores                            | ✓      | 32   | 64 GiB | 2018年机器  |
-| **Viserion** | nodeft                       |  1   | 4 * Phytium FT1500a, 1.8 GHz, 4 cores                        | ✗      | 16   | 32 GiB | 未开放      |
-| **Drogon**   | nodegpu                      |  1   | 1 * E5-2620 v4, 2.10 GHz, 8 cores<br />1 * NVIDIA Tesla K40m | ✓      | 32   | 16 GiB | 未开放      |
+| **Viserion** | nodeft                       |  1   | 4 * Phytium FT1500a, 1.8 GHz, 4 cores                        | ✗      | 16   | 32 GiB | 下线      |
+| **Drogon**   | nodegpu                      |  1   | 1 * E5-2620 v4, 2.10 GHz, 8 cores<br />1 * NVIDIA Tesla K40m | ✓      | 32   | 16 GiB | 下线      |
+| **Tea**   | nodedcu                      |  1   | 128 核心海光CPU（Hygon C86-4G (OPN:7495)，3.0 GHz；2 * BW1000 DCU，64 GB 显存/DCU                              | ✓      | 128   | 128 GiB | 2026年机器      |
 | 数据库       | node24                       |  8   | 2 * E5-2620 v4, 2.10 GHz, 8 cores                            | ✓      | 32   | 64 GiB | 管理员使用  |
 | 其他         | node[03-04]<br />node[13-16] |  3   | 2 * E5-2620 v3, 2.40 GHz, 6 cores                            | ✓      | 24   | 64 GiB | 单独使用    |
 
@@ -96,20 +100,15 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 | 名称     | 说明          |
 | -------- | ------------- |
-| 软件管理 | Lmod 7.8      |
+| 软件管理 | Spack 1.2.0.dev0 |
 | 作业调度 | SLURM 18.08.5 |
 
 所有预装的软件都可以用命令查看：
 
 ```
-$ module spider
+$ spack find --loaded
 ```
 
-或
-
-```
-$ module spider <TAB><TAB>
-```
 
 常用软件列表见[预装软件](software/02-software-list.md)一节。
 
