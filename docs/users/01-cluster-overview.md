@@ -1,7 +1,9 @@
 ---
+sidebar_position: 2
 id: cluster-overview
-title: 集群环境
+title: "集群环境"
 ---
+
 import useBaseUrl from '@docusaurus/useBaseUrl';
 
 **北京科技大学高性能计算与数据工程实验室 (High Performance Computing and Data Engineer Lab,HPC&DE Labs)** 隶属于北京科技大学计算机与通信工程学院。
@@ -133,4 +135,4 @@ $ module spider <TAB><TAB>
 
 ## 其他说明
 
-集群登录节点对 CPU 占用有一定限制，多个用户同时在登录节点上运行程序时，CPU 使用率可能会很低，导致程序跑很长时间。因此，请尽量把程序[提交给调度系统](slurm/02-slurm-submit-jobs.md)，不要在登录节点上运行。
+集群登录节点对 CPU 占用有一定限制，多个用户同时在登录节点上运行程序时，CPU 使用率可能会很低，导致程序跑很长时间。因此，请尽量把程序[提交给调度系统](slurm/quickstart)，不要在登录节点上运行。

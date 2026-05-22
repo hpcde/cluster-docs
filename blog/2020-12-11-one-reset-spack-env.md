@@ -1,10 +1,7 @@
 ---
 slug: one-reset-spack-env
 title: 切换Spack环境变量
-author: one
-author_title: PhD student at USTB
-author_url: https://github.com/alephpiece
-author_image_url: https://github.com/alephpiece.png
+authors: one
 tags: [tutorial, spack]
 ---
 
@@ -17,7 +14,7 @@ $ source $SPACK_ROOT/share/spack/setup-env.sh
 
 当我们有多个Spack时，直接`source`其中一个Spack的环境配置脚本可能不会达到预期效果。比如，首先加载了集群的公共Spack，随后切换到自己的本地Spack，实际上仍有些环境是公共Spack设置的。此时我们需要清除一下旧的环境。
 
-<!--truncate-->
+{/* truncate */}
 
 > 以下均以bash为例。
 
