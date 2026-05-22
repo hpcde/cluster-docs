@@ -1,7 +1,7 @@
 ---
+sidebar_position: 1
 id: getting-started
-slug: getting-started
-title: 首页
+title: "首页"
 ---
 
 ## 本项目地址

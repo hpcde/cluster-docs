@@ -1,10 +1,7 @@
 ---
 slug: one-spack-on-supercomputers
 title: 如何在超算上配置Spack
-author: one
-author_title: PhD student at USTB
-author_url: https://github.com/alephpiece
-author_image_url: https://github.com/alephpiece.png
+authors: one
 tags: [tutorial, spack]
 ---
 
@@ -19,7 +16,7 @@ tags: [tutorial, spack]
 
 本文涉及的所有内容基本都包含在实验室集群文档和 Spack 官方文档中，因此不再专门给出链接。
 
-<!--truncate-->
+{/* truncate */}
 
 ## 超算环境说明
 

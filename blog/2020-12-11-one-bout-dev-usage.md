@@ -1,10 +1,7 @@
 ---
 slug: one-bout-dev-usage
 title: 使用集群上安装的BOUT++库
-author: one
-author_title: PhD student at USTB
-author_url: https://github.com/alephpiece
-author_image_url: https://github.com/alephpiece.png
+authors: one
 tags: [tutorial, bout++, spack]
 ---
 
@@ -27,7 +24,7 @@ $ spack load --only dependencies ~openmp+scorep
 $ bout-config --all
 ```
 
-<!--truncate-->
+{/* truncate */}
 
 ## 链接集群上已安装的BOUT++库
 

@@ -1,10 +1,7 @@
 ---
 slug: one-terminal-multiplexers
 title: 实用工具：Terminal Multiplexers
-author: one
-author_title: PhD student at USTB
-author_url: https://github.com/alephpiece
-author_image_url: https://github.com/alephpiece.png
+authors: one
 tags: [tool, screen, tmux]
 ---
 
@@ -16,7 +13,7 @@ tags: [tool, screen, tmux]
 - `screen`
 - `tmux`
 
-<!--truncate-->
+{/* truncate */}
 
 ## 后台运行程序：nohup 和 &
 

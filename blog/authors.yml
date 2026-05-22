@@ -1,0 +1,13 @@
+one:
+  name: Wang An
+  title: PhD student at USTB
+  url: https://github.com/alephpiece
+  image_url: https://github.com/alephpiece.png
+  page: true
+
+genshen:
+  name: Genshen Chu
+  title: Teacher at USTB
+  url: https://github.com/genshen
+  image_url: https://secure.gravatar.com/avatar/15520bc606e6177300abacab337a5dc6?s=800&d=identicon
+  page: true

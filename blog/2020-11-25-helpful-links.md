@@ -1,10 +1,7 @@
 ---
 slug: helpful-links
 title: 一些有用的参考资料
-author: genshen
-author_title: PhD student at USTB
-author_url: https://github.com/genshen
-author_image_url: https://secure.gravatar.com/avatar/15520bc606e6177300abacab337a5dc6?s=800&d=identicon
+authors: genshen
 tags: [hello]
 ---
 
@@ -32,4 +29,3 @@ tags: [hello]
 ### 相关链接
 - [上海交通大学 Pi 超算集群文档](https://docs.hpc.sjtu.edu.cn)
 
-<!--truncate-->

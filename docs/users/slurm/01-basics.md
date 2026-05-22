@@ -1,5 +1,5 @@
 ---
-id: basics
+id: slurm-basics
 title: Slurm 基本概念
 ---
 
