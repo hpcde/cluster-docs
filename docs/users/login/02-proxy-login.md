@@ -8,7 +8,7 @@ title: 外网代理登录
 - **ssh-web-console**: 在校外通过vpn访问网站 https://console.hpc.gensh.me, 使用[ssh-web-console](https://github.com/genshen/ssh-web-console)登录到校内服务器, 该服务提供基于web的ssh登录与文件传输功能.
 - **wssocks代理**: [wssocks](https://github.com/genshen/wssocks)提供TCP协议代理,可以通过该代理访问校内的网站、使用ssh连接服务器等(只要是TCP协议的均可).
 
-## 外网ssh-web-console使用
+## 外网ssh-web-console使用 【已弃用】
 - 登录VPN  
 在浏览器输入https://n.ustb.edu.cn, 进行VPN登录(账号及密码分别为校园网用户名与密码).  
 
